@@ -30,7 +30,7 @@ public class Task {
 
     @ManyToMany
     @JoinTable(
-        name = "task_employee",
+        name = "task_assignees",
         joinColumns = @JoinColumn(name = "task_id"),
         inverseJoinColumns = @JoinColumn(name = "employee_id")
     )
