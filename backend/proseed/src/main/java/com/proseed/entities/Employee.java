@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 import lombok.ToString;
 
 @Entity
@@ -19,6 +21,9 @@ public class Employee {
 
     @Column(nullable = false)
     private String lastName;
+
+    @ManyToMany(mappedBy = "employees")
+    private Set<Task> tasks;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -25,4 +27,12 @@ public class Task {
 
     @Column(nullable = false)
     private boolean isCompleted; // This can be changed later for more states
+
+    @ManyToMany
+    @JoinTable(
+        name = "task_employee",
+        joinColumns = @JoinColumn(name = "task_id"),
+        inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
+    private Set<Employee> employees;
 }
