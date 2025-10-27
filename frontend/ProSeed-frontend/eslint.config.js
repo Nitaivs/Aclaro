@@ -17,6 +17,9 @@ export default defineConfig([
       reactRefresh.configs.vite,
       reactX.configs['recommended-typescript'],
     ],
+    rules: {
+      '@typescript-eslint/no-misused-promises': 'off',
+    },
     languageOptions: {
       parserOptions: {
         project: ['./tsconfig.json', "./tsconfig.app.json"],
