@@ -30,4 +30,14 @@ public class Employee {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Role role;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "employee_skills_mapping",
+        joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employeeId"),
+        inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "skillId")
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<EmployeeSkill> employeeSkills;
 }
