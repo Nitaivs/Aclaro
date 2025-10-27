@@ -23,6 +23,8 @@ public class Employee {
     private String lastName;
 
     @ManyToMany(mappedBy = "employees")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Task> tasks;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,4 +42,9 @@ public class Employee {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<EmployeeSkill> employeeSkills;
+
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private EmployeeProfile profile;
 }
