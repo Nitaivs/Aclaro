@@ -30,4 +30,9 @@ public class Role {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<Privilege> privileges;
+
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Collection<Employee> employees;
 }

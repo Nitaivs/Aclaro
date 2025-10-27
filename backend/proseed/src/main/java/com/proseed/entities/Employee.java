@@ -2,7 +2,9 @@ package com.proseed.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -17,4 +19,10 @@ public class Employee {
 
     @Column(nullable = false)
     private String lastName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Role role;
 }
