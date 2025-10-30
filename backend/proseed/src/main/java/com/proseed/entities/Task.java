@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -15,6 +16,7 @@ public class Task {
     private Long taskId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore // Prevent recursion
     @JoinColumn(name = "process_id", nullable = false,
                 foreignKey = @ForeignKey(name = "FK_TASK_PROCESS"))
     private ProcessEntity process;
@@ -29,6 +31,7 @@ public class Task {
     private boolean isCompleted; // This can be changed later for more states
 
     @ManyToMany
+    @JsonIgnore // Prevent recursion
     @JoinTable(
         name = "task_assignees",
         joinColumns = @JoinColumn(name = "task_id"),
