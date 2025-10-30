@@ -3,6 +3,9 @@ import {useParams} from "react-router";
 import {use} from "react";
 import TaskCard from "./TaskCard.jsx";
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
+import {useState} from "react";
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
 
 /**
  * @component ProcessPage
@@ -16,6 +19,7 @@ export default function ProcessPage() {
   const {processId} = useParams();
   const parsedProcessId = processId ? parseInt(processId) : undefined;
   const {tasks, addTask, deleteTask} = use(TaskContext);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   if (!parsedProcessId) {
     return (
@@ -52,6 +56,14 @@ export default function ProcessPage() {
           </li>
         ))}
       </ul>
+      <button onClick={() => setIsDialogOpen(true)}>Show Process Details</button>
+      <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+        <DialogTitle>Process Details</DialogTitle>
+        <div style={{ padding: '16px' }}>
+          <p>Details about process {processId} go here.</p>
+          <button onClick={() => setIsDialogOpen(false)}>Close</button>
+        </div>
+      </Dialog>
     </div>
   )
 }
