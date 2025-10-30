@@ -87,9 +87,9 @@ public class DataInitializer implements CommandLineRunner {
         employeeRepository.saveAll(List.of(alice, bob, carol));
 
         // Processes
-        com.proseed.entities.Process process1 = new com.proseed.entities.Process();
+        com.proseed.entities.ProcessEntity process1 = new com.proseed.entities.ProcessEntity();
         process1.setProcessName("Backend Development");
-        com.proseed.entities.Process process2 = new com.proseed.entities.Process();
+        com.proseed.entities.ProcessEntity process2 = new com.proseed.entities.ProcessEntity();
         process2.setProcessName("Frontend Development");
         processRepository.saveAll(List.of(process1, process2));
 

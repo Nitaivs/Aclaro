@@ -1,6 +1,6 @@
 package com.proseed.controllers;
 
-import com.proseed.entities.Process;
+import com.proseed.entities.ProcessEntity;
 import com.proseed.repos.ProcessRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +19,12 @@ public class ProcessController {
     }
 
     @GetMapping
-    public List<Process> getAllProcesses() {
+    public List<ProcessEntity> getAllProcesses() {
         return processRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public Process getProcessById(@PathVariable Long id) {
+    public ProcessEntity getProcessById(@PathVariable Long id) {
         return processRepository.findById(id).orElse(null);
     }
 }

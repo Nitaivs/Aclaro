@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Data
 @NoArgsConstructor
-public class Process {
+public class ProcessEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long processId;

@@ -17,7 +17,7 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "process_id", nullable = false,
                 foreignKey = @ForeignKey(name = "FK_TASK_PROCESS"))
-    private Process process;
+    private ProcessEntity process;
 
     @Column(nullable = false)
     private String taskName;
