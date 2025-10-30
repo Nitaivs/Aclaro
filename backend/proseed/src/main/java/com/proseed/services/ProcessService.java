@@ -7,4 +7,7 @@ import java.util.Optional;
 public interface ProcessService {
     List<ProcessEntity> findAll();
     Optional<ProcessEntity> findById(Long id);
+    ProcessEntity create(ProcessEntity process);
+    Optional<ProcessEntity> update(Long id, ProcessEntity updatedProcess);
+    boolean delete(Long id);
 }

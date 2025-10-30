@@ -21,8 +21,15 @@ public class ProcessEntity {
     private String processName;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "process", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "process", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Collection<Task> tasks;
+
+    @PreRemove
+    private void preRemove() {
+        if (tasks != null) {
+            tasks.clear();
+        }
+    }
 }

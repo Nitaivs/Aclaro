@@ -1,7 +1,7 @@
 package com.proseed.controllers;
 
 import com.proseed.entities.ProcessEntity;
-import com.proseed.repos.ProcessRepository;
+import com.proseed.services.ProcessService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.http.HttpStatus;
@@ -38,24 +38,24 @@ public class ProcessController {
     }
 
     @PostMapping
-    public ProcessEntity createProcess(@RequestBody ProcessEntity process) {
-        return processRepository.save(process);
+    public ResponseEntity<ProcessEntity> createProcess(@RequestBody ProcessEntity process) {
+        ProcessEntity saved = processService.create(process);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
-    public ProcessEntity updateProcess(@PathVariable Long id,
+    public ResponseEntity<ProcessEntity> updateProcess(@PathVariable Long id,
                                     @RequestBody ProcessEntity updatedProcess)
     {
-        return processRepository.findById(id)
-            .map(existing -> {
-                existing.setProcessName(updatedProcess.getProcessName());
-                return processRepository.save(existing);
-            })
-            .orElse(null);
+        return processService.update(id, updatedProcess)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProcess(@PathVariable Long id) {
-        processRepository.deleteById(id);
+    public ResponseEntity<Void> deleteProcess(@PathVariable Long id) {
+        return processService.delete(id)
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

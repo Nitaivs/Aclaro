@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProcessServiceImpl implements ProcessService {
@@ -24,5 +25,26 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public Optional<ProcessEntity> findById(Long id) {
         return repository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public ProcessEntity create(ProcessEntity process) {
+        return repository.save(process);
+    }
+
+    @Override
+    @Transactional
+    public Optional<ProcessEntity> update(Long id, ProcessEntity updatedProcess) {
+        return repository.findById(id).map(existing -> {
+            existing.setProcessName(updatedProcess.getProcessName());
+            return repository.save(existing);
+        });
+    }
+
+    @Override
+    @Transactional
+    public boolean delete(Long id) {
+        return repository.findById(id).map(p -> { repository.delete(p); return true; }).orElse(false);
     }
 }
