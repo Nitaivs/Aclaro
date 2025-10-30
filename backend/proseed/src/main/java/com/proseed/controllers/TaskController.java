@@ -1,7 +1,7 @@
 package com.proseed.controllers;
 
 import com.proseed.entities.Task;
-import com.proseed.entities.Process;
+import com.proseed.entities.ProcessEntity;
 import com.proseed.repos.TaskRepository;
 import com.proseed.repos.ProcessRepository;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class TaskController {
 
     @PostMapping
     public Task createTask(@RequestBody Task task, @RequestParam Long processId) {
-        com.proseed.entities.Process process = processRepository.findById(processId).orElse(null);
+        com.proseed.entities.ProcessEntity process = processRepository.findById(processId).orElse(null);
         if (process == null) {
             throw new IllegalArgumentException("Process not found with id: " + processId);
         }
