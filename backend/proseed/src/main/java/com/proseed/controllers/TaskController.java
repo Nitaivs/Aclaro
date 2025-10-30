@@ -31,7 +31,7 @@ public class TaskController {
 
     @PostMapping
     public Task createTask(@RequestBody Task task, @RequestParam Long processId) {
-        com.proseed.entities.ProcessEntity process = processRepository.findById(processId).orElse(null);
+        ProcessEntity process = processRepository.findById(processId).orElse(null);
         if (process == null) {
             throw new IllegalArgumentException("Process not found with id: " + processId);
         }
