@@ -39,6 +39,11 @@ export default function ProcessPage() {
         )
     }
 
+    //TODO: rewrite to use state once backend is ready
+    function handleDeleteTask(taskId: number): void {
+        setTasks(tasks.filter(task => task.id !== taskId));
+    }
+
     return (
         <div>
             <Link to="/">
@@ -56,6 +61,7 @@ export default function ProcessPage() {
                 {tasks.map((task) => (
                     <li key={task.id}>
                         <TaskCard processId={parsedProcessId} taskId={task.id} taskName={task.name}/>
+                        <button onClick={() => handleDeleteTask(task.id)}>delete</button>
                     </li>
                 ))}
             </ul>
