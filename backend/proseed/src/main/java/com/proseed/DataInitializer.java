@@ -21,6 +21,10 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        if (roleRepository.count() > 0 || processRepository.count() > 0) {
+            return;
+        }
+
         // Privileges
         Privilege privRead = new Privilege();
         Privilege privWrite = new Privilege();

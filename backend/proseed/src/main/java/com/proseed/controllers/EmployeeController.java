@@ -2,14 +2,16 @@ package com.proseed.controllers;
 
 import com.proseed.entities.Employee;
 import com.proseed.repos.EmployeeRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -23,34 +25,42 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        return ResponseEntity.ok(employeeRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable Long id) {
-        return employeeRepository.findById(id).orElse(null);
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+        return employeeRepository.findById(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeRepository.save(employee);
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+        Employee saved = employeeRepository.save(employee);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
         return employeeRepository.findById(id)
             .map(existing -> {
                 existing.setFirstName(updatedEmployee.getFirstName());
                 existing.setLastName(updatedEmployee.getLastName());
                 // Add other updatable fields as needed
-                return employeeRepository.save(existing);
+                Employee saved = employeeRepository.save(existing);
+                return ResponseEntity.ok(saved);
             })
-            .orElse(null);
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        if (!employeeRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         employeeRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
