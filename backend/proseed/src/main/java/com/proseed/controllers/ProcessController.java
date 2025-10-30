@@ -19,20 +19,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/processes")
 public class ProcessController {
-    private final ProcessRepository processRepository;
+    private final ProcessService processService;
 
-    public ProcessController(ProcessRepository processRepository) {
-        this.processRepository = processRepository;
+    public ProcessController(ProcessService processService) {
+        this.processService = processService;
     }
 
     @GetMapping
     public ResponseEntity<List<ProcessEntity>> getAllProcesses() {
-        return ResponseEntity.ok(processRepository.findAll());
+        return ResponseEntity.ok(processService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProcessEntity> getProcessById(@PathVariable Long id) {
-        return processRepository.findById(id)
+        return processService.findById(id)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }

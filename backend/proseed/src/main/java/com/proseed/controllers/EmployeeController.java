@@ -1,7 +1,7 @@
 package com.proseed.controllers;
 
 import com.proseed.entities.Employee;
-import com.proseed.repos.EmployeeRepository;
+import com.proseed.services.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,49 +18,41 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees() {
-        return ResponseEntity.ok(employeeRepository.findAll());
+        return ResponseEntity.ok(employeeService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
-        return employeeRepository.findById(id)
+    return employeeService.findById(id)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        Employee saved = employeeRepository.save(employee);
+        Employee saved = employeeService.create(employee);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
-        return employeeRepository.findById(id)
-            .map(existing -> {
-                existing.setFirstName(updatedEmployee.getFirstName());
-                existing.setLastName(updatedEmployee.getLastName());
-                // Add other updatable fields as needed
-                Employee saved = employeeRepository.save(existing);
-                return ResponseEntity.ok(saved);
-            })
+        return employeeService.update(id, updatedEmployee)
+            .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        if (!employeeRepository.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        employeeRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return employeeService.delete(id)
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
