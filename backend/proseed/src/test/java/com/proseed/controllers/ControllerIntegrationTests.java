@@ -46,6 +46,7 @@ class ControllerIntegrationTests {
 
     @Test
     void employeeControllerCrudFlow() throws Exception {
+        System.out.println("[TEST] employeeControllerCrudFlow: START");
         mockMvc.perform(get("/api/employees"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
@@ -61,6 +62,7 @@ class ControllerIntegrationTests {
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.employeeId").value(999))
             .andExpect(jsonPath("$.firstName").value("Dana"));
+        System.out.println("[TEST] Created employee: " + employeeRepository.findById(999L));
 
         assertThat(employeeRepository.findById(999L)).isPresent();
 
@@ -74,15 +76,19 @@ class ControllerIntegrationTests {
                 .content(updateEmployeeJson))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.lastName").value("Cooper"));
+        System.out.println("[TEST] Updated employee: " + employeeRepository.findById(999L));
 
         mockMvc.perform(delete("/api/employees/{id}", 999))
             .andExpect(status().isNoContent());
+        System.out.println("[TEST] Deleted employee: " + employeeRepository.findById(999L));
 
         assertThat(employeeRepository.findById(999L)).isEmpty();
+        System.out.println("[TEST] employeeControllerCrudFlow: END");
     }
 
     @Test
     void taskControllerCrudFlow() throws Exception {
+        System.out.println("[TEST] taskControllerCrudFlow: START");
         ProcessEntity process = new ProcessEntity();
         process.setProcessName("Integration Process");
         process = processRepository.save(process);
@@ -103,6 +109,7 @@ class ControllerIntegrationTests {
 
         Task createdTask = objectMapper.readValue(createResult.getResponse().getContentAsString(), Task.class);
         Long taskId = createdTask.getTaskId();
+        System.out.println("[TEST] Created task: " + createdTask);
         assertThat(taskId).isNotNull();
         assertThat(taskRepository.findById(taskId)).isPresent();
 
@@ -117,16 +124,20 @@ class ControllerIntegrationTests {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.taskDescription").value("Updated via integration test"))
             .andExpect(jsonPath("$.completed").value(true));
+    System.out.println("[TEST] Updated task: " + taskRepository.findById(taskId).map(Task::getTaskName));
 
         mockMvc.perform(delete("/api/tasks/{id}", taskId))
             .andExpect(status().isNoContent());
+    System.out.println("[TEST] Deleted task: " + taskRepository.findById(taskId).map(Task::getTaskName));
 
         assertThat(taskRepository.findById(taskId)).isEmpty();
         processRepository.deleteById(process.getProcessId());
+        System.out.println("[TEST] taskControllerCrudFlow: END");
     }
 
     @Test
     void processControllerReadEndpoints() throws Exception {
+        System.out.println("[TEST] processControllerReadEndpoints: START");
         ProcessEntity process = new ProcessEntity();
         process.setProcessName("QA Review");
         process = processRepository.save(process);
@@ -134,12 +145,16 @@ class ControllerIntegrationTests {
         mockMvc.perform(get("/api/processes"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[*].processName", hasItem("QA Review")));
+        System.out.println("[TEST] Listed processes, checked for QA Review");
 
         mockMvc.perform(get("/api/processes/{id}", process.getProcessId()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.processName").value("QA Review"));
+        System.out.println("[TEST] Got process by id: " + process.getProcessId());
 
         processRepository.deleteById(process.getProcessId());
+        System.out.println("[TEST] Deleted process: " + process.getProcessId());
+        System.out.println("[TEST] processControllerReadEndpoints: END");
     }
 
     @Test
