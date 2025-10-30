@@ -2,10 +2,15 @@ package com.proseed.controllers;
 
 import com.proseed.entities.ProcessEntity;
 import com.proseed.repos.ProcessRepository;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -26,5 +31,27 @@ public class ProcessController {
     @GetMapping("/{id}")
     public ProcessEntity getProcessById(@PathVariable Long id) {
         return processRepository.findById(id).orElse(null);
+    }
+
+    @PostMapping
+    public ProcessEntity createProcess(@RequestBody ProcessEntity process) {
+        return processRepository.save(process);
+    }
+
+    @PutMapping("/{id}")
+    public ProcessEntity updateProcess(@PathVariable Long id,
+                                    @RequestBody ProcessEntity updatedProcess)
+    {
+        return processRepository.findById(id)
+            .map(existing -> {
+                existing.setProcessName(updatedProcess.getProcessName());
+                return processRepository.save(existing);
+            })
+            .orElse(null);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteProcess(@PathVariable Long id) {
+        processRepository.deleteById(id);
     }
 }
