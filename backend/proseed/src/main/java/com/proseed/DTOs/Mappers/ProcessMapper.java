@@ -11,6 +11,7 @@ public class ProcessMapper {
         return new ProcessDTO(
             processEntity.getProcessId(),
             processEntity.getProcessName(),
+            processEntity.getProcessDescription(),
             /* If tasks exist, maps their IDs. Otherwise, returns an empty list. */
             processEntity.getTasks() != null
                 ? processEntity.getTasks().stream().map(Task::getTaskId)
