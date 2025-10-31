@@ -14,9 +14,37 @@ CREATE TABLE Employee (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
 );
-CREATE TABLE Process ();
-CREATE TABLE Task ();
-CREATE TABLE Roles ();
-CREATE TABLE Skills ();
-CREATE TABLE Employee_roles ();
-CREATE TABLE Employee_skills ();
+CREATE TABLE Process (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    details TEXT,
+);
+CREATE TABLE Task (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    process_id INT,
+    title VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+    FOREIGN KEY (process_id) REFERENCES Process(id)
+);
+CREATE TABLE Roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(100) NOT NULL,
+);
+CREATE TABLE Skills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    skill_name VARCHAR(100) NOT NULL,
+);
+CREATE TABLE Employee_roles (
+    role_id INT NOT NULL,
+    employee_id INT NOT NULL,
+    PRIMARY KEY (role_id, employee_id),
+    FOREIGN KEY (role_id) REFERENCES Roles(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (employee_id) REFERENCES Employee(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Employee_skills (
+    skill_id INT NOT NULL,
+    employee_id INT NOT NULL,
+    PRIMARY KEY (skill_id, employee_id),
+    FOREIGN KEY (skill_id) REFERENCES Skills(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (employee_id) REFERENCES Employee(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
