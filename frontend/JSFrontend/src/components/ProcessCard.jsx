@@ -1,6 +1,7 @@
-// import { Link } from 'react-router';
 import Card from '@mui/material/Card';
 import { Link } from 'react-router';
+import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
+import {use, useEffect} from "react";
 
 /**
  * @component ProcessCard
@@ -12,12 +13,16 @@ import { Link } from 'react-router';
  * @returns {JSX.Element} The rendered ProcessCard component.
  */
 export default function ProcessCard(props) {
+  const {processes} = use(ProcessContext);
+  useEffect(() => {
+    console.log("Processes updated:", processes);
+  })
     return (
         <div>
             <Link to={`/process/${props.id}`}>
                 <Card>
                     <h2>{props.processName}</h2>
-                    <p>this is a description</p>
+                    <p>{processes.find(p => p.id === props.id)?.description || "No description"}</p>
                 </Card>
             </Link>
         </div>
