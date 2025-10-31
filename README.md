@@ -38,4 +38,42 @@ The following table shows which SCRUM Artifacts translate into which Gitlab Feat
 | Burndown chart        | Burndown charts                    |
 | Agile board           | Issue boards                       |
 
+## Backend - Running locally
 
+This repository contains a Spring Boot backend in `backend/proseed`. The backend supports three profiles:
+
+- `dev` - H2 in-memory database. Hibernate manages schema (`spring.jpa.hibernate.ddl-auto=update`). Good for development and tests.
+- `dev-maria` - MariaDB (local) with Flyway migrations. Hibernate validates the schema (`spring.jpa.hibernate.ddl-auto=validate`). Use this to test persisten DB behavior
+- `prod` - Production-like profile using MariaDB and schema validation.
+
+Prerequisites
+- Java 21 (or compatible JDK used by the project)
+- Gradle (wrapper included) - use the included `gradlew`
+- MariaDB server for the `dev-maria`/`prod` profiles (if you plan to run those)
+
+Quick start (dev, in-memory H2)
+
+cd backend/proseed
+./gradlew bootRun
+
+This runs Spring Boot with the default `dev` profile (H2). The app will create/update the schema automatically.
+
+Run with MariaDB + Flyway migrations (dev-maria)
+
+1. Ensure a MariaDB database and user are available and match the values in `backend/proseed/src/main/resources/application-dev-maria.properties` (defaults used by the project):
+
+	 - URL: `jdbc:mariadb://localhost:3306/seed_db`
+	 - Username: `seed_user`
+	 - Password: `seed_pwd`
+
+2. Start with the `dev-maria` profile:
+
+cd backend/proseed
+SPRING_PROFILES_ACTIVE=dev-maria ./gradlew bootRun
+
+
+Flyway troubleshooting
+
+- If Flyway reports a validation failure like `Detected failed migration to version 1 (initial schema)` it means a previous migration run was recorded as failed or the migration file changed after it was applied.
+
+delete history from the database for a quick fix
