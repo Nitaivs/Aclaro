@@ -4,12 +4,12 @@ import {ProcessContext} from "./ProcessContext.jsx";
 export function ProcessProvider({children}) {
   const [processes, setProcesses] = useState([]);
 
-  function addProcess() {
+  function addProcess(name, description) {
     //TODO: rewrite to get ID from database after integration
     const process = {
       id: processes.length + 1,
-      name: `Process ${processes.length + 1}`,
-      description: 'This is a new process',
+      name: name || `Process ${processes.length + 1}`,
+      description: description || "",
       tasks: []
     }
     setProcesses([...processes, process]);
@@ -19,6 +19,12 @@ export function ProcessProvider({children}) {
     setProcesses(processes.filter(process => process.id !== processId));
   }
 
+  function editName(processId, newName) {
+    setProcesses(processes.map(process =>
+      process.id === processId ? {...process, name: newName} : process
+    ));
+  }
+
   function editDescription(processId, newDescription) {
     setProcesses(processes.map(process =>
       process.id === processId ? {...process, description: newDescription} : process
@@ -26,7 +32,13 @@ export function ProcessProvider({children}) {
   }
 
   return (
-    <ProcessContext value={{processes, addProcess, deleteProcess, editDescription}}>
+    <ProcessContext value={{
+      processes,
+      addProcess,
+      deleteProcess,
+      editName,
+      editDescription
+    }}>
       {children}
     </ProcessContext>
   )
