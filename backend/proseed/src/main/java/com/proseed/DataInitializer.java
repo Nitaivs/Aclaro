@@ -5,12 +5,14 @@ import com.proseed.repos.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 
 @Component
+@Profile("dev") //this is only run in dev mode to fill some sample data
 public class DataInitializer implements CommandLineRunner {
     @Autowired private RoleRepository roleRepository;
     @Autowired private PrivilegeRepository privilegeRepository;
