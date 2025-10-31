@@ -19,8 +19,14 @@ export function ProcessProvider({children}) {
     setProcesses(processes.filter(process => process.id !== processId));
   }
 
+  function editDescription(processId, newDescription) {
+    setProcesses(processes.map(process =>
+      process.id === processId ? {...process, description: newDescription} : process
+    ));
+  }
+
   return (
-    <ProcessContext value={{processes, addProcess, deleteProcess}}>
+    <ProcessContext value={{processes, addProcess, deleteProcess, editDescription}}>
       {children}
     </ProcessContext>
   )
