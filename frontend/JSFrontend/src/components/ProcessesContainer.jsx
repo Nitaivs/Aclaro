@@ -1,6 +1,9 @@
 import ProcessCard from "./ProcessCard.jsx";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
-import {use} from "react";
+import {use, useState} from "react";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import TextField from "@mui/material/TextField";
 
 /**
  * @component ProcessesContainer
@@ -11,11 +14,57 @@ import {use} from "react";
  */
 export default function ProcessesContainer() {
   const {processes, addProcess, deleteProcess} = use(ProcessContext);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newProcessName, setNewProcessName] = useState("");
+  const [newProcessDescription, setNewProcessDescription] = useState("");
+  const [processNameError, setProcessNameError] = useState(false);
+
+  function handleAddProcess() {
+    if (!newProcessName) {
+      setProcessNameError(true);
+      return;
+    }
+    addProcess(newProcessName, newProcessDescription);
+    setNewProcessName("");
+    setNewProcessDescription("");
+    setProcessNameError(false);
+    setIsDialogOpen(false);
+  }
 
   return (
     <div>
       <h1>ProSeed</h1>
-      <button onClick={addProcess}>Add process</button>
+      <button onClick={() => setIsDialogOpen(true)}>Add process</button>
+      <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+        <DialogTitle>Add New Process</DialogTitle>
+        <div style={{padding: '0 24px 24px 24px'}}>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Process Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            required={true}
+            error={processNameError}
+            helperText={processNameError ? "Process name is required" : ""}
+            value={newProcessName}
+            onChange={(e) => setNewProcessName(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Process Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={newProcessDescription}
+            onChange={(e) => setNewProcessDescription(e.target.value)}
+          />
+          <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
+          <button onClick={() => handleAddProcess()}>Add</button>
+        </div>
+      </Dialog>
+
       <ul>
         {processes.map((process) => (
           <li key={process.id}>
