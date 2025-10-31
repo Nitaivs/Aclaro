@@ -6,6 +6,9 @@ import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {useState} from "react";
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
+import TextField from '@mui/material/TextField'
+import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
+
 
 /**
  * @component ProcessPage
@@ -20,6 +23,8 @@ export default function ProcessPage() {
   const parsedProcessId = processId ? parseInt(processId) : undefined;
   const {tasks, addTask, deleteTask} = use(TaskContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const descriptionInput = useState("");
+  const {processes, editDescription} = use(ProcessContext);
 
   if (!parsedProcessId) {
     return (
@@ -44,6 +49,7 @@ export default function ProcessPage() {
       </Link>
       <h1>Process Page</h1>
       <p>Process ID: {processId}</p>
+      <p>Description: {processes.find(p => p.id === parsedProcessId)?.description || "No description"}</p>
       <button onClick={() => addTask()}>
         Add Task
       </button>
@@ -59,8 +65,19 @@ export default function ProcessPage() {
       <button onClick={() => setIsDialogOpen(true)}>Show Process Details</button>
       <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
         <DialogTitle>Process Details</DialogTitle>
-        <div style={{ padding: '16px' }}>
+        <div style={{padding: '16px'}}>
           <p>Details about process {processId} go here.</p>
+          <TextField
+            label="Edit Description"
+            defaultValue={processes.find(p => p.id === parsedProcessId)?.description || ""}
+            onChange={(e) => descriptionInput[1](e.target.value)}
+          />
+          <button onClick={() => {
+            editDescription(parsedProcessId, descriptionInput[0]);
+            setIsDialogOpen(false);
+          }}>
+            Save
+          </button>
           <button onClick={() => setIsDialogOpen(false)}>Close</button>
         </div>
       </Dialog>
