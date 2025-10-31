@@ -5,4 +5,18 @@ DROP TABLE IF EXISTS Roles;
 DROP TABLE IF EXISTS Skills;
 DROP TABLE IF EXISTS Employee_roles;
 DROP TABLE IF EXISTS Employee_skills;
-CREATE TABLE Employee ();
+DROP TABLE IF EXISTS Affiliation;
+DROP TABLE IF EXISTS Company_Profile;
+DROP TABLE IF EXISTS Employee_Profile;
+DROP TABLE IF EXISTS Employee_affiliation;
+CREATE TABLE Employee (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+);
+CREATE TABLE Process ();
+CREATE TABLE Task ();
+CREATE TABLE Roles ();
+CREATE TABLE Skills ();
+CREATE TABLE Employee_roles ();
+CREATE TABLE Employee_skills ();
