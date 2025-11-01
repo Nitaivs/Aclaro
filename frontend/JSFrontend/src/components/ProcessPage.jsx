@@ -20,17 +20,32 @@ import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
  */
 export default function ProcessPage() {
   const {processId} = useParams();
+  const {processes, editName, editDescription} = use(ProcessContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
+  const foundProcess = processes.find(p => p.id === parsedProcessId);
   const {tasks, addTask, deleteTask} = use(TaskContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const descriptionInput = useState("");
-  const {processes, editDescription} = use(ProcessContext);
+  const [descriptionInput, setDescriptionInput] = useState("");
+  const [nameInput, setNameInput]= useState("");
 
   if (!parsedProcessId) {
     return (
       <div>
         <p>Invalid process ID</p>
         <p>{parsedProcessId}</p>
+        <Link to="/">
+          <button>
+            Go to Dashboard
+          </button>
+        </Link>
+      </div>
+    )
+  }
+
+  if (!foundProcess) {
+    return (
+      <div>
+        <p>Process not found</p>
         <Link to="/">
           <button>
             Go to Dashboard
@@ -47,8 +62,8 @@ export default function ProcessPage() {
           Go to Dashboard
         </button>
       </Link>
-      <h1>Process Page</h1>
-      <p>Process ID: {processId}</p>
+      <h1>{processes.find(p => p.id === parsedProcessId)?.name || "No name"}</h1>
+      <p>Process ID: {foundProcess.id}</p>
       <p>Description: {processes.find(p => p.id === parsedProcessId)?.description || "No description"}</p>
       <button onClick={() => addTask()}>
         Add Task
@@ -62,22 +77,38 @@ export default function ProcessPage() {
           </li>
         ))}
       </ul>
+
       <button onClick={() => setIsDialogOpen(true)}>Show Process Details</button>
+
       <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
         <DialogTitle>Process Details</DialogTitle>
         <div style={{padding: '16px'}}>
           <p>Details about process {processId} go here.</p>
           <TextField
-            label="Edit Description"
-            defaultValue={processes.find(p => p.id === parsedProcessId)?.description || ""}
-            onChange={(e) => descriptionInput[1](e.target.value)}
+            label="Edit Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            defaultValue={foundProcess.name}
+            onChange={(e) => setNameInput[1](e.target.value)}
           />
+
+          <TextField
+            label="Edit Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            defaultValue={foundProcess.description}
+            onChange={(e) => setDescriptionInput[1](e.target.value)}
+          />
+
           <button onClick={() => {
             editDescription(parsedProcessId, descriptionInput[0]);
             setIsDialogOpen(false);
           }}>
             Save
           </button>
+
           <button onClick={() => setIsDialogOpen(false)}>Close</button>
         </div>
       </Dialog>
