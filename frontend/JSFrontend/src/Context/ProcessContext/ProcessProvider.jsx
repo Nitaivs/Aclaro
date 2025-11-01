@@ -2,10 +2,16 @@ import {useEffect, useState} from "react";
 import {ProcessContext} from "./ProcessContext.jsx";
 import axios from "axios";
 
+/**
+ * ProcessProvider component that provides process-related state and functions to its children.
+ * @param children The child components that will have access to the process context.
+ * @returns {JSX.Element} The ProcessProvider component.
+ */
 export function ProcessProvider({children}) {
   const [processes, setProcesses] = useState([]);
   const [initialized, setInitialized] = useState(false);
   const BASE_URL = "http://localhost:8080/api/";
+  //TODO: move BASE_URL to config file
 
   useEffect(() => {
     if (!initialized) {
@@ -16,6 +22,10 @@ export function ProcessProvider({children}) {
     }
   }, [initialized]);
 
+  /**
+   * Fetches all processes from the database and sets the local state.
+   * @returns {Promise<void>} A promise that resolves when the processes are fetched and set
+   */
   async function initializeProcessesFromDB() {
     try {
       console.log("Initializing processes from DB");
@@ -49,6 +59,11 @@ export function ProcessProvider({children}) {
     }
   }
 
+  /**
+   * Sends a DELETE request to remove a process from the database and updates the local state.
+   * @param processId the ID of the process to delete
+   * @returns {Promise<void>} A promise that resolves when the process is deleted
+   */
   async function deleteProcess(processId) {
     try {
       console.log("Deleting process from DB");
