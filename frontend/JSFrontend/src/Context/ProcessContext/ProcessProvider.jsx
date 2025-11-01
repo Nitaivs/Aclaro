@@ -7,10 +7,10 @@ export function ProcessProvider({children}) {
   function addProcess(name, description) {
     //TODO: rewrite to get ID from database after integration
     const process = {
-      id: processes.length + 1,
-      name: name || `Process ${processes.length + 1}`,
-      description: description || "",
-      tasks: []
+      processId: processes.length + 1,
+      processName: name || `Process ${processes.length + 1}`,
+      processDescription: description || "",
+      processTasks: []
     }
     setProcesses([...processes, process]);
   }
