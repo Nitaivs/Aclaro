@@ -75,16 +75,28 @@ export function ProcessProvider({children}) {
     setProcesses(processes.filter(process => process.processId !== processId));
   }
 
-  function editName(processId, newName) {
-    setProcesses(processes.map(process =>
-      process.id === processId ? {...process, name: newName} : process
-    ));
-  }
-
-  function editDescription(processId, newDescription) {
-    setProcesses(processes.map(process =>
-      process.id === processId ? {...process, description: newDescription} : process
-    ));
+  /**
+   * Sends a PUT request to update a process in the database and updates the local state.
+   * @param processId the ID of the process to update
+   * @param updatedFields an object containing the fields to update
+   * @returns {Promise<void>} A promise that resolves when the process is updated
+   */
+  async function updateProcess(processId, updatedFields) {
+    try {
+      const foundProcess = processes.find(p => p.processId === processId);
+      if (!foundProcess) {
+        console.error("Process not found:", processId);
+        return;
+      }
+      console.log("Updating process:", updatedFields);
+      const response = await axios.put(`${BASE_URL}processes/${processId}`, updatedFields);
+      console.log("response:", response.data);
+      //TODO: replace with response data once backend updates description
+      const updatedProcess = {...foundProcess, ...updatedFields};
+      setProcesses(processes.map(p => p.processId === processId ? updatedProcess : p));
+    } catch (error) {
+      console.error("Error updating process in DB:", error);
+    }
   }
 
   return (
@@ -92,8 +104,7 @@ export function ProcessProvider({children}) {
       processes,
       addProcess,
       deleteProcess,
-      editName,
-      editDescription,
+      updateProcess,
       initializeProcessesFromDB
     }}>
       {children}
