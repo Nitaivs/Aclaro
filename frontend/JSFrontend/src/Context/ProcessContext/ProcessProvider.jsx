@@ -23,7 +23,7 @@ export function ProcessProvider({children}) {
       //TODO: rewrite once default process fetch includes tasks
       for (const process of response.data) {
         const tasksResponse = await axios.get(`${BASE_URL}processes/${process.processId}/tasks`);
-        process.processIds = tasksResponse.data.taskIds;
+        process.taskIds = tasksResponse.data.taskIds;
       }
       setProcesses(response.data);
       setInitialized(true);
