@@ -17,16 +17,13 @@ export default function ProcessCard(props) {
   const foundProcess = processes.find(p => p.processId === props.id);
   useEffect(() => {
     console.log("Processes updated:", processes);
-  })
+  }, [processes]);
+
+  if (!foundProcess) {
     return (
-        <div>
-            <Link to={`/process/${props.id}`}>
-                <Card>
-                    <h2>{props.processName}</h2>
-                    <p>{processes.find(p => p.id === props.id)?.description || "No description"}</p>
-                </Card>
-            </Link>
-        </div>
+      <div>
+        <p>Process not found</p>
+      </div>
     );
   } else {
     return (
