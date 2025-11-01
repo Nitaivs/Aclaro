@@ -67,9 +67,9 @@ export default function ProcessesContainer() {
 
       <ul>
         {processes.map((process) => (
-          <li key={process.id}>
-            <ProcessCard id={process.id} processName={process.name}/>
-            <button onClick={() => deleteProcess(process.id)}>delete</button>
+          <li key={process.processId}>
+            <ProcessCard id={process.processId} processName={process.processName}/>
+            <button onClick={() => deleteProcess(process.processId)}>delete</button>
           </li>
         ))}
       </ul>
