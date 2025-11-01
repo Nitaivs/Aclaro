@@ -20,13 +20,23 @@ import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
  */
 export default function ProcessPage() {
   const {processId} = useParams();
-  const {processes, editName, editDescription} = use(ProcessContext);
+  const {processes, updateProcess} = use(ProcessContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
-  const foundProcess = processes.find(p => p.id === parsedProcessId);
+  const foundProcess = processes.find(p => p.processId === parsedProcessId);
   const {tasks, addTask, deleteTask} = use(TaskContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [descriptionInput, setDescriptionInput] = useState("");
-  const [nameInput, setNameInput]= useState("");
+  const [nameInput, setNameInput] = useState("");
+
+  function handleUpdateProcess() {
+    const newName = nameInput || foundProcess.processName;
+    const newDescription = descriptionInput || foundProcess.processDescription;
+    updateProcess(parsedProcessId, {
+      processName: newName,
+      processDescription: newDescription
+    });
+    setIsDialogOpen(false);
+  }
 
   if (!parsedProcessId) {
     return (
@@ -62,9 +72,9 @@ export default function ProcessPage() {
           Go to Dashboard
         </button>
       </Link>
-      <h1>{processes.find(p => p.id === parsedProcessId)?.name || "No name"}</h1>
-      <p>Process ID: {foundProcess.id}</p>
-      <p>Description: {processes.find(p => p.id === parsedProcessId)?.description || "No description"}</p>
+      <h1>{foundProcess.processName}</h1>
+      <p>Process ID: {foundProcess.processId}</p>
+      <p>Description: {foundProcess.processDescription}</p>
       <button onClick={() => addTask()}>
         Add Task
       </button>
@@ -89,8 +99,8 @@ export default function ProcessPage() {
             type="text"
             fullWidth
             variant="outlined"
-            defaultValue={foundProcess.name}
-            onChange={(e) => setNameInput[1](e.target.value)}
+            defaultValue={foundProcess.processName}
+            onChange={(e) => setNameInput(e.target.value)}
           />
 
           <TextField
@@ -98,12 +108,12 @@ export default function ProcessPage() {
             type="text"
             fullWidth
             variant="outlined"
-            defaultValue={foundProcess.description}
-            onChange={(e) => setDescriptionInput[1](e.target.value)}
+            defaultValue={foundProcess.processDescription}
+            onChange={(e) => setDescriptionInput(e.target.value)}
           />
 
           <button onClick={() => {
-            editDescription(parsedProcessId, descriptionInput[0]);
+            handleUpdateProcess();
             setIsDialogOpen(false);
           }}>
             Save
