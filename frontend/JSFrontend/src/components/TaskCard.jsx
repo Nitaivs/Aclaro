@@ -11,13 +11,13 @@ import {Link} from 'react-router';
  * @param props.taskName The name of the task.
  * @returns {JSX.Element} The rendered TaskCard component.
  */
-export default function TaskCard(props) {
+export default function TaskCard({processId, taskId, taskName, taskDescription }) {
     return (
         <div>
-            <Link to={`/process/${props.processId}/task/${props.taskId}`}>
+            <Link to={`/process/${processId}/task/${taskId}`}>
                 <Card>
-                    <h2>{props.taskName}</h2>
-                    <p>This is a description of the task.</p>
+                    <h2>{taskName}</h2>
+                    <p>{taskDescription}</p>
                 </Card>
             </Link>
         </div>
