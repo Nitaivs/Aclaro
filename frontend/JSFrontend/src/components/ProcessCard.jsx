@@ -1,5 +1,5 @@
 import Card from '@mui/material/Card';
-import { Link } from 'react-router';
+import {Link} from 'react-router';
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import {use, useEffect} from "react";
 
@@ -13,7 +13,7 @@ import {use, useEffect} from "react";
  * @returns {JSX.Element} The rendered ProcessCard component.
  */
 export default function ProcessCard(props) {
-  const {processes} = use(ProcessContext);
+  const {processes, deleteProcess} = use(ProcessContext);
   const foundProcess = processes.find(p => p.processId === props.id);
   useEffect(() => {
     console.log("Processes updated:", processes);
@@ -28,12 +28,13 @@ export default function ProcessCard(props) {
   } else {
     return (
       <div>
-        <Link to={`/process/${props.id}`}>
-          <Card>
+        <Card>
+          <Link to={`/process/${props.id}`}>
             <h2>{foundProcess.processName}</h2>
             <p>{foundProcess.processDescription}</p>
-          </Card>
-        </Link>
+          </Link>
+          <button onClick={() => deleteProcess(foundProcess.processId)}>Delete</button>
+        </Card>
       </div>
     );
   }
