@@ -69,17 +69,26 @@ export default function ProcessPage() {
       <h1>{foundProcess.processName}</h1>
       <p>Process ID: {foundProcess.processId}</p>
       <p>Description: {foundProcess.processDescription}</p>
-      <button onClick={() => addTask()}>
+      <button onClick={() => addTask(parsedProcessId, "New Task", "Task Description")}>
         Add Task
       </button>
 
       <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            <TaskCard processId={parsedProcessId} taskId={task.id} taskName={task.name}/>
-            <button onClick={() => deleteTask(task.id)}>delete</button>
-          </li>
-        ))}
+        {foundProcess.taskIds.map((taskId) => {
+          const task = tasks.find(t => t.taskId === taskId);
+          if (!task) return null;
+          return (
+            <li key={task.taskId}>
+              <TaskCard
+                processId={parsedProcessId}
+                taskId={task.taskId}
+                taskName={task.taskName}
+                taskDescription={task.taskDescription}
+              />
+              <button onClick={() => deleteTask(task.taskId)}>delete</button>
+            </li>
+          )
+        })}
       </ul>
 
       <button onClick={() => setIsDialogOpen(true)}>Show Process Details</button>
