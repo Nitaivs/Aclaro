@@ -69,6 +69,7 @@ export default function ProcessPage() {
       <h1>{foundProcess.processName}</h1>
       <p>Process ID: {foundProcess.processId}</p>
       <p>Description: {foundProcess.processDescription}</p>
+      {/*TODO: add dialog to edit task details before adding*/}
       <button onClick={() => addTask(parsedProcessId, "New Task", "Task Description")}>
         Add Task
       </button>
@@ -76,7 +77,6 @@ export default function ProcessPage() {
       <ul>
         {foundProcess.taskIds.map((taskId) => {
           const task = tasks.find(t => t.taskId === taskId);
-          if (!task) return null;
           return (
             <li key={task.taskId}>
               <TaskCard
