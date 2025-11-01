@@ -42,6 +42,12 @@ export function ProcessProvider({children}) {
     }
   }
 
+  /**
+   * Sends a POST request to add a new process to the database and updates the local state.
+   * @param name the name of the new process
+   * @param description the description of the new process
+   * @returns {Promise<void>} A promise that resolves when the process is added
+   */
   async function addProcess(name, description) {
     try {
       console.log("Adding process to DB");
