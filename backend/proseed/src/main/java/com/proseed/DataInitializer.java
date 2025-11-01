@@ -5,12 +5,14 @@ import com.proseed.repos.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 
 @Component
+@Profile("dev") //this is only run in dev mode to fill some sample data
 public class DataInitializer implements CommandLineRunner {
     @Autowired private RoleRepository roleRepository;
     @Autowired private PrivilegeRepository privilegeRepository;
@@ -21,6 +23,10 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        if (roleRepository.count() > 0 || processRepository.count() > 0) {
+            return;
+        }
+
         // Privileges
         Privilege privRead = new Privilege();
         Privilege privWrite = new Privilege();
@@ -87,9 +93,9 @@ public class DataInitializer implements CommandLineRunner {
         employeeRepository.saveAll(List.of(alice, bob, carol));
 
         // Processes
-        com.proseed.entities.Process process1 = new com.proseed.entities.Process();
+        com.proseed.entities.ProcessEntity process1 = new com.proseed.entities.ProcessEntity();
         process1.setProcessName("Backend Development");
-        com.proseed.entities.Process process2 = new com.proseed.entities.Process();
+        com.proseed.entities.ProcessEntity process2 = new com.proseed.entities.ProcessEntity();
         process2.setProcessName("Frontend Development");
         processRepository.saveAll(List.of(process1, process2));
 

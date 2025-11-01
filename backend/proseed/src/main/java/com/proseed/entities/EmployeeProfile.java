@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -21,5 +23,6 @@ public class EmployeeProfile {
     @JoinColumn(name = "employee_id", nullable = false, unique = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonIgnore // Prevent recursion
     private Employee employee;
 }
