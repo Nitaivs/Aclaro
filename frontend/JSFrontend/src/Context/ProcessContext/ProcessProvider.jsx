@@ -16,6 +16,22 @@ export function ProcessProvider({children}) {
     }
   }, [initialized]);
 
+  async function initializeProcessesFromDB() {
+    try {
+      console.log("Initializing processes from DB");
+      const response = await axios.get(`${BASE_URL}processes`);
+      //TODO: rewrite once default process fetch includes tasks
+      for (const process of response.data) {
+        const tasksResponse = await axios.get(`${BASE_URL}processes/${process.processId}/tasks`);
+        process.processIds = tasksResponse.data.taskIds;
+      }
+      setProcesses(response.data);
+      setInitialized(true);
+    } catch (error) {
+      console.error("Error fetching processes from DB:", error);
+    }
+  }
+
   async function addProcess(name, description) {
     try {
       console.log("Adding process to DB");
@@ -33,24 +49,15 @@ export function ProcessProvider({children}) {
     }
   }
 
-  async function initializeProcessesFromDB() {
+  async function deleteProcess(processId) {
     try {
-      console.log("Initializing processes from DB");
-      const response = await axios.get(`${BASE_URL}processes`);
-      //TODO: rewrite once default process fetch includes tasks
-      for (const process of response.data) {
-        const tasksResponse = await axios.get(`${BASE_URL}processes/${process.processId}/tasks`);
-        process.processIds = tasksResponse.data.taskIds;
-      }
-      setProcesses(response.data);
-      setInitialized(true);
+      console.log("Deleting process from DB");
+      await axios.delete(`${BASE_URL}processes/${processId}`);
+      console.log("Process deleted from DB:", processId);
     } catch (error) {
-      console.error("Error fetching processes from DB:", error);
+      console.error("Error deleting process from DB:", error);
     }
-  }
-
-  function deleteProcess(processId) {
-    setProcesses(processes.filter(process => process.id !== processId));
+    setProcesses(processes.filter(process => process.processId !== processId));
   }
 
   function editName(processId, newName) {
