@@ -4,10 +4,8 @@ import {use} from "react";
 import TaskCard from "./TaskCard.jsx";
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {useState} from "react";
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import TextField from '@mui/material/TextField'
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
+import EditProcessDetailsDialog from "./EditProcessDetailsDialog.jsx";
 
 
 /**
@@ -25,15 +23,11 @@ export default function ProcessPage() {
   const foundProcess = processes.find(p => p.processId === parsedProcessId);
   const {tasks, addTask, deleteTask} = use(TaskContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [descriptionInput, setDescriptionInput] = useState("");
-  const [nameInput, setNameInput] = useState("");
 
-  function handleUpdateProcess() {
-    const newName = nameInput || foundProcess.processName;
-    const newDescription = descriptionInput || foundProcess.processDescription;
+  function handleUpdateProcess(newName, newDescription) {
     updateProcess(parsedProcessId, {
-      processName: newName,
-      processDescription: newDescription
+      processName: newName || foundProcess.processName,
+      processDescription: newDescription || foundProcess.processDescription
     });
     setIsDialogOpen(false);
   }
@@ -90,38 +84,12 @@ export default function ProcessPage() {
 
       <button onClick={() => setIsDialogOpen(true)}>Show Process Details</button>
 
-      <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-        <DialogTitle>Process Details</DialogTitle>
-        <div style={{padding: '16px'}}>
-          <p>Details about process {processId} go here.</p>
-          <TextField
-            label="Edit Name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            defaultValue={foundProcess.processName}
-            onChange={(e) => setNameInput(e.target.value)}
-          />
-
-          <TextField
-            label="Edit Description"
-            type="text"
-            fullWidth
-            variant="outlined"
-            defaultValue={foundProcess.processDescription}
-            onChange={(e) => setDescriptionInput(e.target.value)}
-          />
-
-          <button onClick={() => {
-            handleUpdateProcess();
-            setIsDialogOpen(false);
-          }}>
-            Save
-          </button>
-
-          <button onClick={() => setIsDialogOpen(false)}>Close</button>
-        </div>
-      </Dialog>
+      <EditProcessDetailsDialog
+        currentName={foundProcess.processName}
+        currentDescription={foundProcess.processDescription}
+        onSave={handleUpdateProcess}
+        isOpen={isDialogOpen}
+      />
     </div>
   )
 }
