@@ -14,17 +14,23 @@ export function ProcessProvider({children}) {
     } else {
       console.log("Processes already initialized");
     }
-  })
+  }, [initialized]);
 
-  function addProcess(name, description) {
-    //TODO: rewrite to get ID from database after integration
-    const process = {
-      processId: processes.length + 1,
-      processName: name || `Process ${processes.length + 1}`,
-      processDescription: description || "",
-      processTasks: []
+  async function addProcess(name, description) {
+    try {
+      console.log("Adding process to DB");
+      const response = await axios.post(`${BASE_URL}processes`, {
+        processName: name,
+        processDescription: description
+      });
+      const newProcess = response.data;
+      console.log("Process added to DB:", newProcess);
+      newProcess.taskIds = [];
+      setProcesses([...processes, newProcess]);
+      console.log("Process added locally:", newProcess);
+    } catch (error) {
+      console.error("Error adding process to DB:", error);
     }
-    setProcesses([...processes, process]);
   }
 
   async function initializeProcessesFromDB() {
