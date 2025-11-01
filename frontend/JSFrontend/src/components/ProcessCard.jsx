@@ -14,6 +14,7 @@ import {use, useEffect} from "react";
  */
 export default function ProcessCard(props) {
   const {processes} = use(ProcessContext);
+  const foundProcess = processes.find(p => p.processId === props.id);
   useEffect(() => {
     console.log("Processes updated:", processes);
   })
@@ -27,4 +28,16 @@ export default function ProcessCard(props) {
             </Link>
         </div>
     );
+  } else {
+    return (
+      <div>
+        <Link to={`/process/${props.id}`}>
+          <Card>
+            <h2>{foundProcess.processName}</h2>
+            <p>{foundProcess.processDescription}</p>
+          </Card>
+        </Link>
+      </div>
+    );
+  }
 }
