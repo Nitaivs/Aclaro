@@ -1,13 +1,16 @@
 #Build frontend
-FROM node:22-alpine AS frontend-builder
+FROM node:22-alpine
 WORKDIR /app/frontend/ProSeed-frontend
 COPY frontend/ProSeed-frontend/package*.json ./
 RUN npm ci
 COPY frontend/ProSeed-frontend/ .
-RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
+
 
 #Build backend
-FROM gradle:8.6.5-jdk21 AS backend-builder
+FROM gradle:8.6-jdk21 AS backend-builder
+# This image of Gradle is vulnearble and does not come with an updated version of Gradle
 WORKDIR /app/backend/proseed
 COPY backend/proseed/gradlew .
 COPY backend/proseed/gradlew.bat .
@@ -16,13 +19,12 @@ COPY backend/proseed/build.gradle.kts .
 COPY backend/proseed/gradle ./gradle
 
 COPY backend/proseed/src ./src
-COPY --from=frontend-builder /app/frontend/ProSeed-frontend/build ./src/main/resources/static
 
 RUN ./gradlew clean bootJar -x test
 
-#Final build
+#Runtime
 FROM eclipse-temurin:21-jre-alpine
-WORKDIR /app
-COPY --from=backend-builder /app/backend/proseed/build/libs/*.jar ./app.jar
+WORKDIR /app/backend/proseed
+COPY backend/proseed/ .
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["./gradlew", "bootRun", "-x", "test"]
