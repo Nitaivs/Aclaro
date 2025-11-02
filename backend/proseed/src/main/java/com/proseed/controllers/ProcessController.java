@@ -1,5 +1,6 @@
 package com.proseed.controllers;
 
+import com.proseed.DTOs.ProcessDTO;
 import com.proseed.entities.ProcessEntity;
 import com.proseed.services.ProcessService;
 
@@ -27,18 +28,11 @@ public class ProcessController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProcessEntity>> getAllProcesses() {
+    public ResponseEntity<List<ProcessDTO>> getAllProcesses() {
         return ResponseEntity.ok(processService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProcessEntity> getProcessById(@PathVariable Long id) {
-        return processService.findById(id)
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    @GetMapping("/{id}/tasks")
     public ResponseEntity<?> getProcessWithTaskIds(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(processService.getProcessWithTaskIds(id));
@@ -54,7 +48,7 @@ public class ProcessController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProcessEntity> updateProcess(@PathVariable Long id,
+    public ResponseEntity<ProcessDTO> updateProcess(@PathVariable Long id,
                                     @RequestBody ProcessEntity updatedProcess)
     {
         return processService.update(id, updatedProcess)

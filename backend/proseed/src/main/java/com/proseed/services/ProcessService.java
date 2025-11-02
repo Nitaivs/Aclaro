@@ -6,10 +6,10 @@ import java.util.Optional;
 import com.proseed.DTOs.ProcessDTO;
 
 public interface ProcessService {
-    List<ProcessEntity> findAll();
+    List<ProcessDTO> findAll();
     Optional<ProcessEntity> findById(Long id);
     ProcessEntity create(ProcessEntity process);
-    Optional<ProcessEntity> update(Long id, ProcessEntity updatedProcess);
+    Optional<ProcessDTO> update(Long id, ProcessEntity updatedProcess);
     boolean delete(Long id);
     ProcessDTO getProcessWithTaskIds(Long id);
 }
