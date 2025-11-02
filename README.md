@@ -100,11 +100,8 @@ http://localhost:8080/api
 - GET /processes/{id}
   - Returns: single ProcessDTO with task IDs (200 OK). 404 if not found.
 - POST /processes
-  - Creates a process. Body: ProcessEntity JSON.
-    {
-    processName (not nullable)
-    processDescription (nullable)
-    }
+  - Creates a process. Body: ProcessEntity JSON. (processName - not nullable,
+    processDescription - nullable)
 - PUT /processes/{id}
   - Updates a process. Body: ProcessEntity JSON. Response: 200 OK (updated DTO) or 404.
 - DELETE processes/{id}
