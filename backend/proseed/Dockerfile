@@ -1,6 +1,6 @@
 #Build backend
 FROM gradle:8.6-jdk21 AS backend-builder
-WORKDIR /app/backend/proseed
+WORKDIR /app
 
 # copy sources and wrapper
 COPY gradlew .
@@ -15,7 +15,7 @@ RUN chmod +x ./gradlew && ./gradlew clean bootJar -x test --no-daemon && cp buil
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app/backend/proseed
 
-COPY --from=backend-builder /app/backend/proseed/app.jar app.jar
+COPY --from=backend-builder /app/app.jar app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/backend/proseed/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
