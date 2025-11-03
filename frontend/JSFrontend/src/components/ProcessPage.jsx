@@ -26,6 +26,14 @@ export default function ProcessPage() {
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
 
+  /**
+   * @function handleUpdateProcess
+   * @description Handles the update of process details.
+   * Calls the updateProcess function from ProcessContext with the new name and description.
+   * @param newName The new name for the process. May be undefined, in which case the current name is retained.
+   * @param newDescription The new description for the process.
+   * May be undefined, in which case the current description is retained.
+   */
   function handleUpdateProcess(newName, newDescription) {
     updateProcess(parsedProcessId, {
       processName: newName || foundProcess.processName,
