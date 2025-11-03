@@ -10,10 +10,7 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y \
     curl \
-    unzip\
-    poppler-utils \
-    libzbar0 \
-    libzbar-dev && \
+    unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 COPY  backend/proseed ./backend/proseed
