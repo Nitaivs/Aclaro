@@ -13,6 +13,9 @@ export function ProcessProvider({children}) {
   const BASE_URL = "http://localhost:8080/api/";
   //TODO: move BASE_URL to config file
 
+  /**
+   * Effect hook that initializes processes from the database when the component mounts.
+   */
   useEffect(() => {
     if (!initialized) {
       console.log("initializing processes");
@@ -23,7 +26,9 @@ export function ProcessProvider({children}) {
   }, [initialized]);
 
   /**
-   * Fetches all processes from the database and sets the local state.
+   * @function initializeProcessesFromDB
+   * @description Initializes processes from the database by fetching all processes and setting the local state.
+   * Sets the initialized state to true once done.
    * @returns {Promise<void>} A promise that resolves when the processes are fetched and set
    */
   async function initializeProcessesFromDB() {
@@ -36,6 +41,11 @@ export function ProcessProvider({children}) {
     }
   }
 
+  /**
+   * @function fetchAllProcesses
+   * @description Fetches all processes from the database and sets the local state.
+   * @returns {Promise<void>} A promise that resolves when the processes are fetched and set
+   */
   async function fetchAllProcesses() {
     try {
       console.log("Fetching all processes from DB");
@@ -47,6 +57,12 @@ export function ProcessProvider({children}) {
     }
   }
 
+  /**
+   * @function fetchProcessById
+   * @description Fetches a process by its ID from the database and updates the local state.
+   * @param processId the ID of the process to fetch
+   * @returns {Promise<void>} A promise that resolves when the process is fetched and the state is updated
+   */
   async function fetchProcessById(processId) {
     try {
       console.log("Fetching process by ID from DB:", processId);
@@ -63,6 +79,13 @@ export function ProcessProvider({children}) {
     }
   }
 
+
+  /**
+   * @function deleteTaskIdFromProcess
+   * @description Deletes a task ID from a process's taskIds array in the local state.
+   * @param processId the ID of the process
+   * @param taskId the ID of the task to delete
+   */
   function deleteTaskIdFromProcess(processId, taskId) {
     const foundProcess = processes.find(p => p.processId === processId);
     if (!foundProcess) {
@@ -75,7 +98,8 @@ export function ProcessProvider({children}) {
   }
 
   /**
-   * Sends a POST request to add a new process to the database and updates the local state.
+   * @function addProcess
+   * @description Sends a POST request to add a new process to the database and updates the local state.
    * @param name the name of the new process
    * @param description the description of the new process
    * @returns {Promise<void>} A promise that resolves when the process is added
@@ -98,7 +122,8 @@ export function ProcessProvider({children}) {
   }
 
   /**
-   * Sends a DELETE request to remove a process from the database and updates the local state.
+   * @function deleteProcess
+   * @description Sends a DELETE request to remove a process from the database and updates the local state.
    * @param processId the ID of the process to delete
    * @returns {Promise<void>} A promise that resolves when the process is deleted
    */
@@ -114,7 +139,8 @@ export function ProcessProvider({children}) {
   }
 
   /**
-   * Sends a PUT request to update a process in the database and updates the local state.
+   * @function updateProcess
+   * @description Sends a PUT request to update a process in the database and updates the local state.
    * @param processId the ID of the process to update
    * @param updatedFields an object containing the fields to update
    * @returns {Promise<void>} A promise that resolves when the process is updated
