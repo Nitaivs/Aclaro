@@ -2,6 +2,7 @@ package com.proseed.controllers;
 
 import com.proseed.entities.Task;
 import com.proseed.services.TaskService;
+import com.proseed.DTOs.TaskWithEmployeesDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,6 +36,16 @@ public class TaskController {
     return taskService.findById(id)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @GetMapping("/{id}/employees")
+    public ResponseEntity<?> getTaskWithEmployees(@PathVariable Long id) {
+        try {
+            TaskWithEmployeesDTO dto = taskService.getTaskWithEmployees(id);
+            return ResponseEntity.ok(dto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PostMapping
