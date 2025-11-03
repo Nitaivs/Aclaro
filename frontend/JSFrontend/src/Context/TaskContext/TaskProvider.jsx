@@ -22,10 +22,22 @@ export function TaskProvider({children}) {
   async function initializeTasksFromDB() {
     try {
       console.log("Initializing tasks from DB");
+      // const response = await axios.get(`${BASE_URL}tasks`);
+      // console.log(response);
+      // setTasks(response.data);
+      await fetchAllTasks();
+      setInitialized(true);
+    } catch (error) {
+      console.error("Error fetching tasks from DB:", error);
+    }
+  }
+
+  async function fetchAllTasks() {
+    try {
+      console.log("Fetching all tasks from DB");
       const response = await axios.get(`${BASE_URL}tasks`);
       console.log(response);
       setTasks(response.data);
-      setInitialized(true);
     } catch (error) {
       console.error("Error fetching tasks from DB:", error);
     }
@@ -40,6 +52,10 @@ export function TaskProvider({children}) {
       });
       console.log(response.data);
       setTasks([...tasks, response.data]);
+      //TODO: hack to refresh tasks in process, rewrite
+      await fetchAllTasks()
+      //Return new task to allow adding to process task list
+      return response.data;
       // const foundProcess = processes.find(p => p.processId === processId);
       // if (foundProcess) {
       //   foundProcess.taskIds.push(response.data.id);
@@ -56,7 +72,12 @@ export function TaskProvider({children}) {
   }
 
   return (
-    <TaskContext.Provider value={{tasks, addTask, deleteTask}}>
+    <TaskContext.Provider value={{
+      tasks,
+      addTask,
+      deleteTask,
+      fetchAllTasks
+    }}>
       {children}
     </TaskContext.Provider>
   );
