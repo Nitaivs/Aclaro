@@ -1,21 +1,17 @@
-#Build backend
-FROM gradle:8.6-jdk21 AS backend-builder
+FROM gradle:8.10-jdk17-alpine
+
 WORKDIR /app
 
-# copy sources and wrapper
+# Copy Gradle wrapper and project files
 COPY gradlew .
-COPY gradlew.bat .
-COPY settings.gradle.kts .
-COPY build.gradle.kts .
-COPY gradle ./gradle
-COPY src ./src
+COPY gradle gradle
+COPY build.gradle settings.gradle ./
 
-RUN chmod +x ./gradlew && ./gradlew clean bootJar -x test --no-daemon && cp build/libs/*.jar app.jar
+# Copy the rest of the project
+COPY src src
 
-FROM eclipse-temurin:21-jre-alpine
-WORKDIR /app/backend/proseed
-
-COPY --from=backend-builder /app/app.jar app.jar
-
+# Expose default Spring Boot port
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
+# Run the app in development mode
+CMD ["./gradlew", "bootRun", "--no-daemon"]
