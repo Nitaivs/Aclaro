@@ -19,18 +19,19 @@ import AddTaskDialog from "./AddTaskDialog.jsx";
  */
 export default function ProcessPage() {
   const {processId} = useParams();
-  const {processes, updateProcess} = use(ProcessContext);
+  const {processes, updateProcess, fetchProcessById} = use(ProcessContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
   const foundProcess = processes.find(p => p.processId === parsedProcessId);
   const {tasks, addTask, deleteTask} = use(TaskContext);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
+  const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
 
   function handleUpdateProcess(newName, newDescription) {
     updateProcess(parsedProcessId, {
       processName: newName || foundProcess.processName,
       processDescription: newDescription || foundProcess.processDescription
     });
-    setIsDialogOpen(false);
+    setIsProcessDetailsDialogOpen(false);
   }
 
   //TODO: expand documentation
@@ -126,15 +127,6 @@ export default function ProcessPage() {
           )
         })}
       </ul>
-
-      <button onClick={() => setIsDialogOpen(true)}>Show Process Details</button>
-
-      <EditProcessDetailsDialog
-        currentName={foundProcess.processName}
-        currentDescription={foundProcess.processDescription}
-        onSave={handleUpdateProcess}
-        isOpen={isDialogOpen}
-      />
     </div>
   )
 }
