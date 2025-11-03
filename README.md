@@ -81,6 +81,8 @@ Flyway troubleshooting
 
 delete history from the database for a quick fix
 
+---
+
 # API endpoints - how to test
 
 ## Base URL
@@ -109,3 +111,31 @@ http://localhost:8080/api
   - Updates a process. Body: ProcessEntity JSON. Response: 200 OK (updated DTO) or 404.
 - DELETE processes/{id}
   - Deletes a process. Response: 204 No Content / 404 Not Found.
+
+### Employees
+
+- GET /employees
+  - Returns: List<`EmployeeDTO`] (200 OK).
+- GET /employees/{id}
+  - Returns: single `EmployeeDTO` (200 OK) or 404 Not Found.
+- POST /employees
+  - Creates an Employee. Body: Employee JSON.
+- PUT /employees/{id}
+  - Updates an existing Employee. Body: Employee JSON. Returns: updated Employee (200 OK) or 404 if not found.
+- DELETE /employees/{id}
+  - Deletes an Employee. Response: 204 No Content / 404 Not Found.
+
+### Tasks
+
+- GET /tasks
+  - Returns: List<Task> (200 OK).
+- GET /tasks/{id}
+  - Returns: single Task entity (200 OK) or 404 Not Found.
+- GET /tasks/{id}/employees
+  - Returns: `TaskWithEmployeesDTO` containing task id and list of assigned employees as `EmployeeDTO`s (200 OK) or 404 if task not found.
+- POST /tasks?processId={processId}
+  - Creates a Task and associates it to an existing process. Body: Task JSON (taskName required). Returns: created Task (201 Created). If processId missing or unknown returns 400 Bad Request.
+- PUT /tasks/{id}
+  - Updates a Task. Body: Task JSON (taskName, taskDescription, completed). Returns: updated Task (200 OK) or 404 if not found.
+- DELETE /tasks/{id}
+  - Deletes a Task. Response: 204 No Content / 404 Not Found.
