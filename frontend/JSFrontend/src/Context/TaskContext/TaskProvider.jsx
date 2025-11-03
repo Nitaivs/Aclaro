@@ -72,6 +72,30 @@ export function TaskProvider({children}) {
     }
   }
 
+  /**
+   * @function updateTask
+   * @description Updates an existing task in the database and updates the local state.
+   * @param taskId The ID of the task to update.
+   * @param updatedFields An object containing the fields to update.
+   * @returns {Promise<void>} A promise that resolves when the task is updated and the state is updated.
+   */
+  async function updateTask(taskId, updatedFields) {
+    try {
+      console.log("Updating task with ID:", taskId, "with fields:", updatedFields);
+      const response = await axios.put(`${BASE_URL}tasks/${taskId}`, updatedFields);
+      console.log("Updated task:", response.data);
+      setTasks(tasks.map(t => t.taskId === taskId ? response.data : t));
+    } catch (error) {
+      console.error("Error updating task in DB:", error);
+    }
+  }
+
+  /**
+   * @function deleteTask
+   * @description Deletes a task from the database and updates the local state.
+   * @param taskId The ID of the task to delete.
+   * @returns {Promise<void>} A promise that resolves when the task is deleted and the state is updated.
+   */
   async function deleteTask(taskId) {
     try {
       console.log("Deleting task with ID:", taskId);
@@ -89,6 +113,7 @@ export function TaskProvider({children}) {
       tasks,
       addTask,
       deleteTask,
+      updateTask,
       fetchAllTasks
     }}>
       {children}
