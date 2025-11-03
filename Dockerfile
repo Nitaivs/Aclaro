@@ -28,6 +28,8 @@ COPY --from=frontend-builder /app/frontend/ProSeed-frontend/dist ./../frontend/P
 
 RUN gradle build -x test --no-daemon
 
+RUN ls -l build/libs
+
 EXPOSE 8080
 
-CMD ["java", "-jar", "build/libs/app-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "build/libs/proseed-0.0.1-SNAPSHOT.jar"]
