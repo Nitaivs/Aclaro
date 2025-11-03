@@ -13,12 +13,18 @@ import TextField from "@mui/material/TextField";
  * @return {JSX.Element} The rendered ProcessesContainer component.
  */
 export default function ProcessesContainer() {
-  const {processes, addProcess, deleteProcess} = use(ProcessContext);
+  const {processes, addProcess} = use(ProcessContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newProcessName, setNewProcessName] = useState("");
   const [newProcessDescription, setNewProcessDescription] = useState("");
   const [processNameError, setProcessNameError] = useState(false);
 
+  /**
+   * @function handleAddProcess
+   * @description Handles the addition of a new process.
+   * Validates the input and calls the addProcess function from ProcessContext.
+   * Resets the input fields and closes the dialog upon successful addition.
+   */
   function handleAddProcess() {
     if (!newProcessName) {
       setProcessNameError(true);
@@ -60,8 +66,8 @@ export default function ProcessesContainer() {
             value={newProcessDescription}
             onChange={(e) => setNewProcessDescription(e.target.value)}
           />
-          <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
           <button onClick={() => handleAddProcess()}>Add</button>
+          <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
         </div>
       </Dialog>
 
