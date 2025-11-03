@@ -86,8 +86,20 @@ export default function ProcessPage() {
       <h1>{foundProcess.processName}</h1>
       <p>Process ID: {foundProcess.processId}</p>
       <p>Description: {foundProcess.processDescription}</p>
-      {/*TODO: add dialog to edit task details before adding*/}
-      <button onClick={() => addTask(parsedProcessId, "New Task", "Task Description")}>
+      <div>
+        <button onClick={() => setIsProcessDetailsDialogOpen(true)}>Show Process Details</button>
+        <EditProcessDetailsDialog
+          currentName={foundProcess.processName}
+          currentDescription={foundProcess.processDescription}
+          onSave={handleUpdateProcess}
+          isOpen={isProcessDetailsDialogOpen}
+          onClose={() => setIsProcessDetailsDialogOpen(false)}
+        />
+      </div>
+
+      <button onClick={() => {
+        setIsTaskDetailsDialogOpen(true)
+      }}>
         Add Task
       </button>
 
