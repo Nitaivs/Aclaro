@@ -99,6 +99,9 @@ http://localhost:8080/api
   - Returns: List<ProcessDTO> (200 OK) or Empty list when none found.
 - GET /processes/{id}
   - Returns: single ProcessDTO with task IDs (200 OK). 404 if not found.
+- GET /processes/{id}/tasks
+  - Returns: single ProcessWithTaskInfoDTO with all associated task information.
+    404 if not found.
 - POST /processes
   - Creates a process. Body: ProcessEntity JSON. (processName - not nullable,
     processDescription - nullable)
