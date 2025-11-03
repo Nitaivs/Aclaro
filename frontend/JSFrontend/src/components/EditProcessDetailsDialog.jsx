@@ -5,10 +5,20 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
   const [nameInput, setNameInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
+  const [nameError, setNameError] = useState(false);
 
   useEffect(() => {
     setIsDialogOpen(isOpen);
   }, [isOpen]);
+
+  function handleOnSave() {
+    if (!nameInput) {
+      setNameError(true);
+      return;
+    }
+    onSave(nameInput, descriptionInput);
+    setIsDialogOpen(false);
+  }
 
   return (
     <Dialog open={isDialogOpen}>
@@ -21,6 +31,8 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
           type="text"
           fullWidth
           variant="outlined"
+          error={nameError}
+          helperText={nameError ? "Process name is required" : ""}
           defaultValue={currentName || ''}
           onChange={(e) => setNameInput(e.target.value)}
         />
@@ -36,7 +48,7 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
         />
 
         <button onClick={() => {
-          onSave(nameInput, descriptionInput);
+          handleOnSave();
         }}>
           Save
         </button>
