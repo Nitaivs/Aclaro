@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 
-import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 
@@ -95,8 +94,10 @@ public class DataInitializer implements CommandLineRunner {
         // Processes
         com.proseed.entities.ProcessEntity process1 = new com.proseed.entities.ProcessEntity();
         process1.setProcessName("Backend Development");
+        process1.setProcessDescription("Sample description abc123");
         com.proseed.entities.ProcessEntity process2 = new com.proseed.entities.ProcessEntity();
         process2.setProcessName("Frontend Development");
+        process2.setProcessDescription("Sample description xyz789");
         processRepository.saveAll(List.of(process1, process2));
 
         // Tasks

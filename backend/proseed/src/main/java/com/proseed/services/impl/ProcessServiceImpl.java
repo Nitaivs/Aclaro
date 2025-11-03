@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.proseed.DTOs.Mappers.ProcessMapper;
 import com.proseed.DTOs.ProcessDTO;
+import java.util.stream.Collectors;
 
 @Service
 public class ProcessServiceImpl implements ProcessService {
@@ -23,9 +24,16 @@ public class ProcessServiceImpl implements ProcessService {
         this.repository = repository;
     }
 
+    /**
+     * Returns a list of all processes as ProcessDTOs.
+     * @return List of ProcessDTOs.
+     */
     @Override
-    public List<ProcessEntity> findAll() {
-        return repository.findAll();
+    public List<ProcessDTO> findAll() {
+        return repository.findAll()
+            .stream()
+            .map(ProcessMapper::toDTO)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -41,10 +49,11 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     @Transactional
-    public Optional<ProcessEntity> update(Long id, ProcessEntity updatedProcess) {
+    public Optional<ProcessDTO> update(Long id, ProcessEntity updatedProcess) {
         return repository.findById(id).map(existing -> {
             existing.setProcessName(updatedProcess.getProcessName());
-            return repository.save(existing);
+            existing.setProcessDescription(updatedProcess.getProcessDescription());
+            return ProcessMapper.toDTO(repository.save(existing));
         });
     }
 
