@@ -6,6 +6,7 @@ import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {useState} from "react";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import EditProcessDetailsDialog from "./EditProcessDetailsDialog.jsx";
+import AddTaskDialog from "./AddTaskDialog.jsx";
 
 
 /**
@@ -102,6 +103,12 @@ export default function ProcessPage() {
       }}>
         Add Task
       </button>
+      <AddTaskDialog
+        isOpen={isTaskDetailsDialogOpen}
+        onSave={handleAddTask}
+        onClose={() => setIsTaskDetailsDialogOpen(false)}
+      />
+
 
       <ul>
         {foundProcess.taskIds.map((taskId) => {
