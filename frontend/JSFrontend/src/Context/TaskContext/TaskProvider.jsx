@@ -1,6 +1,5 @@
-import {use, useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 import {TaskContext} from "./TaskContext.jsx";
-import {ProcessContext} from "../ProcessContext/ProcessContext.jsx";
 import axios from "axios";
 
 export function TaskProvider({children}) {
@@ -73,9 +72,16 @@ export function TaskProvider({children}) {
     }
   }
 
-
-  function deleteTask(taskId) {
-    setTasks(tasks.filter(task => task.id !== taskId));
+  async function deleteTask(taskId) {
+    try {
+      console.log("Deleting task with ID:", taskId);
+      await axios.delete(`${BASE_URL}tasks/${taskId}`);
+      setTasks(tasks.filter(t => t.taskId !== taskId));
+      //TODO: hack to refresh tasks in process, rewrite
+      await fetchAllTasks();
+    } catch (error) {
+      console.error("Error deleting task from DB:", error);
+    }
   }
 
   return (
