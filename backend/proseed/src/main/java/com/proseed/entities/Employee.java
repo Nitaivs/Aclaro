@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Set;
 import lombok.ToString;
@@ -23,17 +24,20 @@ public class Employee {
     private String lastName;
 
     @ManyToMany(mappedBy = "employees")
+    @JsonIgnore // Prevent recursion
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Task> tasks;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
+    @JsonIgnore // Prevent recursion
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Role role;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore // Prevent recursion
     @JoinTable(
         name = "employee_skills_mapping",
         joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employeeId"),
@@ -44,6 +48,7 @@ public class Employee {
     private Set<EmployeeSkill> employeeSkills;
 
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore // Prevent recursion
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private EmployeeProfile profile;
