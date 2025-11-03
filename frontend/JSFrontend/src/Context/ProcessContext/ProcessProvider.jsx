@@ -42,6 +42,17 @@ export function ProcessProvider({children}) {
     }
   }
 
+  async function fetchAllProcesses() {
+    try {
+      console.log("Fetching all processes from DB");
+      const response = await axios.get(`${BASE_URL}processes`);
+      console.log(response);
+      setProcesses(response.data);
+    } catch (error) {
+      console.error("Error fetching processes from DB:", error);
+    }
+  }
+
   /**
    * Sends a POST request to add a new process to the database and updates the local state.
    * @param name the name of the new process
@@ -111,7 +122,8 @@ export function ProcessProvider({children}) {
       addProcess,
       deleteProcess,
       updateProcess,
-      initializeProcessesFromDB
+      initializeProcessesFromDB,
+      fetchAllProcesses
     }}>
       {children}
     </ProcessContext>
