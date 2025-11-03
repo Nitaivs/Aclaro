@@ -63,6 +63,17 @@ export function ProcessProvider({children}) {
     }
   }
 
+  function deleteTaskIdFromProcess(processId, taskId) {
+    const foundProcess = processes.find(p => p.processId === processId);
+    if (!foundProcess) {
+      console.error("Process not found:", processId);
+      return;
+    }
+    const updatedTaskIds = foundProcess.taskIds.filter(id => id !== taskId);
+    const updatedProcess = {...foundProcess, taskIds: updatedTaskIds};
+    setProcesses(processes.map(p => p.processId === processId ? updatedProcess : p));
+  }
+
   /**
    * Sends a POST request to add a new process to the database and updates the local state.
    * @param name the name of the new process
@@ -134,7 +145,8 @@ export function ProcessProvider({children}) {
       updateProcess,
       initializeProcessesFromDB,
       fetchAllProcesses,
-      fetchProcessById
+      fetchProcessById,
+      deleteTaskIdFromProcess
     }}>
       {children}
     </ProcessContext>
