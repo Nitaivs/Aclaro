@@ -1,7 +1,7 @@
 import {Dialog, DialogTitle, DialogContent, TextField} from '@mui/material';
 import {useState, useEffect} from 'react';
 
-export default function EditProcessDetailsDialog({currentName, currentDescription, onSave, isOpen}) {
+export default function EditProcessDetailsDialog({currentName, currentDescription, onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
@@ -18,6 +18,7 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
     }
     onSave(nameInput, descriptionInput);
     setIsDialogOpen(false);
+    onClose();
   }
 
   return (
@@ -57,6 +58,7 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
           setNameInput("");
           setDescriptionInput("");
           setIsDialogOpen(false);
+          onClose();
         }}>
           Cancel
         </button>
