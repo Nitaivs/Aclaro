@@ -5,5 +5,5 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run build
-RUN npm start
+RUN npm run dev
 EXPOSE 3000
