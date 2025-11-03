@@ -1,5 +1,5 @@
 FROM node:21 AS frontend-builder
-WORKDIR /app/frontend
+WORKDIR /app/frontend/ProSeed-frontend
 COPY frontend/ProSeed-frontend/package*.json ./
 RUN npm install
 COPY frontend/ProSeed-frontend/ ./
@@ -7,16 +7,24 @@ RUN npm run build
 
 FROM eclipse-temurin:21
 WORKDIR /app
-
-COPY  backend/proseed/ ./backend/proseed/
-WORKDIR /app/backend
+RUN apt-get update && \
+    apt-get install -y \
+    curl \
+    unzip\
+    poppler-utils \
+    libzbar0 \
+    libzbar-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+COPY  backend/proseed ./backend/proseed
+WORKDIR /app/backend/proseed
 ENV GRADLE_VERSION=8.14
-RUN wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -P /tmp \
-    && unzip -d /opt/gradle /tmp/gradle-${GRADLE_VERSION}-bin.zip \
-    && rm /tmp/gradle-${GRADLE_VERSION}-bin.zip
-ENV PATH="/opt/gradle/gradle-${GRADLE_VERSION}/bin"
+RUN wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -P /tmp && \
+    unzip -d /opt/gradle /tmp/gradle-${GRADLE_VERSION}-bin.zip && \
+    rm /tmp/gradle-${GRADLE_VERSION}-bin.zip
+ENV PATH="${PATH}:/opt/gradle/gradle-${GRADLE_VERSION}/bin"
 
-COPY --from=frontend-builder /app/frontend/dist ./../frontend/dist
+COPY --from=frontend-builder /app/frontend/ProSeed-frontend/dist ./../frontend/ProSeed-frontend/dist
 
 RUN gradle build -x test --no-daemon
 
