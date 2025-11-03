@@ -118,10 +118,12 @@ export default function ProcessPage() {
         onClose={() => setIsTaskDetailsDialogOpen(false)}
       />
 
-
       <ul>
         {foundProcess.taskIds.map((taskId) => {
           const task = tasks.find(t => t.taskId === taskId);
+          if (!task) {
+            return;
+          }
           return (
             <li key={task.taskId}>
               <TaskCard
@@ -130,7 +132,6 @@ export default function ProcessPage() {
                 taskName={task.taskName}
                 taskDescription={task.taskDescription}
               />
-              <button onClick={() => deleteTask(task.taskId)}>delete</button>
             </li>
           )
         })}
