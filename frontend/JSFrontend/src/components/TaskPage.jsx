@@ -61,8 +61,8 @@ export default function TaskPage() {
       <p>description: {foundTask.taskDescription}</p>
       <button onClick={() => setIsTaskDetailsDialogOpen(true)}>Edit Task Details</button>
       <EditTaskDetailsDialog
-        currentTaskName={foundTask.taskName}
-        currentTaskDescription={foundTask.taskDescription}
+        currentName={foundTask.taskName}
+        currentDescription={foundTask.taskDescription}
         onSave={handleUpdateTask}
         isOpen={isTaskDetailsDialogOpen}
         onClose={() => setIsTaskDetailsDialogOpen(false)}
