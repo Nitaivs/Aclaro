@@ -29,13 +29,7 @@ export function ProcessProvider({children}) {
   async function initializeProcessesFromDB() {
     try {
       console.log("Initializing processes from DB");
-      const response = await axios.get(`${BASE_URL}processes`);
-      //TODO: rewrite once default process fetch includes tasks
-      for (const process of response.data) {
-        const tasksResponse = await axios.get(`${BASE_URL}processes/${process.processId}/tasks`);
-        process.taskIds = tasksResponse.data.taskIds;
-      }
-      setProcesses(response.data);
+      await fetchAllProcesses()
       setInitialized(true);
     } catch (error) {
       console.error("Error fetching processes from DB:", error);
