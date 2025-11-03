@@ -32,6 +32,23 @@ export default function ProcessPage() {
     setIsDialogOpen(false);
   }
 
+  //TODO: expand documentation
+  /**
+   * @function handleAddTask
+   * @description Handles the addition of a new task to the current process.
+   * @returns {Promise<void>}
+   */
+  async function handleAddTask(taskName, taskDescription) {
+    try {
+      await addTask(parsedProcessId, taskName, taskDescription);
+      //TODO: A bit of a hack to refresh process task list, rewrite
+      await fetchProcessById(parsedProcessId);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
+  }
+
+  // Render error messages for invalid or not found process
   if (!parsedProcessId) {
     return (
       <div>
