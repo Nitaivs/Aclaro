@@ -1,5 +1,6 @@
 package com.proseed.controllers;
 
+import com.proseed.DTOs.EmployeeDTO;
 import com.proseed.entities.Employee;
 import com.proseed.services.EmployeeService;
 import org.springframework.http.HttpStatus;
@@ -25,12 +26,12 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployees() {
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
         return ResponseEntity.ok(employeeService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
     return employeeService.findById(id)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
