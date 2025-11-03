@@ -16,6 +16,14 @@ export default function TaskPage() {
   const foundTask = tasks.find(t => t.taskId === parsedTaskId);
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
 
+  /**
+   * @function handleUpdateTask
+   * @description Handles the update of task details.
+   * Calls the updateTask function from TaskContext with the new name and description.
+   * @param newName the new name for the task. May be undefined, in which case the current name is retained.
+   * @param newDescription the new description for the task. May be undefined, in which case the current description is retained.
+   * @returns {Promise<void>} A promise that resolves when the task update is complete.
+   */
   async function handleUpdateTask(newName, newDescription) {
     if (newName === foundTask.taskName && newDescription === foundTask.taskDescription) {
       setIsTaskDetailsDialogOpen(false);
