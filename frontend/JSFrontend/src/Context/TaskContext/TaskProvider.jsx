@@ -7,8 +7,6 @@ export function TaskProvider({children}) {
   const BASE_URL = "http://localhost:8080/api/";
   const [tasks, setTasks] = useState([]);
   const [initialized, setInitialized] = useState(false);
-  // const {processes, setProcesses} = use(ProcessContext);
-
 
   useEffect(() => {
     if (!initialized) {
@@ -19,12 +17,15 @@ export function TaskProvider({children}) {
     }
   });
 
+  /**
+   * @function initializeTasksFromDB
+   * @description Initializes tasks from the database by fetching all tasks and setting the local state.
+   * Sets the initialized state to true once done.
+   * @returns {Promise<void>} A promise that resolves when the tasks are fetched and set
+   */
   async function initializeTasksFromDB() {
     try {
       console.log("Initializing tasks from DB");
-      // const response = await axios.get(`${BASE_URL}tasks`);
-      // console.log(response);
-      // setTasks(response.data);
       await fetchAllTasks();
       setInitialized(true);
     } catch (error) {
@@ -32,6 +33,11 @@ export function TaskProvider({children}) {
     }
   }
 
+  /**
+   * @function fetchAllTasks
+   * @description Fetches all tasks from the database and sets the local state.
+   * @returns {Promise<void>} A promise that resolves when the tasks are fetched and set
+   */
   async function fetchAllTasks() {
     try {
       console.log("Fetching all tasks from DB");
@@ -43,6 +49,14 @@ export function TaskProvider({children}) {
     }
   }
 
+  /**
+   * @function addTask
+   * @description Adds a new task to the database and updates the local state.
+   * @param processId The ID of the process to which the task belongs.
+   * @param name The name of the task.
+   * @param description The description of the task.
+   * @returns {Promise<void>} A promise that resolves when the task is added and the state is updated.
+   */
   async function addTask(processId, name, description) {
     try {
       const response = await axios.post(`${BASE_URL}tasks?processId=${processId}`, {
@@ -54,13 +68,6 @@ export function TaskProvider({children}) {
       setTasks([...tasks, response.data]);
       //TODO: hack to refresh tasks in process, rewrite
       await fetchAllTasks()
-      //Return new task to allow adding to process task list
-      return response.data;
-      // const foundProcess = processes.find(p => p.processId === processId);
-      // if (foundProcess) {
-      //   foundProcess.taskIds.push(response.data.id);
-      //   setProcesses([...processes.filter(p => p.processId !== processId), foundProcess]);
-      // }
     } catch (error) {
       console.error("Error adding task to DB:", error);
     }
