@@ -13,28 +13,35 @@ export default function EditTaskDetailsDialog({currentName, currentDescription, 
 
   /**
    * @function handleOnSave
-   * @description Handles the save action for editing process details.
+   * @description Handles the save action for editing task details.
    * Validates the input and calls the onSave function with updated details.
    * Calls onClose to close the dialog after saving.
    */
   function handleOnSave() {
+    if (nameInput === currentName && descriptionInput === currentDescription) {
+      onClose();
+      return;
+    }
     if (!nameInput) {
       setNameError(true);
       return;
     }
     onSave(nameInput, descriptionInput);
-    // setIsDialogOpen(false);
+    setNameError(false);
+    setNameInput(currentName || "");
+    setDescriptionInput(currentDescription || "");
     onClose();
   }
 
   return (
     <Dialog open={isDialogOpen}>
-      <DialogTitle>Edit Process Details</DialogTitle>
+      <DialogTitle>Edit Task Details</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
           margin="dense"
           label="Task Name"
+          required={true}
           type="text"
           fullWidth
           variant="outlined"
@@ -61,8 +68,9 @@ export default function EditTaskDetailsDialog({currentName, currentDescription, 
         </button>
 
         <button onClick={() => {
-          setNameInput("");
-          setDescriptionInput("");
+          setNameInput(currentName ||"");
+          setDescriptionInput(currentDescription || "");
+          setNameError(false);
           onClose();
         }}>
           Cancel
