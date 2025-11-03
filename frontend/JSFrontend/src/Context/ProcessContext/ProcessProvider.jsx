@@ -53,6 +53,22 @@ export function ProcessProvider({children}) {
     }
   }
 
+  async function fetchProcessById(processId) {
+    try {
+      console.log("Fetching process by ID from DB:", processId);
+      const response = await axios.get(`${BASE_URL}processes/${processId}`);
+      console.log("Fetched process:", response.data);
+      const existingProcess = processes.find(p => p.processId === processId);
+      if (existingProcess) {
+        setProcesses(processes.map(p => p.processId === processId ? response.data : p));
+        return;
+      }
+      setProcesses([...processes, response.data]);
+    } catch (error) {
+      console.error("Error fetching process by ID from DB:", error);
+    }
+  }
+
   /**
    * Sends a POST request to add a new process to the database and updates the local state.
    * @param name the name of the new process
@@ -123,7 +139,8 @@ export function ProcessProvider({children}) {
       deleteProcess,
       updateProcess,
       initializeProcessesFromDB,
-      fetchAllProcesses
+      fetchAllProcesses,
+      fetchProcessById
     }}>
       {children}
     </ProcessContext>
