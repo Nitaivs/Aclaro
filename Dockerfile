@@ -21,7 +21,8 @@ RUN wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.
     rm /tmp/gradle-${GRADLE_VERSION}-bin.zip
 ENV PATH="${PATH}:/opt/gradle/gradle-${GRADLE_VERSION}/bin"
 
-COPY --from=frontend-builder /app/frontend/ProSeed-frontend/dist ./../frontend/ProSeed-frontend/dist
+COPY --from=frontend-builder /app/frontend/ProSeed-frontend/dist ./src/main/resources/static
+
 
 RUN gradle build -x test --no-daemon
 
