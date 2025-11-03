@@ -28,12 +28,15 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
    * Calls onClose to close the dialog after saving.
    */
   function handleOnSave() {
+    if (nameInput === currentName && descriptionInput === currentDescription) {
+      onClose();
+      return;
+    }
     if (!nameInput) {
       setNameError(true);
       return;
     }
     onSave(nameInput, descriptionInput);
-    setIsDialogOpen(false);
     onClose();
   }
 
@@ -71,8 +74,8 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
         </button>
 
         <button onClick={() => {
-          setNameInput("");
-          setDescriptionInput("");
+          setNameInput(currentName || "");
+          setDescriptionInput(currentDescription || "");
           setIsDialogOpen(false);
           onClose();
         }}>
