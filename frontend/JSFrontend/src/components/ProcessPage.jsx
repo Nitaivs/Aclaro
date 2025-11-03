@@ -8,7 +8,6 @@ import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import EditProcessDetailsDialog from "./EditProcessDetailsDialog.jsx";
 import AddTaskDialog from "./AddTaskDialog.jsx";
 
-
 /**
  * @component ProcessPage
  * @description A page component that displays details for a specific process.
@@ -22,7 +21,7 @@ export default function ProcessPage() {
   const {processes, updateProcess, fetchProcessById} = use(ProcessContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
   const foundProcess = processes.find(p => p.processId === parsedProcessId);
-  const {tasks, addTask, deleteTask} = use(TaskContext);
+  const {tasks, addTask} = use(TaskContext);
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
 
