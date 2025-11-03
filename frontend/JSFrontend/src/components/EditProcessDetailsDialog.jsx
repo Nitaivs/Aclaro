@@ -36,6 +36,7 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
       setNameError(true);
       return;
     }
+    setNameError(false);
     onSave(nameInput, descriptionInput);
     onClose();
   }
@@ -76,7 +77,7 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
         <button onClick={() => {
           setNameInput(currentName || "");
           setDescriptionInput(currentDescription || "");
-          setIsDialogOpen(false);
+          setNameError(false);
           onClose();
         }}>
           Cancel
