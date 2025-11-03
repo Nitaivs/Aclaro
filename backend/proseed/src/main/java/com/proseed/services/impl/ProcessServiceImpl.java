@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.proseed.DTOs.Mappers.ProcessMapper;
 import com.proseed.DTOs.ProcessDTO;
+import com.proseed.DTOs.ProcessWithTaskInfoDTO;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,6 +75,15 @@ public class ProcessServiceImpl implements ProcessService {
     public ProcessDTO getProcessWithTaskIds(Long id) {
         return repository.findById(id)
             .map(ProcessMapper::toDTO)
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Process not found with id: " + id
+            ));
+    }
+
+    @Override
+    public ProcessWithTaskInfoDTO getProcessWithTaskInfo(Long id) {
+        return repository.findById(id)
+            .map(ProcessMapper::toProcessWithTaskInfoDTO)
             .orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Process not found with id: " + id
             ));
