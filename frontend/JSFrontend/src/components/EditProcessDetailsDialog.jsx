@@ -2,8 +2,8 @@ import {Dialog, DialogTitle, DialogContent, TextField} from '@mui/material';
 import {useState, useEffect} from 'react';
 
 export default function EditProcessDetailsDialog({currentName, currentDescription, onSave, isOpen, onClose}) {
-  const [nameInput, setNameInput] = useState("");
-  const [descriptionInput, setDescriptionInput] = useState("");
+  const [nameInput, setNameInput] = useState(currentName || "");
+  const [descriptionInput, setDescriptionInput] = useState(currentDescription || "");
   const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
   const [nameError, setNameError] = useState(false);
 
