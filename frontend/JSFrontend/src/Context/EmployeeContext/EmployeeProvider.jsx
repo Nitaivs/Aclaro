@@ -8,16 +8,18 @@ export function EmployeeProvider({children}) {
   const BASE_URL = "http://localhost:8080/api/";
   //TODO: move BASE_URL to config file
 
-  //TODO: initialize employees from DB
-  // useEffect(() => {})
+  useEffect(() => {
+    if (!initialized) {
+      initializeEmployeesFromDB();
+    }
+  })
 
   async function initializeEmployeesFromDB() {
     try {
       console.log("Initializing employees from DB");
       await fetchAllEmployees();
       setInitialized(true);
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error fetching employees from DB:", error);
     }
   }
