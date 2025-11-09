@@ -25,12 +25,13 @@ export function EmployeeProvider({children}) {
   async function fetchAllEmployees() {
     try {
       console.log("Fetching all employees from DB");
+      //TODO: replace mock response once backend is ready
+      const response = {data: [{name: "John Doe", id: 1}, {name: "Jane Doe", id: 1}]}
       //TODO: update endpoint if needed
-      const response = await axios.get(`${BASE_URL}employees`);
+      // const response = await axios.get(`${BASE_URL}employees`);
       console.log(response);
       setEmployees(response.data);
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error fetching employees from DB:", error);
     }
   }
