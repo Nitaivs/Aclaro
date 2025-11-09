@@ -2,11 +2,20 @@ import {useState, useEffect} from "react";
 import {TaskContext} from "./TaskContext.jsx";
 import axios from "axios";
 
+/**
+ * @Component TaskProvider
+ * @description Provides task-related state and functions to its children via TaskContext.
+ * @param children The child components that will have access to the task context.
+ * @returns {JSX.Element} The TaskProvider component.
+ */
 export function TaskProvider({children}) {
   const BASE_URL = "http://localhost:8080/api/";
   const [tasks, setTasks] = useState([]);
   const [initialized, setInitialized] = useState(false);
 
+  /**
+   * * Effect hook that initializes tasks from the database when the component mounts.
+   */
   useEffect(() => {
     if (!initialized) {
       console.log("initializing tasks");

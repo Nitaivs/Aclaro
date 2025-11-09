@@ -2,6 +2,13 @@ import {useEffect, useState} from "react";
 import {DepartmentContext} from "./DepartmentContext.jsx";
 import axios from "axios";
 
+/**
+ * @Component EmployeeProvider
+ * @description Provides department-related state and functions to its children via DepartmentContext.
+ * @param children
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function EmployeeProvider({children}) {
   const [departments, setDepartments] = useState([]);
   const [initialized, setInitialized] = useState(false);

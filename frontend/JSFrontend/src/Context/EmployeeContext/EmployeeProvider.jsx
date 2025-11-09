@@ -2,6 +2,12 @@ import {useEffect, useState} from "react";
 import {EmployeeContext} from "./EmployeeContext.jsx";
 import axios from "axios";
 
+/**
+ * @Component EmployeeProvider
+ * @description Provides employee-related state and functions to its children via EmployeeContext.
+ * @param children The child components that will have access to the employee context.
+ * @returns {JSX.Element} The EmployeeProvider component.
+ */
 export function EmployeeProvider({children}) {
   const [employees, setEmployees] = useState([]);
   const [initialized, setInitialized] = useState(false);
