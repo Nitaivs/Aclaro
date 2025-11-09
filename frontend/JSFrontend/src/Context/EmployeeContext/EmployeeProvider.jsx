@@ -44,8 +44,7 @@ export function EmployeeProvider({children}) {
       const response = await axios.get(`${BASE_URL}employees/${id}`);
       console.log(response);
       return response.data;
-    }
-    catch (error) {
+    } catch (error) {
       console.error(`Error fetching employee with id ${id} from DB:`, error);
     }
   }
