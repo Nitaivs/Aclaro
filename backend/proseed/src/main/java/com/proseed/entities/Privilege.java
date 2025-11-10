@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Data
@@ -20,5 +20,5 @@ public class Privilege {
     @ManyToMany(mappedBy = "privileges", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Role> roles;
+    private Set<Role> roles;
 }

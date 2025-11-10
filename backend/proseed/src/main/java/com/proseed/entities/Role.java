@@ -1,5 +1,5 @@
 package com.proseed.entities;
-import java.util.Collection;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -30,10 +30,10 @@ public class Role {
     )
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Privilege> privileges;
+    private Set<Privilege> privileges;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Collection<Employee> employees;
+    private Set<Employee> employees;
 }
