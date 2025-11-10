@@ -16,8 +16,8 @@ export default function EmployeePage() {
   const foundEmployee = employees.find(e => e.id === parseInt(employeeId));
   const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] = useState(false);
 
-  function handleUpdateEmployee(updatedName) {
-    updateEmployee(parsedEmployeeId, updatedName);
+  function handleUpdateEmployee(newFirstName, newLastName) {
+    updateEmployee(parsedEmployeeId, {firstName: newFirstName, lastName: newLastName});
     setIsEditEmployeeDialogOpen(false);
   }
 
@@ -57,12 +57,13 @@ export default function EmployeePage() {
         </button>
       </Link>
       <h2>Employee Page</h2>
-      <h1>{foundEmployee.name}</h1>
+      <h1>{foundEmployee.firstName} {foundEmployee.lastName}</h1>
       <button onClick={() => setIsEditEmployeeDialogOpen(true)}>
         Edit Employee
       </button>
       <EditEmployeeDialog
-        currentName={foundEmployee.name}
+        currentFirstName={foundEmployee.firstName}
+        currentLastName={foundEmployee.lastName}
         isOpen={isEditEmployeeDialogOpen}
         onClose={() => setIsEditEmployeeDialogOpen(false)}
         onSave={handleUpdateEmployee}
