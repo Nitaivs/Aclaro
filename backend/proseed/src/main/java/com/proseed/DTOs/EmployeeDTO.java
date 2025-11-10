@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,4 +14,6 @@ public class EmployeeDTO {
     private Long employeeId;
     private String firstName;
     private String lastName;
+    private String department;
+    private List<String> skills;
 }

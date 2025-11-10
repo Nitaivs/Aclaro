@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import java.util.Collection;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class EmployeeSkill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "skill_id", nullable = false, unique = true)
     private Long skillId;
 
     @Column(nullable = false, length = 40)
@@ -24,5 +25,5 @@ public class EmployeeSkill {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private Collection<Employee> employees;
+    private Set<Employee> employees;
 }
