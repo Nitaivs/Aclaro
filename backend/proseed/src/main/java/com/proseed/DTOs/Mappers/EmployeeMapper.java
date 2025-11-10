@@ -13,6 +13,7 @@ public class EmployeeMapper {
             employee.getFirstName(),
             employee.getLastName(),
             employee.getDepartment(),
+            employee.getRole() != null ? employee.getRole().getRoleName() : "", // Handle null role by returning an empty String
             employee.getEmployeeSkills() != null ?
                 employee.getEmployeeSkills().stream()
                         .map(EmployeeSkill::getSkillName)

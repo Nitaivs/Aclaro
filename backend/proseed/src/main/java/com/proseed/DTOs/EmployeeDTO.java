@@ -15,5 +15,6 @@ public class EmployeeDTO {
     private String firstName;
     private String lastName;
     private String department;
+    private String roleName;
     private List<String> skills;
 }
