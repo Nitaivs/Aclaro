@@ -40,15 +40,17 @@ export default function EmployeePage() {
         </Link>
       </div>
     );
-      <div>
-        <h1>Employee Page</h1>
-        <p>Error: Employee with id: {parsedEmployeeId} not found.</p>
-        <Link to="/employees">
-          <button>
-            Return to employee list
-          </button>
-        </Link>
-      </div>
-    );
   }
+
+  return (
+    <div>
+      <Link to="/employees">
+        <button>
+          Return to employee list
+        </button>
+      </Link>
+      <h1>Employee Page</h1>
+      <h3>Employee Name: {foundEmployee.name}</h3>
+    </div>
+  );
 }
