@@ -48,7 +48,7 @@ export function EmployeeProvider({children}) {
     try {
       console.log("Fetching all employees from DB");
       //TODO: replace mock response once backend is ready
-      const response = {data: [{name: "John Doe", id: 1}, {name: "Jane Doe", id: 1}]}
+      const response = {data: [{name: "John Doe", id: 1}, {name: "Jane Doe", id: 2}]}
       //TODO: update endpoint if needed
       // const response = await axios.get(`${BASE_URL}employees`);
       console.log("Employees:", response.data)
