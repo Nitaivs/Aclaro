@@ -14,6 +14,21 @@ export default function EmployeePage() {
   const parsedEmployeeId = employeeId ? parseInt(employeeId) : undefined;
   const foundEmployee = employees.find(e => e.id === parseInt(employeeId));
 
+  if (!parsedEmployeeId) {
+    return (
+      <div>
+        <h1>Employee Page</h1>
+        <p>Error: Invalid employee ID.</p>
+        <Link to="/employees">
+          <button>
+            Return to employee list
+          </button>
+        </Link>
+      </div>
+    );
+  }
+
+  if (!foundEmployee) {
     return (
         <div>
             <h1>Employee Page</h1>
@@ -25,4 +40,15 @@ export default function EmployeePage() {
             <EmployeeList />
         </div>
     );
+      <div>
+        <h1>Employee Page</h1>
+        <p>Error: Employee with id: {parsedEmployeeId} not found.</p>
+        <Link to="/employees">
+          <button>
+            Return to employee list
+          </button>
+        </Link>
+      </div>
+    );
+  }
 }
