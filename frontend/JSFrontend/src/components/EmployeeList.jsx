@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { EmployeeContext } from "../Context/EmployeeContext/EmployeeContext.jsx";
 import {
     Box,
@@ -9,12 +9,18 @@ import {
     Avatar,
     ListItemText,
     Divider,
-    Typography
+    Typography,
+    TextField
 } from '@mui/material';
 
 export default function EmployeeList() {
     const ctx = useContext(EmployeeContext);
-    const employees = ctx?.employees;
+    const employees = ctx.employees;
+    const [query, setQuery] = useState('');
+
+    const filtered = employees.filter(emp =>
+        (emp?.name || '').toLowerCase().includes(query.trim().toLowerCase())
+    );
 
     return (
         <Box>
@@ -22,37 +28,45 @@ export default function EmployeeList() {
                 Employee List
             </Typography>
 
+            <TextField
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search by name"
+                fullWidth
+                size="small"
+                color="white"
+                sx={{
+                    mb: 1,
+                    '& .MuiInputBase-root': {
+                        backgroundColor: 'white',
+                        borderRadius: 1,
+                    },
+                }}
+            />
+
             <Paper variant="outlined" sx={{ p: 1 }}>
                 <List>
-                    {employees.length === 0 ? (
+                    {filtered.length === 0 ? (
                         <ListItem>
                             <ListItemText
                                 primary="No employees found"
-                                secondary="There are currently no employees to display."
+                                secondary={query ? `No employees match "${query}".` : "There are currently no employees to display."}
                             />
                         </ListItem>
                     ) : (
-                        employees.map((emp, idx) => (
+                        filtered.map((emp, idx) => (
                             <div key={emp.id ?? idx}>
                                 <ListItem alignItems="flex-start">
                                     <ListItemAvatar>
-                                        <Avatar>{(emp.name || 'E').charAt(0)}</Avatar>
+                                        <Avatar></Avatar>
                                     </ListItemAvatar>
 
                                     <ListItemText
-                                        primary={emp.name}
-                                        secondary={
-                                            <>
-                                                <Typography component="span" variant="body2" color="text.primary">
-                                                    {emp.role}
-                                                </Typography>
-                                                {emp.email ? ` — ${emp.email}` : ''}
-                                            </>
-                                        }
+                                        primary={emp?.name}
                                     />
                                 </ListItem>
 
-                                {idx < employees.length - 1 && <Divider component="li" />}
+                                {idx < filtered.length - 1 && <Divider component="li" />}
                             </div>
                         ))
                     )}
