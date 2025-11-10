@@ -3,6 +3,7 @@ package com.proseed.controllers;
 import com.proseed.DTOs.ProcessDTO;
 import com.proseed.entities.ProcessEntity;
 import com.proseed.services.ProcessService;
+import com.proseed.DTOs.ProcessWithTaskInfoDTO;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,15 @@ public class ProcessController {
     public ResponseEntity<?> getProcessWithTaskIds(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(processService.getProcessWithTaskIds(id));
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+        }
+    }
+
+    @GetMapping("/{id}/tasks")
+    public ResponseEntity<?> getProcessWithTaskInfo(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(processService.getProcessWithTaskInfo(id));
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         }

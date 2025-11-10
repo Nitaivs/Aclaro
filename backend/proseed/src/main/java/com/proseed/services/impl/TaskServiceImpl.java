@@ -5,6 +5,8 @@ import com.proseed.entities.Task;
 import com.proseed.repos.ProcessRepository;
 import com.proseed.repos.TaskRepository;
 import com.proseed.services.TaskService;
+import com.proseed.DTOs.Mappers.TaskMapper;
+import com.proseed.DTOs.TaskWithEmployeesDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,5 +53,12 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public boolean delete(Long id) {
         return taskRepository.findById(id).map(t -> { taskRepository.delete(t); return true; }).orElse(false);
+    }
+
+    @Override
+    public TaskWithEmployeesDTO getTaskWithEmployees(Long id) {
+        return taskRepository.findById(id)
+            .map(TaskMapper::toTaskWithEmployeesDTO)
+            .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
     }
 }
