@@ -52,4 +52,7 @@ public class Employee {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private EmployeeProfile profile;
+
+    @Column(nullable = true, length = 100)
+    private String department;
 }
