@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import java.util.Set;
+//import java.util.Set;
 
 @Entity
 @Data
@@ -17,8 +17,10 @@ public class Privilege {
     @ToString.Include
     private Long privilegeId;
 
+    /* Commented out for now; can be re-enabled if role-privilege mapping is needed in the future.
     @ManyToMany(mappedBy = "privileges", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Role> roles;
+    */
 }

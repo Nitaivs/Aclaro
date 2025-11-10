@@ -54,6 +54,7 @@ public class Employee {
     @EqualsAndHashCode.Exclude
     private EmployeeProfile profile;
 
-    @Column(nullable = true, length = 100)
-    private String department;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private Department department;
 }

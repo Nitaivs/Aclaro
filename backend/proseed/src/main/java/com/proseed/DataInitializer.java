@@ -20,6 +20,7 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired private ProcessRepository processRepository;
     @Autowired private TaskRepository taskRepository;
     @Autowired private EmployeeSkillRepository employeeSkillRepository;
+    @Autowired private com.proseed.repos.DepartmentRepository departmentRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -36,13 +37,13 @@ public class DataInitializer implements CommandLineRunner {
         // Roles
     Role adminRole = new Role();
     adminRole.setRoleName("ADMIN");
-    adminRole.setPrivileges(new HashSet<>(List.of(privRead, privWrite, privDelete)));
+    //adminRole.setPrivileges(new HashSet<>(List.of(privRead, privWrite, privDelete)));
     Role userRole = new Role();
     userRole.setRoleName("USER");
-    userRole.setPrivileges(new HashSet<>(List.of(privRead)));
+    //userRole.setPrivileges(new HashSet<>(List.of(privRead)));
     Role managerRole = new Role();
     managerRole.setRoleName("MANAGER");
-    managerRole.setPrivileges(new HashSet<>(List.of(privRead, privWrite)));
+    //managerRole.setPrivileges(new HashSet<>(List.of(privRead, privWrite)));
     roleRepository.saveAll(List.of(adminRole, userRole, managerRole));
 
         // Employee Skills
@@ -56,11 +57,21 @@ public class DataInitializer implements CommandLineRunner {
     reactSkill.setSkillName("React");
     employeeSkillRepository.saveAll(List.of(javaSkill, springSkill, sqlSkill, reactSkill));
 
+        // Departments
+    Department deptBackend = new Department();
+    deptBackend.setDepartmentName("Backend");
+    Department deptFrontend = new Department();
+    deptFrontend.setDepartmentName("Frontend");
+    Department deptOps = new Department();
+    deptOps.setDepartmentName("Operations");
+    departmentRepository.saveAll(List.of(deptBackend, deptFrontend, deptOps));
+
         // Employees & Profiles
     Employee alice = new Employee();
     alice.setFirstName("Alice");
     alice.setLastName("Smith");
     alice.setRole(adminRole);
+    alice.setDepartment(deptBackend);
     alice.setEmployeeSkills(new HashSet<>(List.of(javaSkill, springSkill)));
     EmployeeProfile aliceProfile = new EmployeeProfile();
     aliceProfile.setDescription("Sample text one");
@@ -71,6 +82,7 @@ public class DataInitializer implements CommandLineRunner {
     bob.setFirstName("Bob");
     bob.setLastName("Jones");
     bob.setRole(userRole);
+    bob.setDepartment(deptOps);
     bob.setEmployeeSkills(new HashSet<>(List.of(sqlSkill)));
     EmployeeProfile bobProfile = new EmployeeProfile();
     bobProfile.setDescription("Sample text two");
@@ -81,6 +93,7 @@ public class DataInitializer implements CommandLineRunner {
     carol.setFirstName("Carol");
     carol.setLastName("Taylor");
     carol.setRole(managerRole);
+    carol.setDepartment(deptFrontend);
     carol.setEmployeeSkills(new HashSet<>(List.of(javaSkill, reactSkill)));
     EmployeeProfile carolProfile = new EmployeeProfile();
     carolProfile.setDescription("Sample text three");

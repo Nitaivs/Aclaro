@@ -20,6 +20,7 @@ public class Role {
 
     private String roleName;
 
+    /* This section is commented out for now; can be re-enabled if role-privilege mapping is needed in the future.
     @ManyToMany(fetch = FetchType.LAZY) // Nullable for roles without any privileges
     @JoinTable(
         name = "role_privileges",
@@ -31,6 +32,7 @@ public class Role {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Privilege> privileges;
+    */
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @ToString.Exclude
