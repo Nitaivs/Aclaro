@@ -1,8 +1,7 @@
-import { Link } from "react-router";
-import { useContext, useEffect, useState } from 'react';
-import { EmployeeContext } from "../Context/EmployeeContext/EmployeeContext.jsx";
-import EmployeeList from "./EmployeeList.jsx";
-
+import {Link} from "react-router";
+import {use, useEffect, useState} from 'react';
+import {EmployeeContext} from "../Context/EmployeeContext/EmployeeContext.jsx";
+import {useParams} from "react-router";
 
 /**
  * @component EmployeePage
@@ -10,6 +9,10 @@ import EmployeeList from "./EmployeeList.jsx";
  * @returns {JSX.Element} The rendered EmployeePage component.
  */
 export default function EmployeePage() {
+  const {employees} = use(EmployeeContext);
+  const {employeeId} = useParams();
+  const parsedEmployeeId = employeeId ? parseInt(employeeId) : undefined;
+  const foundEmployee = employees.find(e => e.id === parseInt(employeeId));
 
     return (
         <div>
