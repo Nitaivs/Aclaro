@@ -84,7 +84,14 @@ export function EmployeeProvider({children}) {
     }
   }
 
-  //TODO: add update method once backend supports it
+  //TODO: implement adding departments to employees
+  function updateEmployee(id, updatedName) {
+    //TODO: implement update request to backend when backend is ready
+    setEmployees(employees.map(employee =>
+      employee.id === id ? {...employee, name: updatedName} : employee
+    ));
+  }
+
 
   /**
    * @function deleteEmployeeById Deletes an employee by their ID from the database.
@@ -132,6 +139,7 @@ export function EmployeeProvider({children}) {
       fetchAllEmployees,
       fetchEmployeeById,
       addEmployee,
+      updateEmployee,
       deleteEmployeeById,
       initializeEmployeesFromDB,
       initialized
