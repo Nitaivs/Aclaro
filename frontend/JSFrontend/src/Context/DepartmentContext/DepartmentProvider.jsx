@@ -5,8 +5,8 @@ import axios from "axios";
 /**
  * @Component EmployeeProvider
  * @description Provides department-related state and functions to its children via DepartmentContext.
- * @param children
- * @returns {JSX.Element}
+ * @param children The child components that will have access to the department context.
+ * @returns {JSX.Element} The EmployeeProvider component.
  * @constructor
  */
 export function EmployeeProvider({children}) {
@@ -24,6 +24,12 @@ export function EmployeeProvider({children}) {
     }
   }, [initialized])
 
+  /**
+   * @function initializeDepartmentsFromDB
+   * @description Initializes departments from the database.
+   * Calls fetchAllDepartments to retrieve all departments and update the state, then sets initialized to true.
+   * @returns {Promise<void>} A promise that resolves when the initialization is complete.
+   */
   async function initializeDepartmentsFromDB() {
     try {
       console.log("Initializing departments from DB");
@@ -35,6 +41,11 @@ export function EmployeeProvider({children}) {
     }
   }
 
+  /**
+   * @function fetchAllDepartments
+   * @description Fetches all departments from the database and updates the state.
+   * @returns {Promise<void>} A promise that resolves when the departments are fetched and state is updated.
+   */
   async function fetchAllDepartments() {
     try {
       console.log("Fetching all departments from DB");
