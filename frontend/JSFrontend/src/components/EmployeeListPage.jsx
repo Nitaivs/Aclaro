@@ -2,7 +2,18 @@ import {use, useState} from "react";
 import {EmployeeContext} from "../Context/EmployeeContext/EmployeeContext.jsx";
 import AddEmployeeDialog from "./AddEmployeeDialog.jsx";
 import {Link} from "react-router";
-import {Card, Alert, AlertTitle} from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  TextField,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Divider
+} from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 
 /**
@@ -16,6 +27,12 @@ export default function EmployeeListPage() {
   const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [filterString, setFilterString] = useState("");
+
+  // Filter employees based on the filterString
+  const filtered = employees.filter(emp =>
+    (emp?.name || '').toLowerCase().includes(filterString.trim().toLowerCase())
+  );
 
   async function handleAddEmployee(name) {
     try {
@@ -53,21 +70,52 @@ export default function EmployeeListPage() {
         </Alert>
       </Collapse>
 
-      <ul>
-        {employees.map(employee => (
-          <li key={employee.id}>
-            <Card
-              style={{margin: '10px', padding: '10px'}}
-            >
-              <Link to={`/employees/${employee.id}`}>
-                <h3>
-                  {employee.name}
-                </h3>
-              </Link>
-            </Card>
-          </li>
-        ))}
-      </ul>
+      {/* Search Field */}
+      <TextField
+        value={filterString}
+        onChange={(e) => setFilterString(e.target.value)}
+        placeholder="Search by name"
+        fullWidth
+        size="small"
+        color="white"
+        sx={{
+          mb: 1,
+          '& .MuiInputBase-root': {
+            backgroundColor: 'white',
+            borderRadius: 1,
+          },
+        }}
+      />
+
+      <Paper variant="outlined" sx={{p: 1}}>
+        <List>
+          {filtered.length === 0 ? (
+            <ListItem>
+              <ListItemText
+                primary="No employees found"
+                secondary={filterString ? `No employees match "${filterString}".` : "There are currently no employees to display."}
+              />
+            </ListItem>
+          ) : (
+            filtered.map((emp, idx) => (
+
+              <div key={emp.id ?? idx}>
+                <Link to={`/employees/${emp.id}`}>
+                  <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                      <Avatar></Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={emp?.name}
+                    />
+                    {idx < filtered.length - 1 && <Divider component="li"/>}
+                  </ListItem>
+                </Link>
+              </div>
+            ))
+          )}
+        </List>
+      </Paper>
     </div>
   )
 }
