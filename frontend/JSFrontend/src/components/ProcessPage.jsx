@@ -63,9 +63,9 @@ export default function ProcessPage() {
       <div>
         <p>Invalid process ID</p>
         <p>{parsedProcessId}</p>
-        <Link to="/">
+        <Link to="/processes">
           <button>
-            Go to Dashboard
+            Return to Processes
           </button>
         </Link>
       </div>
@@ -76,9 +76,9 @@ export default function ProcessPage() {
     return (
       <div>
         <p>Process not found</p>
-        <Link to="/">
+        <Link to="/processes">
           <button>
-            Go to Dashboard
+            Return to Processes
           </button>
         </Link>
       </div>
@@ -87,9 +87,9 @@ export default function ProcessPage() {
 
   return (
     <div>
-      <Link to="/">
+      <Link to="/processes">
         <button>
-          Go to Dashboard
+          Return to Processes
         </button>
       </Link>
       <h1>{foundProcess.processName}</h1>

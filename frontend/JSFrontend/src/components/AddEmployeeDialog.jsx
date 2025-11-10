@@ -22,7 +22,8 @@ export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
   }, [isOpen]);
 
   /**
-   * Handles the save action when adding a new employee.
+   * @function handleOnSave
+   * @description Handles the save action when adding a new employee.
    * Validates the input and calls the onSave callback if valid.
    */
   function handleOnSave() {
@@ -31,7 +32,17 @@ export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
       return;
     }
     onSave(nameInput);
+    handleClose()
+  }
+
+  /**
+   * @function handleClose
+   * @description Handles the close action for the dialog.
+   * Resets the input fields and error state, then calls the onClose callback.
+   */
+  function handleClose() {
     setNameInput("");
+    setNameError(false);
     onClose();
   }
 
@@ -54,8 +65,7 @@ export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
         />
         <button onClick={() => handleOnSave()}>Add</button>
         <button onClick={() => {
-          setNameInput("");
-          onClose();
+          handleClose();
         }}>Cancel
         </button>
       </div>

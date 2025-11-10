@@ -103,16 +103,36 @@ export function EmployeeProvider({ children }) {
         }
     }
 
-    return (
-        <EmployeeContext.Provider value={{
-            employees,
-            fetchAllEmployees,
-            fetchEmployeeById,
-            deleteEmployeeById,
-            initializeEmployeesFromDB,
-            initialized
-        }}>
-            {children}
-        </EmployeeContext.Provider>
-    )
+  /**
+   * @function addEmployee
+   * @description Adds a new employee to the database.
+   * Sends a post request and updates the state to include the new employee.
+   * @param name - The name of the employee to add.
+   * @returns {Promise<void>} A promise that resolves when the employee is added and state is updated.
+   */
+  async function addEmployee(name) {
+    try {
+      console.log(`Adding employee with name ${name} to DB`);
+      const response = await axios.post(`${BASE_URL}employees`, {name});
+      console.log(response);
+      setEmployees([...employees, response.data]);
+    } catch (error) {
+      console.error(`Error adding employee with name ${name} to DB:`, error);
+      throw error; // Rethrow error to inform caller
+    }
+  }
+
+  return (
+    <EmployeeContext.Provider value={{
+      employees,
+      fetchAllEmployees,
+      fetchEmployeeById,
+      addEmployee,
+      deleteEmployeeById,
+      initializeEmployeesFromDB,
+      initialized
+    }}>
+      {children}
+    </EmployeeContext.Provider>
+  )
 }
