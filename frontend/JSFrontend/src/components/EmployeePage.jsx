@@ -30,15 +30,15 @@ export default function EmployeePage() {
 
   if (!foundEmployee) {
     return (
-        <div>
-            <h1>Employee Page</h1>
-            <Link to="/">
-                <button>
-                    Go back
-                </button>
-            </Link>
-            <EmployeeList />
-        </div>
+      <div>
+        <h1>Employee Page</h1>
+        <p>Error: Employee with id: {parsedEmployeeId} not found.</p>
+        <Link to="/employees">
+          <button>
+            Return to employee list
+          </button>
+        </Link>
+      </div>
     );
       <div>
         <h1>Employee Page</h1>
