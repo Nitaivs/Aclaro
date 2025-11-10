@@ -2,6 +2,7 @@ import {Link} from "react-router";
 import {use, useEffect, useState} from 'react';
 import {EmployeeContext} from "../Context/EmployeeContext/EmployeeContext.jsx";
 import {useParams} from "react-router";
+import EditEmployeeDialog from "./EditEmployeeDialog.jsx";
 
 /**
  * @component EmployeePage
@@ -9,10 +10,16 @@ import {useParams} from "react-router";
  * @returns {JSX.Element} The rendered EmployeePage component.
  */
 export default function EmployeePage() {
-  const {employees} = use(EmployeeContext);
+  const {employees, updateEmployee} = use(EmployeeContext);
   const {employeeId} = useParams();
   const parsedEmployeeId = employeeId ? parseInt(employeeId) : undefined;
   const foundEmployee = employees.find(e => e.id === parseInt(employeeId));
+  const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] = useState(false);
+
+  function handleUpdateEmployee(updatedName) {
+    updateEmployee(parsedEmployeeId, updatedName);
+    setIsEditEmployeeDialogOpen(false);
+  }
 
   if (!parsedEmployeeId) {
     return (
@@ -49,8 +56,17 @@ export default function EmployeePage() {
           Return to employee list
         </button>
       </Link>
-      <h1>Employee Page</h1>
-      <h3>Employee Name: {foundEmployee.name}</h3>
+      <h2>Employee Page</h2>
+      <h1>{foundEmployee.name}</h1>
+      <button onClick={() => setIsEditEmployeeDialogOpen(true)}>
+        Edit Employee
+      </button>
+      <EditEmployeeDialog
+        currentName={foundEmployee.name}
+        isOpen={isEditEmployeeDialogOpen}
+        onClose={() => setIsEditEmployeeDialogOpen(false)}
+        onSave={handleUpdateEmployee}
+      />
     </div>
   );
 }
