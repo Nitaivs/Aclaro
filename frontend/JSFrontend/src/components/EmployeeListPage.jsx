@@ -30,8 +30,9 @@ export default function EmployeeListPage() {
   const [filterString, setFilterString] = useState("");
 
   // Filter employees based on the filterString
-  const filtered = employees.filter(emp =>
-    (emp?.firstName || emp?.lastName || '').toLowerCase().includes(filterString.trim().toLowerCase())
+  const filtered = employees.filter(emp => `
+    ${emp?.firstName || ''} ${emp?.lastName || ''}`.toLowerCase().includes(filterString.trim().toLowerCase())
+
   );
 
   /**
