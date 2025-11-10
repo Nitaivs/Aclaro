@@ -9,8 +9,14 @@ This Gitlab by LRZ project is here to be utilized for **completely managing your
 So, you will use it
 
 - to create and update your **product backlog** with epics and user stories (=gitlab issues)
+
+---
+
 - to agree on and maintain your **sprint backlog for each sprint**
+
 - update the **user stories and tasks within a sprint**
+
+
 
 For some hints on SCRUM in Gitlab see section further below.
 
@@ -26,6 +32,7 @@ With finishing your project you will **hand in all required deliverables for gra
 
 # Hints
 
+
 ## SCRUM Artifacts in Gitlab
 
 The following table shows which SCRUM Artifacts translate into which Gitlab Features
@@ -38,6 +45,7 @@ The following table shows which SCRUM Artifacts translate into which Gitlab Feat
 | Points and estimation | Weights                            |
 | Product backlog       | Issue lists and Prioritized labels |
 | Sprint / iteration    | Milestones                         |
+
 | Burndown chart        | Burndown charts                    |
 | Agile board           | Issue boards                       |
 
@@ -52,8 +60,10 @@ This repository contains a Spring Boot backend in `backend/proseed`. The backend
 Prerequisites
 
 - Java 21 (or compatible JDK used by the project)
+
 - Gradle (wrapper included) - use the included `gradlew`
 - MariaDB server for the `dev-maria`/`prod` profiles (if you plan to run those)
+
 
 Quick start (dev, in-memory H2)
 
