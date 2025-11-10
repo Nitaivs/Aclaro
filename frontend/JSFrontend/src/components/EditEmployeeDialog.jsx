@@ -2,14 +2,20 @@ import {Dialog, DialogTitle, DialogContent, TextField} from '@mui/material';
 import {useState, useEffect} from 'react';
 
 
-export default function EditEmployeeDialog({currentName, onSave, isOpen, onClose}) {
-  const [nameInput, setNameInput] = useState(currentName || "");
+export default function EditEmployeeDialog({currentFirstName, currentLastName, onSave, isOpen, onClose}) {
+  const [firstNameInput, setFirstNameInput] = useState(currentFirstName || "");
+  const [lastNameInput, setLastNameInput] = useState(currentLastName || "");
+  //TODO: error currently does not distinguish between first and last name, fix later
   const [nameError, setNameError] = useState(false);
-  const [defaultName, setDefaultName] = useState(currentName || "")
+  const [defaultFirstName, setDefaultFirstName] = useState(currentFirstName || "")
+  const [defaultLastName, setDefaultLastName] = useState(currentLastName || "")
 
   useEffect(() => {
-    setDefaultName(currentName);
-  }, [currentName]);
+    setDefaultFirstName(currentFirstName);
+    setDefaultLastName(currentLastName);
+    setFirstNameInput(currentFirstName);
+    setLastNameInput(currentLastName);
+  }, [currentFirstName, currentLastName]);
 
   /**
    * @function handleOnSave
@@ -18,20 +24,26 @@ export default function EditEmployeeDialog({currentName, onSave, isOpen, onClose
    * Calls onClose to close the dialog after saving.
    */
   function handleOnSave() {
-    if (nameInput === currentName) {
-      onClose();
+    if (firstNameInput === currentFirstName && lastNameInput === currentLastName) {
+      handleClose()
       return;
     }
-    if (!nameInput) {
+    if (!firstNameInput || !lastNameInput) {
       setNameError(true);
       return;
     }
-    onSave(nameInput);
+    onSave(firstNameInput, lastNameInput);
     handleClose()
   }
 
+  /**
+   * @function handleClose
+   * @description Handles the close action for the dialog.
+   * Resets the input fields and error state, then calls the onClose callback.
+   */
   function handleClose() {
-    setNameInput(currentName || "");
+    // setFirstNameInput(currentFirstName || "");
+    // setLastNameInput(currentLastName || "");
     setNameError(false);
     onClose();
   }
@@ -43,15 +55,28 @@ export default function EditEmployeeDialog({currentName, onSave, isOpen, onClose
         <TextField
           autoFocus
           margin="dense"
-          label="Employee Name"
+          label="First Name"
           required={true}
           type="text"
           fullWidth
           variant="outlined"
           error={nameError}
-          helperText={nameError ? "Employee name is required" : ""}
-          defaultValue={defaultName || ''}
-          onChange={(e) => setNameInput(e.target.value)}
+          helperText={nameError ? "First name is required" : ""}
+          defaultValue={defaultFirstName || ''}
+          onChange={(e) => setFirstNameInput(e.target.value)}
+        />
+
+        <TextField
+          margin="dense"
+          label="Last Name"
+          required={true}
+          type="text"
+          fullWidth
+          variant="outlined"
+          error={nameError}
+          helperText={nameError ? "Last name is required" : ""}
+          defaultValue={defaultLastName || ''}
+          onChange={(e) => setLastNameInput(e.target.value)}
         />
 
         <button onClick={() => {
