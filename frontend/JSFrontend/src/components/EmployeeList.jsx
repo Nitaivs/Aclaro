@@ -13,11 +13,17 @@ import {
     TextField
 } from '@mui/material';
 
+/**
+ * @component EmployeeList
+ * @description A component that displays a list of employees
+ * @returns {JSX.Element} The rendered ProcessCard component.
+ */
 export default function EmployeeList() {
     const ctx = useContext(EmployeeContext);
     const employees = ctx.employees;
     const [query, setQuery] = useState('');
 
+    // Filter employees based on the search query
     const filtered = employees.filter(emp =>
         (emp?.name || '').toLowerCase().includes(query.trim().toLowerCase())
     );
@@ -27,7 +33,7 @@ export default function EmployeeList() {
             <Typography variant="h5" gutterBottom>
                 Employee List
             </Typography>
-
+            {/* Search Field */}
             <TextField
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
