@@ -41,6 +41,32 @@ export function EmployeeProvider({children}) {
     }
   }
 
+  /**
+   * @function addDepartment
+   * @description Adds a new department to the database and updates the state.
+   * @param name - The name of the department to add.
+   * @returns {Promise<void>} A promise that resolves when the department is added and state is updated.
+   */
+  async function addDepartment(name) {
+    try {
+      console.log(`Adding department with name ${name} to DB`);
+      // const response = await axios.post(`${BASE_URL}departments`, {name});
+      //TODO: remove mock response once backend is ready
+      const response = {data: [{name: name, id: Math.floor(Math.random() * 10000) }]}
+      console.log(response);
+      setDepartments([...departments, response.data]);
+    } catch (error) {
+      console.error(`Error adding department with name ${name} to DB:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * @function deleteDepartmentById
+   * @description Deletes a department by its ID from the database and updates the state.
+   * @param {number} id - The ID of the department to delete.
+   * @returns {Promise<void>} A promise that resolves when the department is deleted and state is updated.
+   */
   async function deleteDepartmentById(id) {
     try {
       console.log(`Deleting department with id ${id} from DB`);
@@ -57,6 +83,7 @@ export function EmployeeProvider({children}) {
       departments,
       initializeDepartmentsFromDB,
       fetchAllDepartments,
+      addDepartment,
       deleteDepartmentById
     }}>
       {children}
