@@ -57,7 +57,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // Employees & Profiles
         Employee alice = new Employee();
-        alice.setEmployeeId(1L);
+        //alice.setEmployeeId(1L);
         alice.setFirstName("Alice");
         alice.setLastName("Smith");
         alice.setRole(adminRole);
@@ -68,7 +68,7 @@ public class DataInitializer implements CommandLineRunner {
         alice.setProfile(aliceProfile);
 
         Employee bob = new Employee();
-        bob.setEmployeeId(2L);
+        //bob.setEmployeeId(2L);
         bob.setFirstName("Bob");
         bob.setLastName("Jones");
         bob.setRole(userRole);
@@ -79,7 +79,7 @@ public class DataInitializer implements CommandLineRunner {
         bob.setProfile(bobProfile);
 
         Employee carol = new Employee();
-        carol.setEmployeeId(3L);
+        //carol.setEmployeeId(3L);
         carol.setFirstName("Carol");
         carol.setLastName("Taylor");
         carol.setRole(managerRole);
