@@ -84,6 +84,24 @@ export function EmployeeProvider({children}) {
     }
   }
 
+  /**
+   * @function addEmployee
+   * @description Adds a new employee to the database.
+   * Sends a post request and updates the state to include the new employee.
+   * @param name - The name of the employee to add.
+   * @returns {Promise<void>} A promise that resolves when the employee is added and state is updated.
+   */
+  async function addEmployee(name) {
+    try {
+      console.log(`Adding employee with name ${name} to DB`);
+      const response = await axios.post(`${BASE_URL}employees`, {name});
+      console.log(response);
+      setEmployees([...employees, response.data]);
+    } catch (error) {
+      console.error(`Error adding employee with name ${name} to DB:`, error);
+    }
+  }
+
   //TODO: add update method once backend supports it
 
   /**
