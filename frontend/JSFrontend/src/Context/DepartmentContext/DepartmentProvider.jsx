@@ -15,8 +15,14 @@ export function EmployeeProvider({children}) {
   const BASE_URL = "http://localhost:8080/api/";
   //TODO: move BASE_URL to config file
 
-  //TODO: initialize departments from DB
-  // useEffect(() => {})
+  /**
+   * useEffect hook that initializes departments from the database when the component mounts.
+   */
+  useEffect(() => {
+    if (!initialized) {
+      initializeDepartmentsFromDB();
+    }
+  }, [initialized])
 
   async function initializeDepartmentsFromDB() {
     try {
