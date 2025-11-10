@@ -99,6 +99,7 @@ export function EmployeeProvider({children}) {
       setEmployees([...employees, response.data]);
     } catch (error) {
       console.error(`Error adding employee with name ${name} to DB:`, error);
+      throw error; // Rethrow error to inform caller
     }
   }
 
@@ -126,6 +127,7 @@ export function EmployeeProvider({children}) {
       employees,
       fetchAllEmployees,
       fetchEmployeeById,
+      addEmployee,
       deleteEmployeeById,
       initializeEmployeesFromDB,
       initialized
