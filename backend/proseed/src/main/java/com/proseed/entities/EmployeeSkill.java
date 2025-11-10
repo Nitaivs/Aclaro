@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Data
@@ -18,8 +18,8 @@ public class EmployeeSkill {
     @Column(nullable = false, length = 40)
     private String skillName;
 
-    @ManyToMany(mappedBy = "employeeSkills", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "employee_skills", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Employee> employees;
+    private Set<Employee> employees;
 }
