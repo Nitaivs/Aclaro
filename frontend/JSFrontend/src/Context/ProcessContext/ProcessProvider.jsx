@@ -3,7 +3,8 @@ import {ProcessContext} from "./ProcessContext.jsx";
 import axios from "axios";
 
 /**
- * ProcessProvider component that provides process-related state and functions to its children.
+ * @Component ProcessProvider
+ * @description Provides process-related state and functions to its children via ProcessContext.
  * @param children The child components that will have access to the process context.
  * @returns {JSX.Element} The ProcessProvider component.
  */
