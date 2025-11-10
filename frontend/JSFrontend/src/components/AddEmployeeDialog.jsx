@@ -10,16 +10,18 @@ import {useState, useEffect} from 'react';
  * @returns {JSX.Element} The AddEmployeeDialog component.
  */
 export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
-  const [nameInput, setNameInput] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
+  const [firstNameInput, setFirstNameInput] = useState("");
+  const [lastNameInput, setLastNameInput] = useState("");
+  // const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
+  //TODO: error currently does not distinguish between first and last name, fix later
   const [nameError, setNameError] = useState(false);
 
-  /**
-   * UseEffect hook to update the dialog open state when the isOpen prop changes.
-   */
-  useEffect(() => {
-    setIsDialogOpen(isOpen);
-  }, [isOpen]);
+  // /**
+  //  * UseEffect hook to update the dialog open state when the isOpen prop changes.
+  //  */
+  // useEffect(() => {
+  //   setIsDialogOpen(isOpen);
+  // }, [isOpen]);
 
   /**
    * @function handleOnSave
@@ -27,11 +29,11 @@ export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
    * Validates the input and calls the onSave callback if valid.
    */
   function handleOnSave() {
-    if (!nameInput) {
+    if (!firstNameInput || !lastNameInput) {
       setNameError(true);
       return;
     }
-    onSave(nameInput);
+    onSave(firstNameInput, lastNameInput);
     handleClose()
   }
 
@@ -41,32 +43,49 @@ export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
    * Resets the input fields and error state, then calls the onClose callback.
    */
   function handleClose() {
-    setNameInput("");
+    setFirstNameInput("");
+    setLastNameInput("");
     setNameError(false);
     onClose();
   }
 
   return (
-    <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+    <Dialog open={isOpen}>
       <DialogTitle>Add New Employee</DialogTitle>
       <div style={{padding: '0 24px 24px 24px'}}>
         <TextField
           autoFocus
           margin="dense"
-          label="Employee Name"
+          label="First Name"
           type="text"
           fullWidth
           variant="outlined"
           required={true}
           error={nameError}
-          helperText={nameError ? "Employee name is required" : ""}
-          value={nameInput}
-          onChange={(e) => setNameInput(e.target.value)}
+          helperText={nameError ? "First name is required" : ""}
+          value={firstNameInput}
+          onChange={(e) => setFirstNameInput(e.target.value)}
         />
+
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Last Name"
+          type="text"
+          fullWidth
+          variant="outlined"
+          required={true}
+          error={nameError}
+          helperText={nameError ? "Last name is required" : ""}
+          value={lastNameInput}
+          onChange={(e) => setLastNameInput(e.target.value)}
+        />
+
         <button onClick={() => handleOnSave()}>Add</button>
         <button onClick={() => {
           handleClose();
-        }}>Cancel
+        }}>
+          Cancel
         </button>
       </div>
     </Dialog>
