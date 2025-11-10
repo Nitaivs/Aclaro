@@ -59,7 +59,11 @@ export default function EmployeeListPage() {
             <Card
               style={{margin: '10px', padding: '10px'}}
             >
-              {employee.name}
+              <Link to={`/employees/${employee.id}`}>
+                <h3>
+                  {employee.name}
+                </h3>
+              </Link>
             </Card>
           </li>
         ))}
