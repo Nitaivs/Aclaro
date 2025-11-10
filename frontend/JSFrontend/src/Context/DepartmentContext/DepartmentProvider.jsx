@@ -32,8 +32,11 @@ export function EmployeeProvider({children}) {
   async function fetchAllDepartments() {
     try {
       console.log("Fetching all departments from DB");
-      const response = await axios.get(`${BASE_URL}departments`);
-      console.log(response);
+      // const response = await axios.get(`${BASE_URL}departments`);
+      // console.log(response);
+      //TODO: remove mock response once backend is ready
+      const response = {data: [{name: "HR", id: 1}, {name: "Engineering", id: 2}]}
+      console.log("Departments:", response.data)
       setDepartments(response.data);
     }
     catch (error) {
