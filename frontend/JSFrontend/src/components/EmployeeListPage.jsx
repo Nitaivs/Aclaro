@@ -98,7 +98,6 @@ export default function EmployeeListPage() {
             </ListItem>
           ) : (
             filtered.map((emp, idx) => (
-
               <div key={emp.id ?? idx}>
                 <Link to={`/employees/${emp.id}`}>
                   <ListItem alignItems="flex-start">
@@ -108,8 +107,8 @@ export default function EmployeeListPage() {
                     <ListItemText
                       primary={emp?.name}
                     />
-                    {idx < filtered.length - 1 && <Divider component="li"/>}
                   </ListItem>
+                  {idx < filtered.length - 1 && <Divider component="li"/>}
                 </Link>
               </div>
             ))
