@@ -1,4 +1,4 @@
-import {Route, Routes, BrowserRouter} from "react-router";
+import { Route, Routes, BrowserRouter } from "react-router";
 import Dashboard from "./Dashboard.jsx";
 import ProcessPage from "./ProcessPage.jsx";
 import TaskPage from "./TaskPage.jsx";
