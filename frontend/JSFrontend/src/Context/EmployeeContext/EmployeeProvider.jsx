@@ -113,9 +113,13 @@ export function EmployeeProvider({ children }) {
   async function addEmployee(name) {
     try {
       console.log(`Adding employee with name ${name} to DB`);
-      const response = await axios.post(`${BASE_URL}employees`, {name});
-      console.log(response);
-      setEmployees([...employees, response.data]);
+      // const response = await axios.post(`${BASE_URL}employees`, {name});
+      // console.log(response);
+      // setEmployees([...employees, response.data]);
+      //TODO: remove mock response once backend is ready
+      const mockResponse = { data: { name: name, id: Math.floor(Math.random() * 10000) } };
+      console.log(mockResponse);
+      setEmployees([...employees, mockResponse.data]);
     } catch (error) {
       console.error(`Error adding employee with name ${name} to DB:`, error);
       throw error; // Rethrow error to inform caller
