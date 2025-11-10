@@ -12,6 +12,7 @@ import java.util.Collection;
 public class Privilege {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "privilege_id", nullable = false, unique = true)
     @EqualsAndHashCode.Include
     @ToString.Include
     private Long privilegeId;

@@ -13,12 +13,13 @@ import java.util.Set;
 public class EmployeeSkill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "skill_id", nullable = false, unique = true)
     private Long skillId;
 
     @Column(nullable = false, length = 40)
     private String skillName;
 
-    @ManyToMany(mappedBy = "employee_skills", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "employeeSkills", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Employee> employees;

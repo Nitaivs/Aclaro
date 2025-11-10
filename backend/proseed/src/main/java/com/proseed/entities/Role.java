@@ -13,6 +13,7 @@ import lombok.ToString;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id", nullable = false, unique = true)
     private Long roleId;
 
     @Column(nullable = false, unique = true, length = 100)
@@ -23,9 +24,9 @@ public class Role {
     @JoinTable(
         name = "role_privileges",
         joinColumns = @JoinColumn(name = "role_id",
-                                referencedColumnName = "roleId"),
+                                referencedColumnName = "role_id"),
         inverseJoinColumns = @JoinColumn(name = "privilege_id",
-                                        referencedColumnName = "privilegeId")
+                                        referencedColumnName = "privilege_id")
     )
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
