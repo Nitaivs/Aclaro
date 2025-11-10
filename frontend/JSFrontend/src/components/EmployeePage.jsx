@@ -12,7 +12,7 @@ export default function EmployeePage() {
             <h1>Employee Page</h1>
             <Link to="/">
                 <button>
-                    Go to Dashboard
+                    Go back
                 </button>
             </Link>
             <EmployeeList />

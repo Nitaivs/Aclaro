@@ -1,4 +1,4 @@
-import {Route, Routes, BrowserRouter} from "react-router";
+import { Route, Routes, BrowserRouter } from "react-router";
 import Dashboard from "./Dashboard.jsx";
 import ProcessPage from "./ProcessPage.jsx";
 import TaskPage from "./TaskPage.jsx";
@@ -13,9 +13,10 @@ export default function Router() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Dashboard/>}/>
-                <Route path="/process/:processId" element={<ProcessPage/>}/>
-                <Route path="/process/:processId/task/:taskId" element={<TaskPage/>}/>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/process/:processId" element={<ProcessPage />} />
+                <Route path="/process/:processId/task/:taskId" element={<TaskPage />} />
+                <Route path="/employee" element={<EmployeePage />} />
             </Routes>
         </BrowserRouter>
     )
