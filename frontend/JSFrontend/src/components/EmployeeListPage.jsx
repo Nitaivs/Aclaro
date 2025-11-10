@@ -31,12 +31,20 @@ export default function EmployeeListPage() {
 
   // Filter employees based on the filterString
   const filtered = employees.filter(emp =>
-    (emp?.name || '').toLowerCase().includes(filterString.trim().toLowerCase())
+    (emp?.firstName || emp?.lastName || '').toLowerCase().includes(filterString.trim().toLowerCase())
   );
 
-  async function handleAddEmployee(name) {
+  /**
+   * @function handleAddEmployee
+   * @description Handles the addition of a new employee.
+   * Calls the addEmployee function from EmployeeContext and manages error handling.
+   * @param firstName - The first name of the new employee.
+   * @param lastName - The last name of the new employee.
+   * @returns {Promise<void>} A promise that resolves when the employee is added or an error occurs.
+   */
+  async function handleAddEmployee(firstName, lastName) {
     try {
-      await addEmployee(name)
+      await addEmployee(firstName, lastName);
     } catch (error) {
       console.error("Error adding employee:", error);
       setErrorMessage(error.message)
@@ -104,9 +112,9 @@ export default function EmployeeListPage() {
                     <ListItemAvatar>
                       <Avatar></Avatar>
                     </ListItemAvatar>
-                    <ListItemText
-                      primary={emp?.name}
-                    />
+                    <p>
+                      {emp.firstName} {emp.lastName}
+                    </p>
                   </ListItem>
                   {idx < filtered.length - 1 && <Divider component="li"/>}
                 </Link>
