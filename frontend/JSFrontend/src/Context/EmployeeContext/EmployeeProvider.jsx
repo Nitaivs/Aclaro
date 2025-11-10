@@ -48,7 +48,15 @@ export function EmployeeProvider({children}) {
     try {
       console.log("Fetching all employees from DB");
       //TODO: replace mock response once backend is ready
-      const response = {data: [{name: "John Doe", id: 1}, {name: "Jane Doe", id: 2}]}
+      const response = {
+        data: [
+          {
+            firstName: "John", lastName: "Doe", id: 1
+          },
+          {
+            firstName: "Jane", lastName: "Doe", id: 2
+          }]
+      }
       //TODO: update endpoint if needed
       // const response = await axios.get(`${BASE_URL}employees`);
       console.log("Employees:", response.data)
@@ -85,13 +93,12 @@ export function EmployeeProvider({children}) {
   }
 
   //TODO: implement adding departments to employees
-  function updateEmployee(id, updatedName) {
+  function updateEmployee(id, updatedFields) {
     //TODO: implement update request to backend when backend is ready
     setEmployees(employees.map(employee =>
-      employee.id === id ? {...employee, name: updatedName} : employee
+      employee.id === id ? {...employee, ...updatedFields} : employee
     ));
   }
-
 
   /**
    * @function deleteEmployeeById Deletes an employee by their ID from the database.
@@ -114,17 +121,19 @@ export function EmployeeProvider({children}) {
    * @function addEmployee
    * @description Adds a new employee to the database.
    * Sends a post request and updates the state to include the new employee.
-   * @param name - The name of the employee to add.
+   * @param firstName - The first name of the employee to add.
+   * @param lastName - The last name of the employee to add.
    * @returns {Promise<void>} A promise that resolves when the employee is added and state is updated.
    */
-  async function addEmployee(name) {
+  async function addEmployee(firstName, lastName) {
     try {
       console.log(`Adding employee with name ${name} to DB`);
       // const response = await axios.post(`${BASE_URL}employees`, {name});
       // console.log(response);
       // setEmployees([...employees, response.data]);
       //TODO: remove mock response once backend is ready
-      const mockResponse = {data: {name: name, id: Math.floor(Math.random() * 10000)}};
+      // const mockResponse = {data: {name: name, id: Math.floor(Math.random() * 10000)}};
+      const mockResponse = {data: {firstName: firstName, lastName: lastName, id: Math.floor(Math.random() * 10000)}};
       console.log(mockResponse);
       setEmployees([...employees, mockResponse.data]);
     } catch (error) {
