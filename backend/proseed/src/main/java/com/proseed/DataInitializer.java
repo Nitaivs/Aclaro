@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @Profile("dev") //this is only run in dev mode to fill some sample data
@@ -27,78 +28,76 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         // Privileges
-        Privilege privRead = new Privilege();
-        Privilege privWrite = new Privilege();
-        Privilege privDelete = new Privilege();
-        privilegeRepository.saveAll(List.of(privRead, privWrite, privDelete));
+    Privilege privRead = new Privilege();
+    Privilege privWrite = new Privilege();
+    Privilege privDelete = new Privilege();
+    privilegeRepository.saveAll(List.of(privRead, privWrite, privDelete));
 
         // Roles
-        Role adminRole = new Role();
-        adminRole.setRoleName("ADMIN");
-        adminRole.setPrivileges(new HashSet<>(List.of(privRead, privWrite, privDelete)));
-        Role userRole = new Role();
-        userRole.setRoleName("USER");
-        userRole.setPrivileges(new HashSet<>(List.of(privRead)));
-        Role managerRole = new Role();
-        managerRole.setRoleName("MANAGER");
-        managerRole.setPrivileges(new HashSet<>(List.of(privRead, privWrite)));
-        roleRepository.saveAll(List.of(adminRole, userRole, managerRole));
+    Role adminRole = new Role();
+    adminRole.setRoleName("ADMIN");
+    adminRole.setPrivileges(new HashSet<>(List.of(privRead, privWrite, privDelete)));
+    Role userRole = new Role();
+    userRole.setRoleName("USER");
+    userRole.setPrivileges(new HashSet<>(List.of(privRead)));
+    Role managerRole = new Role();
+    managerRole.setRoleName("MANAGER");
+    managerRole.setPrivileges(new HashSet<>(List.of(privRead, privWrite)));
+    roleRepository.saveAll(List.of(adminRole, userRole, managerRole));
 
         // Employee Skills
-        EmployeeSkill javaSkill = new EmployeeSkill();
-        javaSkill.setSkillName("Java");
-        EmployeeSkill springSkill = new EmployeeSkill();
-        springSkill.setSkillName("Spring Boot");
-        EmployeeSkill sqlSkill = new EmployeeSkill();
-        sqlSkill.setSkillName("SQL");
-        EmployeeSkill reactSkill = new EmployeeSkill();
-        reactSkill.setSkillName("React");
-        employeeSkillRepository.saveAll(List.of(javaSkill, springSkill, sqlSkill, reactSkill));
+    EmployeeSkill javaSkill = new EmployeeSkill();
+    javaSkill.setSkillName("Java");
+    EmployeeSkill springSkill = new EmployeeSkill();
+    springSkill.setSkillName("Spring Boot");
+    EmployeeSkill sqlSkill = new EmployeeSkill();
+    sqlSkill.setSkillName("SQL");
+    EmployeeSkill reactSkill = new EmployeeSkill();
+    reactSkill.setSkillName("React");
+    employeeSkillRepository.saveAll(List.of(javaSkill, springSkill, sqlSkill, reactSkill));
 
         // Employees & Profiles
-        Employee alice = new Employee();
-        //alice.setEmployeeId(1L);
-        alice.setFirstName("Alice");
-        alice.setLastName("Smith");
-        alice.setRole(adminRole);
-        alice.setEmployeeSkills(new HashSet<>(List.of(javaSkill, springSkill)));
-        EmployeeProfile aliceProfile = new EmployeeProfile();
-        aliceProfile.setDescription("Sample text one");
-        aliceProfile.setEmployee(alice);
-        alice.setProfile(aliceProfile);
+    Employee alice = new Employee();
+    alice.setFirstName("Alice");
+    alice.setLastName("Smith");
+    alice.setRole(adminRole);
+    alice.setEmployeeSkills(new HashSet<>(List.of(javaSkill, springSkill)));
+    EmployeeProfile aliceProfile = new EmployeeProfile();
+    aliceProfile.setDescription("Sample text one");
+    aliceProfile.setEmployee(alice);
+    alice.setProfile(aliceProfile);
 
-        Employee bob = new Employee();
-        //bob.setEmployeeId(2L);
-        bob.setFirstName("Bob");
-        bob.setLastName("Jones");
-        bob.setRole(userRole);
-        bob.setEmployeeSkills(new HashSet<>(List.of(sqlSkill)));
-        EmployeeProfile bobProfile = new EmployeeProfile();
-        bobProfile.setDescription("Sample text two");
-        bobProfile.setEmployee(bob);
-        bob.setProfile(bobProfile);
+    Employee bob = new Employee();
+    bob.setFirstName("Bob");
+    bob.setLastName("Jones");
+    bob.setRole(userRole);
+    bob.setEmployeeSkills(new HashSet<>(List.of(sqlSkill)));
+    EmployeeProfile bobProfile = new EmployeeProfile();
+    bobProfile.setDescription("Sample text two");
+    bobProfile.setEmployee(bob);
+    bob.setProfile(bobProfile);
 
-        Employee carol = new Employee();
-        //carol.setEmployeeId(3L);
-        carol.setFirstName("Carol");
-        carol.setLastName("Taylor");
-        carol.setRole(managerRole);
-        carol.setEmployeeSkills(new HashSet<>(List.of(javaSkill, reactSkill)));
-        EmployeeProfile carolProfile = new EmployeeProfile();
-        carolProfile.setDescription("Sample text three");
-        carolProfile.setEmployee(carol);
-        carol.setProfile(carolProfile);
+    Employee carol = new Employee();
+    carol.setFirstName("Carol");
+    carol.setLastName("Taylor");
+    carol.setRole(managerRole);
+    carol.setEmployeeSkills(new HashSet<>(List.of(javaSkill, reactSkill)));
+    EmployeeProfile carolProfile = new EmployeeProfile();
+    carolProfile.setDescription("Sample text three");
+    carolProfile.setEmployee(carol);
+    carol.setProfile(carolProfile);
 
-        employeeRepository.saveAll(List.of(alice, bob, carol));
+    // persist employees (profiles cascade)
+    employeeRepository.saveAll(List.of(alice, bob, carol));
 
         // Processes
-        com.proseed.entities.ProcessEntity process1 = new com.proseed.entities.ProcessEntity();
-        process1.setProcessName("Backend Development");
-        process1.setProcessDescription("Sample description abc123");
-        com.proseed.entities.ProcessEntity process2 = new com.proseed.entities.ProcessEntity();
-        process2.setProcessName("Frontend Development");
-        process2.setProcessDescription("Sample description xyz789");
-        processRepository.saveAll(List.of(process1, process2));
+    ProcessEntity process1 = new ProcessEntity();
+    process1.setProcessName("Backend Development");
+    process1.setProcessDescription("Sample description abc123");
+    ProcessEntity process2 = new ProcessEntity();
+    process2.setProcessName("Frontend Development");
+    process2.setProcessDescription("Sample description xyz789");
+    processRepository.saveAll(List.of(process1, process2));
 
         // Tasks
         Task task1 = new Task();
