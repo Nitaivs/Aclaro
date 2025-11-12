@@ -202,6 +202,16 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
   - Description: Update an existing employee.
   - Success: 200 OK (updated Employee) or 404 Not Found
 
+- PATCH /api/employees/{id}
+  - Description: Partially update an existing employee. Only provided fields (e.g. `firstName`, `lastName`) are changed.
+  - Success: 200 OK (updated EmployeeDTO) or 404 Not Found
+  - Example:
+    ```bash
+    curl -X PATCH "http://localhost:8080/api/employees/1" \
+      -H "Content-Type: application/json" \
+      -d '{"lastName":"Smith-Updated"}'
+    ```
+
 - DELETE /api/employees/{id}
   - Success: 204 No Content or 404 Not Found
 
@@ -269,6 +279,15 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 - DELETE /api/tasks/{id}
   - Success: 204 No Content
   - Not found: 404 Not Found
+
+- DELETE /api/tasks/{taskId}/employees/{employeeId}
+  - Description: Remove a single employee assignment from a task. Idempotent; returns 204 even if the employee was not assigned.
+  - Success: 204 No Content
+  - Not found task: 404 Not Found (if the task id does not exist). Employee id not found: 404.
+  - Example:
+    ```bash
+    curl -X DELETE "http://localhost:8080/api/tasks/1/employees/3" -w "\nHTTP %{http_code}\n"
+    ```
 
 ---
 
