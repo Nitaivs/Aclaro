@@ -97,55 +97,178 @@ delete history from the database for a quick fix
 
 ## Base URL
 
+All endpoints are mounted under the /api prefix when running locally (default):
+
 http://localhost:8080/api
 
-(Ensure the app is running via `.\gradlew.bat bootRun`.)
+Make sure the backend is running (from `backend/proseed`):
+
+```bash
+./gradlew bootRun
+```
 
 ---
 
-## Endpoints
+## Endpoints (detailed)
+
+Notes:
+- All endpoints return JSON when successful and set appropriate HTTP status codes.
+- Common error responses used by the API:
+  - 400 Bad Request — validation failure or missing/invalid query parameters (for example missing processId when creating a task).
+  - 404 Not Found — resource with the requested id doesn't exist.
+  - 409 Conflict — attempted operation violates constraints (rare; e.g., delete when referenced).
+  - 500 Internal Server Error — unexpected server-side error.
+
+When testing from a browser-hosted page on a different port/origin, ensure CORS is enabled (controllers are annotated with `@CrossOrigin`).
 
 ### Processes
 
-- GET /processes
-  - Returns: List<ProcessDTO> (200 OK) or Empty list when none found.
-- GET /processes/{id}
-  - Returns: single ProcessDTO with task IDs (200 OK). 404 if not found.
-- GET /processes/{id}/tasks
-  - Returns: single ProcessWithTaskInfoDTO with all associated task information.
-    404 if not found.
-- POST /processes
-  - Creates a process. Body: ProcessEntity JSON. (processName - not nullable,
-    processDescription - nullable)
-- PUT /processes/{id}
-  - Updates a process. Body: ProcessEntity JSON. Response: 200 OK (updated DTO) or 404.
-- DELETE processes/{id}
-  - Deletes a process. Response: 204 No Content / 404 Not Found.
+- GET /api/processes
+  - Description: Return all processes as an array of ProcessDTO.
+  - Success: 200 OK, body: [ProcessDTO,...]
+  - Example ProcessDTO:
+    ```json
+    {
+      "processId": 1,
+      "processName": "Backend Development",
+      "processDescription": "...",
+      "taskIds": [1,2,3]
+    }
+    ```
+
+- GET /api/processes/{id}
+  - Description: Return a single process (top-level fields + list of task IDs).
+  - Success: 200 OK, body: ProcessDTO
+  - Not found: 404 Not Found
+
+- GET /api/processes/{id}/tasks
+  - Description: Return a ProcessWithTaskInfoDTO containing the process and full task DTOs (including nested subtasks).
+  - Success: 200 OK, body: ProcessWithTaskInfoDTO
+  - Not found: 404 Not Found
+  - Example ProcessWithTaskInfoDTO (truncated):
+    ```json
+    {
+      "processId": 1,
+      "processName": "Backend Development",
+      "processDescription": "...",
+      "tasks": [
+        { "taskId": 1, "taskName": "Design API", "employeeIds": [1,3], "subTasks": [] }
+      ]
+    }
+    ```
+
+- POST /api/processes
+  - Description: Create a new process.
+  - Request body: ProcessEntity JSON. Required fields: `processName`.
+  - Success: 201 Created, body: created ProcessEntity (JSON) with assigned `processId`.
+  - Example request body:
+    ```json
+    { "processName": "New Process", "processDescription": "Optional description" }
+    ```
+  - Errors: 400 Bad Request when required fields are missing.
+
+- PUT /api/processes/{id}
+  - Description: Update an existing process.
+  - Request body: ProcessEntity JSON.
+  - Success: 200 OK, body: updated ProcessDTO
+  - Not found: 404 Not Found
+
+- DELETE /api/processes/{id}
+  - Description: Delete a process.
+  - Success: 204 No Content
+  - Not found: 404 Not Found
 
 ### Employees
 
-- GET /employees
-  - Returns: List<`EmployeeDTO`] (200 OK).
-- GET /employees/{id}
-  - Returns: single `EmployeeDTO` (200 OK) or 404 Not Found.
-- POST /employees
-  - Creates an Employee. Body: Employee JSON.
-- PUT /employees/{id}
-  - Updates an existing Employee. Body: Employee JSON. Returns: updated Employee (200 OK) or 404 if not found.
-- DELETE /employees/{id}
-  - Deletes an Employee. Response: 204 No Content / 404 Not Found.
+- GET /api/employees
+  - Description: Return all employees as EmployeeDTOs.
+  - Success: 200 OK
+  - Example EmployeeDTO:
+    ```json
+    { "employeeId": 1, "firstName": "Alice", "lastName": "Smith", "departmentId": 1, "roleName": "ADMIN", "skills": ["Java"] }
+    ```
+
+- GET /api/employees/{id}
+  - Success: 200 OK, body: EmployeeDTO
+  - Not found: 404 Not Found
+
+- POST /api/employees
+  - Description: Create a new employee.
+  - Request body: Employee JSON (fields used by the entity/service).
+  - Success: 201 Created, body: created Employee JSON (includes `employeeId`).
+  - Errors: 400 Bad Request for invalid payload.
+
+- PUT /api/employees/{id}
+  - Description: Update an existing employee.
+  - Success: 200 OK (updated Employee) or 404 Not Found
+
+- DELETE /api/employees/{id}
+  - Success: 204 No Content or 404 Not Found
 
 ### Tasks
 
-- GET /tasks
-  - Returns: List<Task> (200 OK).
-- GET /tasks/{id}
-  - Returns: single Task entity (200 OK) or 404 Not Found.
-- GET /tasks/{id}/employees
-  - Returns: `TaskWithEmployeesDTO` containing task id and list of assigned employees as `EmployeeDTO`s (200 OK) or 404 if task not found.
-- POST /tasks?processId={processId}
-  - Creates a Task and associates it to an existing process. Body: Task JSON (taskName required). Returns: created Task (201 Created). If processId missing or unknown returns 400 Bad Request.
-- PUT /tasks/{id}
-  - Updates a Task. Body: Task JSON (taskName, taskDescription, completed). Returns: updated Task (200 OK) or 404 if not found.
-- DELETE /tasks/{id}
-  - Deletes a Task. Response: 204 No Content / 404 Not Found.
+- GET /api/tasks
+  - Description: Return all tasks as TaskDTOs.
+  - Success: 200 OK
+  - Example TaskDTO:
+    ```json
+    { "taskId": 1, "taskName": "Design API", "taskDescription": "...", "completed": false, "employeeIds": [1,3], "subTasks": [] }
+    ```
+
+- GET /api/tasks/{id}
+  - Success: 200 OK, body: TaskDTO
+  - Not found: 404 Not Found
+
+- GET /api/tasks/{id}/employees
+  - Description: Return TaskWithEmployeesDTO (task + list of EmployeeDTOs for assigned employees).
+  - Success: 200 OK
+  - Not found: 404 Not Found
+
+- POST /api/tasks?processId={processId}
+  - Description: Create a new task and attach it to an existing process.
+  - Query param: `processId` (required) — ID of the process to attach to.
+  - Request body: TaskDTO JSON.
+  - Success: 201 Created, body: created TaskDTO (includes `taskId`).
+  - Errors: 400 Bad Request when `processId` is missing or invalid; 400 for invalid body.
+
+- PUT /api/tasks/{id}
+  - Description: Update a task (including assigning employees and nested subtasks).
+  - Request body: TaskDTO JSON.
+  - Success: 200 OK, body: updated TaskDTO
+  - Not found: 404 Not Found
+
+  - Example: set an existing task (id=5) as a subtask of task id=2
+
+    Request (PUT /api/tasks/2) body (TaskDTO JSON):
+
+    ```json
+    {
+      "taskId": 2,
+      "taskName": "Parent Task",
+      "taskDescription": "Parent task description",
+      "completed": false,
+      "employeeIds": [1],
+      "subTasks": [
+        {
+          "taskId": 5
+        }
+      ]
+    }
+    ```
+
+    curl example:
+
+    ```bash
+    curl -v -X PUT "http://localhost:8080/api/tasks/2" \
+      -H "Content-Type: application/json" \
+      -d '{"taskId":2,"taskName":"Parent Task","taskDescription":"Parent task description","completed":false,"employeeIds":[1],"subTasks":[{"taskId":5}]}'
+    ```
+
+    Notes: the `subTasks` array accepts TaskDTOs; to attach an existing task as a subtask include its `taskId` (other fields may be omitted). The server will map the DTOs to entities and preserve the nesting. If the referenced subtask id doesn't exist the request may fail with 400/404
+
+- DELETE /api/tasks/{id}
+  - Success: 204 No Content
+  - Not found: 404 Not Found
+
+---
+
