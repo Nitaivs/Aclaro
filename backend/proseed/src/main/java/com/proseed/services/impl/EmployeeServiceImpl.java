@@ -51,6 +51,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
+    public Optional<EmployeeDTO> updatePartial(Long id, EmployeeDTO patch) {
+        return repository.findById(id).map(existing -> {
+            if (patch.getFirstName() != null) existing.setFirstName(patch.getFirstName());
+            if (patch.getLastName() != null) existing.setLastName(patch.getLastName());
+            Employee saved = repository.save(existing);
+            return EmployeeMapper.toEmployeeDTO(saved);
+        });
+    }
+
+    @Override
+    @Transactional
     public boolean delete(Long id) {
         return repository.findById(id).map(e -> { repository.delete(e); return true; }).orElse(false);
     }
