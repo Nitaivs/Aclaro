@@ -5,6 +5,7 @@ import com.proseed.entities.Task;
 import com.proseed.repos.ProcessRepository;
 import com.proseed.repos.TaskRepository;
 import com.proseed.repos.EmployeeRepository;
+import com.proseed.entities.Employee;
 import com.proseed.DTOs.TaskDTO;
 import com.proseed.services.TaskService;
 import com.proseed.DTOs.Mappers.TaskMapper;
@@ -19,10 +20,12 @@ import java.util.Optional;
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final ProcessRepository processRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository, ProcessRepository processRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, ProcessRepository processRepository, EmployeeRepository employeeRepository) {
         this.taskRepository = taskRepository;
         this.processRepository = processRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
@@ -114,5 +117,17 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findById(id)
             .map(TaskMapper::toTaskWithEmployeesDTO)
             .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
+    }
+
+    @Override
+    @Transactional
+    public void removeEmployeeFromTask(Long taskId, Long employeeId) {
+        Task task = taskRepository.findById(taskId)
+            .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + taskId));
+        Employee employee = employeeRepository.findById(employeeId)
+            .orElseThrow(() -> new IllegalArgumentException("Employee not found with id: " + employeeId));
+        if (task.getEmployees() != null && task.getEmployees().remove(employee)) {
+            taskRepository.save(task);
+        }
     }
 }

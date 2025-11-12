@@ -12,4 +12,9 @@ public interface TaskService {
     Optional<Task> update(Long id, Task task);
     boolean delete(Long id);
     TaskWithEmployeesDTO getTaskWithEmployees(Long id);
+    /**
+     * Remove a single employee assignment from a task. Idempotent.
+     * Should update the join table only; does not delete any Employee.
+     */
+    void removeEmployeeFromTask(Long taskId, Long employeeId);
 }

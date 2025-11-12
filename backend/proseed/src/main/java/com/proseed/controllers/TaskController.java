@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 
@@ -135,6 +136,18 @@ public class TaskController {
         return taskService.delete(id)
             ? ResponseEntity.noContent().build()
             : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    /**
+     * Remove a single employee from a task's assignees. Idempotent.
+     * @param taskId Task ID
+     * @param employeeId Employee ID to remove from the task
+     * @return 204 No Content regardless of whether the employee was assigned
+     */
+    @DeleteMapping("/{taskId}/employees/{employeeId}")
+    public ResponseEntity<Void> removeEmployeeFromTask(@PathVariable Long taskId, @PathVariable Long employeeId) {
+        taskService.removeEmployeeFromTask(taskId, employeeId);
+        return ResponseEntity.noContent().build();
     }
 
     /**
