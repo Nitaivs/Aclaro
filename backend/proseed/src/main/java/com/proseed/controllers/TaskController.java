@@ -117,13 +117,18 @@ public class TaskController {
      * @return Updated TaskDTO if found, 404 otherwise
      */
     public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody TaskDTO updatedTaskDto) {
-        Task updatedTask = TaskMapper.fromTaskDTO(updatedTaskDto);
-        // Recursively assign employees to this task and all subtasks
-        assignEmployeesRecursively(updatedTask, updatedTaskDto);
-        return taskService.update(id, updatedTask)
-            .map(TaskMapper::toTaskDTO)
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        try {
+            Task updatedTask = TaskMapper.fromTaskDTO(updatedTaskDto);
+            // Recursively assign employees to this task and all subtasks
+            assignEmployeesRecursively(updatedTask, updatedTaskDto);
+            return taskService.update(id, updatedTask)
+                .map(TaskMapper::toTaskDTO)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        } catch (IllegalArgumentException ex) {
+            // Use 400 Bad Request for validation errors like circular relationships or missing subtasks
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @DeleteMapping("/{id}")

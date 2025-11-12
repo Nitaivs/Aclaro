@@ -42,6 +42,8 @@ public class TaskServiceImpl implements TaskService {
         ProcessEntity process = processRepository.findById(processId)
             .orElseThrow(() -> new IllegalArgumentException("Process not found with id: " + processId));
         task.setProcess(process);
+        // Validate there are no circular references within the provided subtree
+        validateNoCycles(task);
         // prepare and link any provided subtasks (set parent and process)
         if (task.getSubTasks() != null) {
             task.getSubTasks().forEach(sub -> prepareSubTasks(task, sub, process));
@@ -65,6 +67,12 @@ public class TaskServiceImpl implements TaskService {
                     if (incoming.getTaskId() != null) {
                         Task managed = taskRepository.findById(incoming.getTaskId())
                             .orElseThrow(() -> new IllegalArgumentException("Subtask not found: " + incoming.getTaskId()));
+                        // Prevent circular relationships: you cannot make an ancestor a child of its descendant
+                        if (isAncestorOf(managed, existing) || managed.getTaskId().equals(existing.getTaskId())) {
+                            throw new IllegalArgumentException(
+                                "Circular subtask relationship detected: task " + managed.getTaskId() +
+                                " cannot be a child of its descendant " + existing.getTaskId());
+                        }
                         // reparent the managed entity
                         managed.setParentTask(existing);
                         managed.setProcess(existing.getProcess());
@@ -103,6 +111,52 @@ public class TaskServiceImpl implements TaskService {
         if (current.getSubTasks() != null) {
             current.getSubTasks().forEach(child -> prepareSubTasks(current, child, process));
         }
+    }
+
+    /**
+     * Returns true if candidateAncestor is an ancestor (direct or indirect parent) of node.
+     */
+    private boolean isAncestorOf(Task candidateAncestor, Task node) {
+        Task cursor = node.getParentTask();
+        while (cursor != null) {
+            if (cursor.getTaskId() != null && candidateAncestor.getTaskId() != null
+                && cursor.getTaskId().equals(candidateAncestor.getTaskId())) {
+                return true;
+            }
+            cursor = cursor.getParentTask();
+        }
+        return false;
+    }
+
+    /**
+     * Validate that there are no cycles within the provided task tree (DTO->entity graph) before persisting.
+     * Uses taskId when present; otherwise falls back to object identity to detect self-reference.
+     */
+    private void validateNoCycles(Task root) {
+        java.util.Set<Long> idPath = new java.util.HashSet<>();
+        java.util.Set<Task> objPath = new java.util.HashSet<>();
+        validateNoCyclesDfs(root, idPath, objPath);
+    }
+
+    private void validateNoCyclesDfs(Task node, java.util.Set<Long> idPath, java.util.Set<Task> objPath) {
+        Long id = node.getTaskId();
+        if (id != null) {
+            if (!idPath.add(id)) {
+                throw new IllegalArgumentException("Circular subtask relationship detected in creation payload involving task id: " + id);
+            }
+        } else {
+            if (!objPath.add(node)) {
+                throw new IllegalArgumentException("Circular subtask relationship detected in creation payload (self-reference)");
+            }
+        }
+
+        if (node.getSubTasks() != null) {
+            for (Task child : node.getSubTasks()) {
+                validateNoCyclesDfs(child, idPath, objPath);
+            }
+        }
+
+        if (id != null) idPath.remove(id); else objPath.remove(node);
     }
 
     @Override
