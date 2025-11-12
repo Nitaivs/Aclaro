@@ -30,6 +30,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @return List of ProcessDTOs.
      */
     @Override
+    @Transactional(readOnly = true)
     public List<ProcessDTO> findAll() {
         return repository.findAll()
             .stream()
@@ -72,6 +73,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @throws ResponseStatusException if the process is not found.
      */
     @Override
+    @Transactional(readOnly = true)
     public ProcessDTO getProcessWithTaskIds(Long id) {
         return repository.findById(id)
             .map(ProcessMapper::toDTO)
@@ -81,6 +83,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProcessWithTaskInfoDTO getProcessWithTaskInfo(Long id) {
         return repository.findById(id)
             .map(ProcessMapper::toProcessWithTaskInfoDTO)

@@ -24,9 +24,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Task> findAll() { return taskRepository.findAll(); }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Task> findById(Long id) { return taskRepository.findById(id); }
 
     @Override
@@ -35,6 +37,10 @@ public class TaskServiceImpl implements TaskService {
         ProcessEntity process = processRepository.findById(processId)
             .orElseThrow(() -> new IllegalArgumentException("Process not found with id: " + processId));
         task.setProcess(process);
+        // prepare and link any provided subtasks (set parent and process)
+        if (task.getSubTasks() != null) {
+            task.getSubTasks().forEach(sub -> prepareSubTasks(task, sub, process));
+        }
         return taskRepository.save(task);
     }
 
@@ -45,8 +51,25 @@ public class TaskServiceImpl implements TaskService {
             existing.setTaskName(task.getTaskName());
             existing.setTaskDescription(task.getTaskDescription());
             existing.setCompleted(task.isCompleted());
+            // if client provided subtasks, replace/manage them
+            if (task.getSubTasks() != null) {
+                // prepare each incoming subtask
+                task.getSubTasks().forEach(sub -> prepareSubTasks(existing, sub, existing.getProcess()));
+                existing.setSubTasks(task.getSubTasks());
+            }
             return taskRepository.save(existing);
         });
+    }
+
+    /**
+     * Recursively set parent and process for subtasks and their children.
+     */
+    private void prepareSubTasks(Task parent, Task current, ProcessEntity process) {
+        current.setParentTask(parent);
+        current.setProcess(process);
+        if (current.getSubTasks() != null) {
+            current.getSubTasks().forEach(child -> prepareSubTasks(current, child, process));
+        }
     }
 
     @Override
@@ -56,6 +79,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TaskWithEmployeesDTO getTaskWithEmployees(Long id) {
         return taskRepository.findById(id)
             .map(TaskMapper::toTaskWithEmployeesDTO)
