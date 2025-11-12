@@ -10,8 +10,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskWithEmployeesDTO {
+public class TaskDTO {
     private Long taskId;
-    private List<EmployeeDTO> assignedEmployees;
-    private List<TaskWithEmployeesDTO> subTasks;
+    private String taskName;
+    private String taskDescription;
+    private Boolean completed;
+    private List<Long> employeeIds;
+    private List<TaskDTO> subTasks;
 }

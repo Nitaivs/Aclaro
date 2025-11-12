@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
 
-import com.proseed.entities.Task;
+import com.proseed.DTOs.TaskDTO;
 
 @Getter
 @Setter
@@ -14,5 +14,5 @@ import com.proseed.entities.Task;
 @AllArgsConstructor
 public class ProcessWithTaskInfoDTO {
     private Long processId;
-    private List<Task> tasks;
+    private List<TaskDTO> tasks;
 }
