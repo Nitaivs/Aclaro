@@ -54,6 +54,10 @@ public class TaskMapper {
 
     public static Task fromTaskDTO(TaskDTO dto) {
         Task t = new Task();
+        // preserve id when provided so service can resolve existing entities
+        if (dto.getTaskId() != null) {
+            t.setTaskId(dto.getTaskId());
+        }
         t.setTaskName(dto.getTaskName());
         t.setTaskDescription(dto.getTaskDescription());
         t.setCompleted(dto.getCompleted() != null ? dto.getCompleted() : false);

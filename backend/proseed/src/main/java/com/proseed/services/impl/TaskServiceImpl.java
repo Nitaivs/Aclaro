@@ -4,6 +4,8 @@ import com.proseed.entities.ProcessEntity;
 import com.proseed.entities.Task;
 import com.proseed.repos.ProcessRepository;
 import com.proseed.repos.TaskRepository;
+import com.proseed.repos.EmployeeRepository;
+import com.proseed.DTOs.TaskDTO;
 import com.proseed.services.TaskService;
 import com.proseed.DTOs.Mappers.TaskMapper;
 import com.proseed.DTOs.TaskWithEmployeesDTO;
@@ -47,16 +49,44 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Optional<Task> update(Long id, Task task) {
+        // Resolve and reparent subtasks safely to avoid orphanRemoval accidental deletes.
         return taskRepository.findById(id).map(existing -> {
             existing.setTaskName(task.getTaskName());
             existing.setTaskDescription(task.getTaskDescription());
             existing.setCompleted(task.isCompleted());
-            // if client provided subtasks, replace/manage them
+
             if (task.getSubTasks() != null) {
-                // prepare each incoming subtask
-                task.getSubTasks().forEach(sub -> prepareSubTasks(existing, sub, existing.getProcess()));
-                existing.setSubTasks(task.getSubTasks());
+                // Build a resolved set of subtasks: existing managed entities for ids, or new ones for creations
+                java.util.Set<Task> resolved = new java.util.LinkedHashSet<>();
+                for (Task incoming : task.getSubTasks()) {
+                    if (incoming.getTaskId() != null) {
+                        Task managed = taskRepository.findById(incoming.getTaskId())
+                            .orElseThrow(() -> new IllegalArgumentException("Subtask not found: " + incoming.getTaskId()));
+                        // reparent the managed entity
+                        managed.setParentTask(existing);
+                        managed.setProcess(existing.getProcess());
+                        // recursively ensure children of managed (if dto provided) are prepared - leave as is if not provided
+                        if (incoming.getSubTasks() != null) {
+                            // map any provided nested DTOs onto managed's children recursively by calling prepareSubTasks
+                            incoming.getSubTasks().forEach(child -> prepareSubTasks(managed, child, existing.getProcess()));
+                        }
+                        resolved.add(managed);
+                    } else {
+                        // new subtask: set parent/process recursively
+                        prepareSubTasks(existing, incoming, existing.getProcess());
+                        resolved.add(incoming);
+                    }
+                }
+
+                // Ensure existing subtasks collection is initialized before replacing
+                if (existing.getSubTasks() == null) {
+                    existing.setSubTasks(new java.util.LinkedHashSet<>());
+                }
+                // Replace existing's subtasks with resolved set
+                existing.getSubTasks().clear();
+                existing.getSubTasks().addAll(resolved);
             }
+
             return taskRepository.save(existing);
         });
     }
