@@ -22,6 +22,20 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
+/**
+ * REST controller for managing Task entities and their relationships.
+ * Provides endpoints for CRUD operations, employee assignment, and subtask management.
+ *
+ * Endpoints:
+ *   GET    /api/tasks                - List all tasks
+ *   GET    /api/tasks/{id}           - Get task by ID
+ *   GET    /api/tasks/{id}/employees - Get task with assigned employees
+ *   POST   /api/tasks?processId=...  - Create a new task under a process
+ *   PUT    /api/tasks/{id}           - Update a task (including subtasks and employees)
+ *   DELETE /api/tasks/{id}           - Delete a task
+ *
+ * Subtask and employee assignment is handled recursively for nested tasks.
+ */
 @CrossOrigin
 @RestController
 @RequestMapping("/api/tasks")
@@ -35,6 +49,10 @@ public class TaskController {
     }
 
     @GetMapping
+    /**
+     * Get all tasks in the system.
+     * @return List of TaskDTOs (may be nested if subtasks exist)
+     */
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
         List<Task> tasks = taskService.findAll();
         List<TaskDTO> dtos = tasks.stream().map(TaskMapper::toTaskDTO).toList();
@@ -42,14 +60,24 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
+    /**
+     * Get a single task by its ID.
+     * @param id Task ID
+     * @return TaskDTO if found, 404 otherwise
+     */
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
-    return taskService.findById(id)
+        return taskService.findById(id)
             .map(TaskMapper::toTaskDTO)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/{id}/employees")
+    /**
+     * Get a task and its assigned employees by ID.
+     * @param id Task ID
+     * @return TaskWithEmployeesDTO if found, 404 otherwise
+     */
     public ResponseEntity<?> getTaskWithEmployees(@PathVariable Long id) {
         try {
             TaskWithEmployeesDTO dto = taskService.getTaskWithEmployees(id);
@@ -60,10 +88,17 @@ public class TaskController {
     }
 
     @PostMapping
+    /**
+     * Create a new task under a given process.
+     * Accepts a TaskDTO with optional subtasks and employee IDs.
+     * @param taskDto Task data (may include subtasks and employeeIds)
+     * @param processId ID of the process to attach the task to
+     * @return Created TaskDTO, or 400 if invalid
+     */
     public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDto, @RequestParam Long processId) {
         try {
             Task task = TaskMapper.fromTaskDTO(taskDto);
-            // map employee ids to entities recursively
+            // Recursively assign employees to this task and all subtasks
             assignEmployeesRecursively(task, taskDto);
             Task saved = taskService.create(processId, task);
             return ResponseEntity.status(HttpStatus.CREATED).body(TaskMapper.toTaskDTO(saved));
@@ -73,8 +108,16 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
+    /**
+     * Update an existing task, including its subtasks and assigned employees.
+     * Accepts a TaskDTO with updated fields and relationships.
+     * @param id Task ID to update
+     * @param updatedTaskDto Updated task data
+     * @return Updated TaskDTO if found, 404 otherwise
+     */
     public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody TaskDTO updatedTaskDto) {
         Task updatedTask = TaskMapper.fromTaskDTO(updatedTaskDto);
+        // Recursively assign employees to this task and all subtasks
         assignEmployeesRecursively(updatedTask, updatedTaskDto);
         return taskService.update(id, updatedTask)
             .map(TaskMapper::toTaskDTO)
@@ -83,20 +126,34 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    /**
+     * Delete a task by its ID.
+     * @param id Task ID
+     * @return 204 No Content if deleted, 404 if not found
+     */
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         return taskService.delete(id)
             ? ResponseEntity.noContent().build()
             : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    /**
+     * Recursively assigns employees to a Task and its subtasks based on the DTO's employeeIds.
+     * This ensures that nested subtasks receive their correct employee assignments.
+     *
+     * @param task The Task entity to assign employees to
+     * @param dto  The corresponding TaskDTO containing employeeIds and subTasks
+     */
     private void assignEmployeesRecursively(Task task, TaskDTO dto) {
+        // Assign employees to this task if employeeIds are provided
         if (dto.getEmployeeIds() != null && !dto.getEmployeeIds().isEmpty()) {
             List<Employee> employees = employeeRepository.findAllById(dto.getEmployeeIds());
             task.setEmployees(new java.util.HashSet<>(employees));
         }
+        // Recursively assign employees to subtasks
         if (dto.getSubTasks() != null && task.getSubTasks() != null) {
-            // match by order/position: map each dto subtask to corresponding Task entity in set
-            // since Task.subTasks is a Set, we will rely on sizes and iterate in insertion order by converting to list
+            // Match by order/position: map each DTO subtask to corresponding Task entity in set
+            // Since Task.subTasks is a Set, rely on sizes and iterate in insertion order by converting to list
             List<Task> subEntities = task.getSubTasks().stream().toList();
             for (int i = 0; i < Math.min(subEntities.size(), dto.getSubTasks().size()); i++) {
                 assignEmployeesRecursively(subEntities.get(i), dto.getSubTasks().get(i));
