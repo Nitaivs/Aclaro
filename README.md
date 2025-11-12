@@ -291,3 +291,64 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 
 ---
 
+### Task hierarchy & cycle prevention
+
+To keep the task hierarchy a proper tree, the backend actively rejects any attempt (POST or PUT) that would introduce a cycle.
+
+What is a cycle?
+
+- A task listed as a subtask of itself directly.
+- A task becoming (directly or indirectly) a child of one of its own descendants (e.g. A -> B and then updating B to have A as a subtask).
+- Repeated occurrence of the same existing task id within a single submitted subtree chain.
+
+Validation points:
+
+- On create (POST /api/tasks?processId=...) the entire submitted subtree is walked before persisting; if a cycle or duplicate reference is detected the request fails with 400.
+- On update (PUT /api/tasks/{id}) each referenced existing subtask is checked to ensure it is not an ancestor of the task being updated and not the task itself.
+
+Example invalid create payload (self-reference through nested subTasks):
+```json
+{
+  "taskName": "A",
+  "completed": false,
+  "subTasks": [
+    {
+      "taskId": 10,
+      "subTasks": [ { "taskId": 10 } ]
+    }
+  ]
+}
+```
+
+Example invalid update attempting to make parent its own descendant:
+```json
+// Existing: A(taskId=2) already has subtask B(taskId=5)
+// Request tries to set A as a subtask of B
+PUT /api/tasks/5
+{
+  "taskId": 5,
+  "taskName": "B",
+  "subTasks": [ { "taskId": 2 } ]
+}
+```
+
+Error response shape (simplified):
+```json
+{
+  "timestamp": "2025-11-12T21:40:00Z",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Circular subtask relationship detected: task 2 cannot be a child of its descendant 5",
+  "path": "/api/tasks/5"
+}
+```
+
+If you receive a 400 with a circular message, adjust the hierarchy so that each task appears only once in any parent chain and never points back upward.
+
+Happy path reparenting strategy:
+1. Retrieve current tree (GET /api/processes/{id}/tasks or GET /api/tasks/{id}).
+2. Decide new parent for existing task(s).
+3. Issue PUT on the new parent including minimal subTasks array with the taskId(s) you want to attach.
+4. Verify with GET that the subtree updated as expected.
+
+
