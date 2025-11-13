@@ -23,7 +23,8 @@ ENV PATH="${PATH}:/opt/gradle/gradle-${GRADLE_VERSION}/bin"
 
 COPY --from=frontend-builder /app/frontend/JSFrontend/dist ./src/main/resources/static
 
-
+RUN mkdir -p /root/.gradle && chmod -R 777 /root/.gradle
+RUN chmod -R 777 /app
 RUN gradle build -x test --no-daemon
 
 RUN ls -l build/libs
