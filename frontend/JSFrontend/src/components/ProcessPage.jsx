@@ -32,59 +32,108 @@ export default function ProcessPage() {
   const parsedProcessId = processId ? parseInt(processId) : undefined;
   const foundProcess = processes.find(p => p.processId === parsedProcessId);
   const {tasks, addTask} = use(TaskContext);
+  const [associatedTasks, setAssociatedTasks] = useState([]);
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
   useEffect(() => {
+    setAssociatedTasks(findAssociatedTasks)
     generateNodesAndEdges();
-  }, [foundProcess]);
+  }, [foundProcess, tasks]);
+
+  function findAssociatedTasks() {
+    if (!foundProcess) {
+      return [];
+    }
+    const associated = [];
+    for (const taskId of foundProcess.taskIds) {
+      const task = tasks.find(t => t.taskId === taskId);
+      if (task) {
+        associated.push(task);
+      }
+    }
+    return associated;
+  }
 
   function generateNodesAndEdges() {
     if (!foundProcess) {
       return;
     }
     // Layout constants
-    const branchX = 300;
-    const rootX = 0;
+    const horizontalSpacing = 300;
     const verticalSpacing = 160;
+    const nodes = [];
+    const edges = [];
 
-    const taskNodes = [];
-    for (let i = 0; i < foundProcess.taskIds.length; i++) {
-      const task = tasks.find(t => t.taskId === foundProcess.taskIds[i]);
-      if (!task) continue;
-      const taskNode = {
-        id: 'task-' + task.taskId,
-        type: 'taskNode',
-        // Position will be set later
-        // position: {x: branchX, y: i * 200},
-        data: {label: task.taskName},
+    function buildTree() {
+      const rootNode = {
+        id: `process-${foundProcess.processId}`,
+        type: 'processNode',
+        data: {label: foundProcess.processName},
+        children: []
       }
-      taskNodes.push(taskNode);
-    }
-
-    const totalHeight = (taskNodes.length - 1) * verticalSpacing;
-    const centerOffset = totalHeight / 2;
-
-    const positionedTaskNodes = taskNodes.map((node, index) => {
-      return {
-        ...node,
-        position: {
-          x: branchX,
-          y: index * verticalSpacing - centerOffset
+      for (let i = 0; i < associatedTasks.length; i++) {
+        const branchNode = {
+          id: `branch-${i}`,
+          type: 'taskNode',
+          data: {label: `Branch ${i + 1}`},
+          children: []
         }
-      }
-    });
 
-    const processNode = {
-      id: 'process-' + foundProcess.processId,
-      type: 'processNode',
-      position: {x: rootX, y: 0},
-      data: {label: foundProcess.processName},
+        for (let j = 0; j < rand2; j++) {
+          const branch1 = {
+            id: `task-${i}-${j}`,
+            type: 'taskNode',
+            data: {label: `branch ${j}`},
+            children: []
+          }
+          branchNode.children.push(branch1);
+        }
+        rootNode.children.push(branchNode);
+      }
+      return rootNode;
     }
 
-    setNodes([processNode, ...positionedTaskNodes]);
+    function calculateSubtreeSize(node) {
+      if (node.children.length === 0) return 1;
+      return node.children.reduce((sum, child) => sum + calculateSubtreeSize(child), 0);
+    }
+
+    function layoutTree(node, x, yStart, yEnd) {
+      const yCenter = (yStart + yEnd) / 2;
+      nodes.push({
+        id: node.id,
+        type: node.type,
+        data: node.data,
+        position: {x: x, y: yCenter}
+      })
+      if (node.children.length === 0) return;
+
+      let currentY = yStart;
+      node.children.forEach((child) => {
+        const subtreeSize = calculateSubtreeSize(child);
+        const childHeight = subtreeSize * verticalSpacing;
+        const childYStart = currentY;
+        const childYEnd = currentY + childHeight;
+        edges.push({
+          id: `edge-${node.id}-${child.id}`,
+          source: node.id,
+          target: child.id,
+          animated: false
+        });
+        layoutTree(child, x + horizontalSpacing, childYStart, childYEnd, currentY = childYEnd);
+      });
+    }
+
+    const tree = buildTree();
+    const totalSize = calculateSubtreeSize(tree);
+    const totalHeight = totalSize * verticalSpacing;
+    layoutTree(tree, 0, -totalHeight / 2, totalHeight / 2);
+
+    setNodes(nodes);
+    setEdges(edges);
   }
 
   /**
@@ -156,11 +205,13 @@ export default function ProcessPage() {
           Return to Processes
         </button>
       </Link>
-      <h1>{foundProcess.processName}</h1>
-      <p>Process ID: {foundProcess.processId}</p>
-      <p>Description: {foundProcess.processDescription}</p>
+      {/*<h1>{foundProcess.processName}</h1>*/}
+      {/*<p>Process ID: {foundProcess.processId}</p>*/}
+      {/*<p>Description: {foundProcess.processDescription}</p>*/}
       <div>
-        <button onClick={() => setIsProcessDetailsDialogOpen(true)}>Show Process Details</button>
+        <button onClick={() => setIsProcessDetailsDialogOpen(true)}>
+          Edit Process Details
+        </button>
         <EditProcessDetailsDialog
           currentName={foundProcess.processName}
           currentDescription={foundProcess.processDescription}
@@ -181,10 +232,10 @@ export default function ProcessPage() {
         onClose={() => setIsTaskDetailsDialogOpen(false)}
       />
 
-      <div style={{width: '70vh', height: '70vh', border: '2px solid white', marginTop: '20px'}}>
+      <div style={{width: '100vh', height: '100vh', border: '2px solid black', marginTop: '20px'}}>
         <ReactFlow
           nodes={nodes}
-          // edges={edges}
+          edges={edges}
           nodeTypes={nodeTypes}
           proOptions={{hideAttribution: true}}
           fitView
@@ -192,6 +243,7 @@ export default function ProcessPage() {
         />
       </div>
 
+      {/*TODO: remove after making sure it's no longer needed*/}
       {/*<ul>*/}
       {/*  {foundProcess.taskIds.map((taskId) => {*/}
       {/*    const task = tasks.find(t => t.taskId === taskId);*/}
