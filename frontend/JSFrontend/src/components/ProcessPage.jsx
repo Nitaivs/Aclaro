@@ -129,24 +129,35 @@ export default function ProcessPage() {
         onClose={() => setIsTaskDetailsDialogOpen(false)}
       />
 
-      <ul>
-        {foundProcess.taskIds.map((taskId) => {
-          const task = tasks.find(t => t.taskId === taskId);
-          if (!task) {
-            return;
-          }
-          return (
-            <li key={task.taskId}>
-              <TaskCard
-                processId={parsedProcessId}
-                taskId={task.taskId}
-                taskName={task.taskName}
-                taskDescription={task.taskDescription}
-              />
-            </li>
-          )
-        })}
-      </ul>
+      <div style={{width: '70vh', height: '70vh', border: '2px solid white', marginTop: '20px'}}>
+        <ReactFlow
+          nodes={nodes}
+          // edges={edges}
+          nodeTypes={nodeTypes}
+          proOptions={{hideAttribution: true}}
+          fitView
+          nodesDraggable={false}
+        />
+      </div>
+
+      {/*<ul>*/}
+      {/*  {foundProcess.taskIds.map((taskId) => {*/}
+      {/*    const task = tasks.find(t => t.taskId === taskId);*/}
+      {/*    if (!task) {*/}
+      {/*      return;*/}
+      {/*    }*/}
+      {/*    return (*/}
+      {/*      <li key={task.taskId}>*/}
+      {/*        <TaskCard*/}
+      {/*          processId={parsedProcessId}*/}
+      {/*          taskId={task.taskId}*/}
+      {/*          taskName={task.taskName}*/}
+      {/*          taskDescription={task.taskDescription}*/}
+      {/*        />*/}
+      {/*      </li>*/}
+      {/*    )*/}
+      {/*  })}*/}
+      {/*</ul>*/}
     </div>
   )
 }
