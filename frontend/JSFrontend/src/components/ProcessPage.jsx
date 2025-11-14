@@ -38,14 +38,25 @@ export default function ProcessPage() {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
+  /**
+   * @effect Update associated tasks when foundProcess or tasks change
+   */
   useEffect(() => {
     setAssociatedTasks(findAssociatedTasks)
   }, [foundProcess, tasks]);
 
+  /**
+   * @effect Generate nodes and edges for React Flow when associatedTasks change
+   */
   useEffect(() => {
     generateNodesAndEdges();
   }, [associatedTasks]);
 
+  /**
+   * @function findAssociatedTasks
+   * @description Finds and returns tasks associated with the found process.
+   * @returns {*[]} An array of tasks associated with the found process.
+   */
   function findAssociatedTasks() {
     if (!foundProcess) {
       return [];
@@ -60,6 +71,7 @@ export default function ProcessPage() {
     return associated;
   }
 
+  //TODO: refactor. Move into separate utility file and divide into smaller functions
   function generateNodesAndEdges() {
     if (!foundProcess) {
       return;
