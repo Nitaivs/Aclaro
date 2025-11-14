@@ -17,4 +17,5 @@ public class TaskDTO {
     private Boolean completed;
     private List<Long> employeeIds;
     private List<TaskDTO> subTasks;
+    private Long parentTaskId;
 }

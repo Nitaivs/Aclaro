@@ -46,7 +46,8 @@ public class TaskMapper {
             task.getTaskDescription(),
             task.isCompleted(),
             employeeIds,
-            subTasks
+            subTasks,
+            task.getParentTask() != null ? task.getParentTask().getTaskId() : null
         );
 
         return dto;
