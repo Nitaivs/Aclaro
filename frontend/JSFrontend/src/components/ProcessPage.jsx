@@ -77,25 +77,34 @@ export default function ProcessPage() {
         data: {label: foundProcess.processName},
         children: []
       }
-      for (let i = 0; i < associatedTasks.length; i++) {
-        const branchNode = {
-          id: `branch-${i}`,
-          type: 'taskNode',
-          data: {label: `Branch ${i + 1}`},
-          children: []
-        }
 
-        for (let j = 0; j < rand2; j++) {
-          const branch1 = {
-            id: `task-${i}-${j}`,
-            type: 'taskNode',
-            data: {label: `branch ${j}`},
-            children: []
+      const taskMap = new Map(associatedTasks.map(task => [task.taskId, task]))
+
+      function buildSubtree(task) {
+        const node = {
+          id: `task-${task.taskId}`,
+          type: 'taskNode',
+          data: {label: task.taskName},
+          children: []
+        };
+
+        if (task.subTasks && task.subTasks.length > 0) {
+          for (const subTask of task.subTasks) {
+            const fullSubTask = taskMap.get(subTask.taskId);
+            if (fullSubTask) {
+              node.children.push(buildSubtree(fullSubTask));
+            }
           }
-          branchNode.children.push(branch1);
         }
-        rootNode.children.push(branchNode);
+        return node;
       }
+
+      associatedTasks
+        .filter(task => task.parentTaskId === null)
+        .forEach(task => {
+          rootNode.children.push(buildSubtree(task));
+        });
+
       return rootNode;
     }
 
