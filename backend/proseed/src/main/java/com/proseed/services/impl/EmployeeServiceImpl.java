@@ -73,6 +73,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         });
     }
 
+    /**
+     * Deletes an employee and removes all associations to tasks and skills.
+     * @param id The ID of the employee to delete.
+     * @return true if deletion was successful.
+     * @throws EntityNotFoundException if the employee does not exist.
+     */
     @Override
     @Transactional
     public boolean delete(Long id) {
