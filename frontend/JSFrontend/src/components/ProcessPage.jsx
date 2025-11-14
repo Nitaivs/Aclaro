@@ -51,11 +51,13 @@ export default function ProcessPage() {
     setIsProcessDetailsDialogOpen(false);
   }
 
-  //TODO: expand documentation
   /**
    * @function handleAddTask
    * @description Handles the addition of a new task to the current process.
-   * @returns {Promise<void>}
+   * Calls the addTask function from TaskContext with the process ID, task name, and task description.
+   * @param {string} taskName - The name of the task to be added.
+   * @param {string} taskDescription - The description of the task to be added.
+   * @returns {Promise<void>} A promise that resolves when the task has been added.
    */
   async function handleAddTask(taskName, taskDescription) {
     try {
