@@ -1,5 +1,7 @@
 package com.proseed.services.impl;
 
+import com.proseed.DTOs.EmployeeDTO;
+import com.proseed.DTOs.Mappers.EmployeeMapper;
 import com.proseed.entities.Employee;
 import com.proseed.repos.EmployeeRepository;
 import com.proseed.services.EmployeeService;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import static java.util.stream.Collectors.toList;
 import java.util.Optional;
 
 @Service
@@ -18,13 +21,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> findAll() {
-        return repository.findAll();
+    public List<EmployeeDTO> findAll() {
+        return repository.findAll().stream()
+            .map(EmployeeMapper::toEmployeeDTO)
+            .collect(toList());
     }
 
     @Override
-    public Optional<Employee> findById(Long id) {
-        return repository.findById(id);
+    public Optional<EmployeeDTO> findById(Long id) {
+        return repository.findById(id)
+            .map(EmployeeMapper::toEmployeeDTO);
     }
 
     @Override
@@ -40,6 +46,17 @@ public class EmployeeServiceImpl implements EmployeeService {
             existing.setFirstName(employee.getFirstName());
             existing.setLastName(employee.getLastName());
             return repository.save(existing);
+        });
+    }
+
+    @Override
+    @Transactional
+    public Optional<EmployeeDTO> updatePartial(Long id, EmployeeDTO patch) {
+        return repository.findById(id).map(existing -> {
+            if (patch.getFirstName() != null) existing.setFirstName(patch.getFirstName());
+            if (patch.getLastName() != null) existing.setLastName(patch.getLastName());
+            Employee saved = repository.save(existing);
+            return EmployeeMapper.toEmployeeDTO(saved);
         });
     }
 
