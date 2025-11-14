@@ -40,8 +40,11 @@ export default function ProcessPage() {
 
   useEffect(() => {
     setAssociatedTasks(findAssociatedTasks)
-    generateNodesAndEdges();
   }, [foundProcess, tasks]);
+
+  useEffect(() => {
+    generateNodesAndEdges();
+  }, [associatedTasks]);
 
   function findAssociatedTasks() {
     if (!foundProcess) {
