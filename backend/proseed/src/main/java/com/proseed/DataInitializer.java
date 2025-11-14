@@ -165,6 +165,25 @@ public class DataInitializer implements CommandLineRunner {
         }
         subTask1.getSubTasks().add(subTask3);
 
+        Task subTask4 = new Task();
+        subTask4.setTaskName("Sub Task 4");
+        subTask4.setTaskDescription("This is a sub-task of sub task 2.");
+        subTask4.setCompleted(false);
+        subTask4.setProcess(process1);
+        subTask4.setParentTask(subTask3);
+        if (subTask3.getSubTasks() == null) {
+            subTask3.setSubTasks(new HashSet<>());
+        }
+        subTask3.getSubTasks().add(subTask4);
+
+        Task subTask5 = new Task();
+        subTask5.setTaskName("Sub Task 5");
+        subTask5.setTaskDescription("This is a sub-task of sub task 2.");
+        subTask5.setCompleted(false);
+        subTask5.setProcess(process1);
+        subTask5.setParentTask(subTask3);
+        subTask3.getSubTasks().add(subTask5);
+
         taskRepository.saveAll(List.of(task1, task2, task3));
     }
 }
