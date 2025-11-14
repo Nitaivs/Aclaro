@@ -96,7 +96,7 @@ export default function ProcessPage() {
         const node = {
           id: `task-${task.taskId}`,
           type: 'taskNode',
-          data: {label: task.taskName},
+          data: {label: task.taskName, taskId: task.taskId},
           children: []
         };
 
