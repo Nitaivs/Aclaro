@@ -1,5 +1,5 @@
 import {Link} from "react-router";
-import {use, useEffect, useState} from 'react';
+import {use, useState} from 'react';
 import {EmployeeContext} from "../Context/EmployeeContext/EmployeeContext.jsx";
 import {useParams} from "react-router";
 import EditEmployeeDialog from "./EditEmployeeDialog.jsx";
