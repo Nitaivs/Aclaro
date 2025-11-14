@@ -1,4 +1,5 @@
 import {Handle, Position, useReactFlow} from "@xyflow/react";
+import {Link} from 'react-router';
 
 export default function TaskNode({data, id}) {
   const {getEdges} = useReactFlow();
@@ -14,10 +15,12 @@ export default function TaskNode({data, id}) {
       border: '2px solid darkgreen',
       boxShadow: '2px 2px 5px rgba(0,0,0,0.3)'
     }}>
-      <div style={{padding: 12, fontWeight: 'bold', textAlign: 'center', color: 'black'}}>
-        <Handle type="target" position={Position.Left}/>
-        {data.label}
-      </div>
+      <Handle type="target" position={Position.Left}/>
+      <Link to={`/tasks/${data.taskId}`} style={{textDecoration: 'none'}}>
+        <div style={{padding: 12, fontWeight: 'bold', textAlign: 'center', color: 'black'}}>
+          {data.label}
+        </div>
+      </Link>
       {hasOutgoingEdges && <Handle type="source" position={Position.Right}/>}
     </div>
   )
