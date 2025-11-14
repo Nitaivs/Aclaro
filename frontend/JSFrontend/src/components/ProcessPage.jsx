@@ -1,6 +1,6 @@
 import {Link} from 'react-router';
 import {useParams} from "react-router";
-import {use} from "react";
+import {use, useEffect} from "react";
 import TaskCard from "./TaskCard.jsx";
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {useState} from "react";
@@ -34,6 +34,58 @@ export default function ProcessPage() {
   const {tasks, addTask} = use(TaskContext);
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
+  const [nodes, setNodes] = useState([]);
+  const [edges, setEdges] = useState([]);
+
+  useEffect(() => {
+    generateNodesAndEdges();
+  }, [foundProcess]);
+
+  function generateNodesAndEdges() {
+    if (!foundProcess) {
+      return;
+    }
+    // Layout constants
+    const branchX = 300;
+    const rootX = 0;
+    const verticalSpacing = 160;
+
+    const taskNodes = [];
+    for (let i = 0; i < foundProcess.taskIds.length; i++) {
+      const task = tasks.find(t => t.taskId === foundProcess.taskIds[i]);
+      if (!task) continue;
+      const taskNode = {
+        id: 'task-' + task.taskId,
+        type: 'taskNode',
+        // Position will be set later
+        // position: {x: branchX, y: i * 200},
+        data: {label: task.taskName},
+      }
+      taskNodes.push(taskNode);
+    }
+
+    const totalHeight = (taskNodes.length - 1) * verticalSpacing;
+    const centerOffset = totalHeight / 2;
+
+    const positionedTaskNodes = taskNodes.map((node, index) => {
+      return {
+        ...node,
+        position: {
+          x: branchX,
+          y: index * verticalSpacing - centerOffset
+        }
+      }
+    });
+
+    const processNode = {
+      id: 'process-' + foundProcess.processId,
+      type: 'processNode',
+      position: {x: rootX, y: 0},
+      data: {label: foundProcess.processName},
+    }
+
+    setNodes([processNode, ...positionedTaskNodes]);
+  }
 
   /**
    * @function handleUpdateProcess
