@@ -29,6 +29,7 @@ export default function EmployeeListPage() {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [filterString, setFilterString] = useState("");
+    const [removeMode, setRemoveMode] = useState(false);
 
     // Filter employees based on the filterString
     const filtered = employees.filter(emp => `
@@ -83,6 +84,9 @@ export default function EmployeeListPage() {
             <button onClick={() => setIsAddEmployeeDialogOpen(true)}>
                 Add employee
             </button>
+            <button onClick={() => setRemoveMode(!removeMode)}>
+                {removeMode ? "Exit" : "Remove Employees"}
+            </button>
 
             <AddEmployeeDialog
                 isOpen={isAddEmployeeDialogOpen}
@@ -130,17 +134,19 @@ export default function EmployeeListPage() {
                                     <ListItem
                                         alignItems="flex-start"
                                         secondaryAction={
-                                            <IconButton
-                                                edge="end"
-                                                aria-label="delete"
-                                                color="error"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    handleDeleteEmployee(emp.id);
-                                                }}
-                                            >
-                                                X
-                                            </IconButton>
+                                            removeMode ? (
+                                                <IconButton
+                                                    edge="end"
+                                                    aria-label="delete"
+                                                    color="error"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        handleDeleteEmployee(emp.id);
+                                                    }}
+                                                >
+                                                    X
+                                                </IconButton>
+                                            ) : null
                                         }
                                     />
                                     <ListItem alignItems="flex-start">
