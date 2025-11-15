@@ -48,6 +48,9 @@ public class TaskServiceImpl implements TaskService {
         if (task.getSubTasks() != null) {
             task.getSubTasks().forEach(sub -> prepareSubTasks(task, sub, process));
         }
+
+        // Set parent if provided
+        setParentWithId(task, task.getParentTask() != null ? task.getParentTask().getTaskId() : null);
         return taskRepository.save(task);
     }
 
@@ -98,6 +101,7 @@ public class TaskServiceImpl implements TaskService {
                 existing.getSubTasks().addAll(resolved);
             }
 
+            setParentWithId(existing, dto.getParentTaskId());
             return taskRepository.save(existing);
         });
     }
@@ -157,6 +161,16 @@ public class TaskServiceImpl implements TaskService {
         }
 
         if (id != null) idPath.remove(id); else objPath.remove(node);
+    }
+
+    private void setParentWithId(Task task, Long parentId) {
+        if (parentId != null) {
+            Task parent = taskRepository.findById(parentId)
+                .orElseThrow(() -> new IllegalArgumentException("Parent task not found with id: " + parentId));
+            task.setParentTask(parent);
+        } else {
+            task.setParentTask(null);
+        }
     }
 
     @Override

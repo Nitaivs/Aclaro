@@ -67,8 +67,15 @@ public class EmployeeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        return employeeService.delete(id)
-            ? ResponseEntity.noContent().build()
-            : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try{
+            boolean deleted = employeeService.delete(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }
