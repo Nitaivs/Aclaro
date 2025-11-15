@@ -11,6 +11,10 @@ import '@xyflow/react/dist/style.css'
 import {ReactFlow} from "@xyflow/react";
 import ProcessNode from "./ProcessNode.jsx";
 import TaskNode from "./TaskNode.jsx";
+import {
+  ProcessOperationsContext,
+  ProcessOperationsProvider
+} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
 
 // Define custom node types for React Flow
 const nodeTypes = {
@@ -257,14 +261,16 @@ export default function ProcessPage() {
       />
 
       <div style={{width: '100vh', height: '100vh', border: '2px solid black', marginTop: '20px'}}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          proOptions={{hideAttribution: true}}
-          fitView
-          nodesDraggable={false}
-        />
+        <ProcessOperationsProvider processId={parsedProcessId}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            proOptions={{hideAttribution: true}}
+            fitView
+            nodesDraggable={false}
+          />
+        </ProcessOperationsProvider>
       </div>
 
       {/*TODO: remove after making sure it's no longer needed*/}
