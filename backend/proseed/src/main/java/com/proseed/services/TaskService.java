@@ -8,8 +8,8 @@ import java.util.Optional;
 public interface TaskService {
     List<Task> findAll();
     Optional<Task> findById(Long id);
-    Task create(Long processId, Task task);
-    Optional<Task> update(Long id, Task task);
+    Task create(Long processId, Task task, Long parentId);
+    Optional<Task> update(Long id, Task task, Long parentId);
     boolean delete(Long id);
     TaskWithEmployeesDTO getTaskWithEmployees(Long id);
     /**
