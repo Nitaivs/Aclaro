@@ -1,27 +1,30 @@
 import {useState} from "react";
-import plusIcon from '../assets/plus-svgrepo-com.svg';
+import plusIcon from '../assets/plusIcon.svg';
+import AddTaskDialog from "./AddTaskDialog.jsx";
 
-export default function PlusButton({onClick, position = 'right'}) {
+export default function PlusButton({parentTaskId, position = 'right'}) {
   const [hover, setHover] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        position: 'absolute',
-        top: '50%',
-        [position]: -12,
-        transform: 'translateY(-50%)',
-        background: 'none',
-        border: 'none',
-        padding: 0,
-        margin: 0,
-        cursor: 'pointer',
-      }}
-      aria-label="Add Task"
-    >
+    <div>
+      <button
+        onClick={() => setIsDialogOpen(true)}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        style={{
+          position: 'absolute',
+          top: '50%',
+          [position]: -12,
+          transform: 'translateY(-50%)',
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          margin: 0,
+          cursor: 'pointer',
+        }}
+        aria-label="Add Task"
+      >
         <img
           src={plusIcon}
           alt="Add Task"
@@ -41,6 +44,12 @@ export default function PlusButton({onClick, position = 'right'}) {
             transition: 'filter 0.2s',
           }}
         />
-    </button>
+      </button>
+      <AddTaskDialog
+        isOpen={isDialogOpen}
+        parentTaskId={parentTaskId}
+        onClose={() => setIsDialogOpen(false)}
+      />
+    </div>
   );
 }
