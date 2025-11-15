@@ -1,4 +1,5 @@
 import {Handle, Position} from "@xyflow/react";
+import PlusButton from "./PlusButton.jsx";
 
 export default function ProcessNode({data}) {
   return (
@@ -14,6 +15,7 @@ export default function ProcessNode({data}) {
         {data.label}
       </div>
       <Handle type="source" position={Position.Right}/>
+      <PlusButton onClick={() => console.log("clicked")}/>
     </div>
   )
 }
