@@ -178,7 +178,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public boolean delete(Long id) {
-        return taskRepository.findById(id).map(t -> { taskRepository.delete(t); return true; }).orElse(false);
+        //checks if task exists and deletes it if it doesn't have subtasks
+        return taskRepository.findById(id).map(t -> {
+            if (t.getSubTasks() != null && !t.getSubTasks().isEmpty()) {
+                throw new IllegalArgumentException("Cannot delete task with id " + id + " because it has subtasks.");
+            }
+            taskRepository.delete(t);
+            return true;
+        }).orElse(false);
     }
 
     @Override
