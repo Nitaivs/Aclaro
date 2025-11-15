@@ -101,7 +101,7 @@ public class TaskController {
             Task task = TaskMapper.fromTaskDTO(taskDto);
             // Recursively assign employees to this task and all subtasks
             assignEmployeesRecursively(task, taskDto);
-            Task saved = taskService.create(processId, task);
+            Task saved = taskService.create(processId, task, taskDto.getParentTaskId());
             return ResponseEntity.status(HttpStatus.CREATED).body(TaskMapper.toTaskDTO(saved));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -121,7 +121,7 @@ public class TaskController {
             Task updatedTask = TaskMapper.fromTaskDTO(updatedTaskDto);
             // Recursively assign employees to this task and all subtasks
             assignEmployeesRecursively(updatedTask, updatedTaskDto);
-            return taskService.update(id, updatedTask)
+            return taskService.update(id, updatedTask, updatedTaskDto.getParentTaskId())
                 .map(TaskMapper::toTaskDTO)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
