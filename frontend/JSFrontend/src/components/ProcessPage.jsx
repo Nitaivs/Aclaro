@@ -32,13 +32,13 @@ const nodeTypes = {
  */
 export default function ProcessPage() {
   const {processId} = useParams();
-  const {processes, updateProcess, fetchProcessById} = use(ProcessContext);
+  const {processes, updateProcess} = use(ProcessContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
   const foundProcess = processes.find(p => p.processId === parsedProcessId);
-  const {tasks, addTask} = use(TaskContext);
+  const {tasks} = use(TaskContext);
   const [associatedTasks, setAssociatedTasks] = useState([]);
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
-  const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
+  // const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
@@ -188,15 +188,15 @@ export default function ProcessPage() {
    * @param {string} taskDescription - The description of the task to be added.
    * @returns {Promise<void>} A promise that resolves when the task has been added.
    */
-  async function handleAddTask(taskName, taskDescription) {
-    try {
-      await addTask(parsedProcessId, taskName, taskDescription);
-      //TODO: A bit of a hack to refresh process task list, rewrite
-      await fetchProcessById(parsedProcessId);
-    } catch (error) {
-      console.error("Error adding task:", error);
-    }
-  }
+  // async function handleAddTask(taskName, taskDescription, parentTaskId = null) {
+  //   try {
+  //     await addTask(parsedProcessId, taskName, taskDescription);
+  //     //TODO: A bit of a hack to refresh process task list, rewrite
+  //     await fetchProcessById(parsedProcessId);
+  //   } catch (error) {
+  //     console.error("Error adding task:", error);
+  //   }
+  // }
 
   // Render error messages for invalid or not found process
   if (!parsedProcessId) {
@@ -249,16 +249,16 @@ export default function ProcessPage() {
         />
       </div>
 
-      <button onClick={() => {
-        setIsTaskDetailsDialogOpen(true)
-      }}>
-        Add Task
-      </button>
-      <AddTaskDialog
-        isOpen={isTaskDetailsDialogOpen}
-        onSave={handleAddTask}
-        onClose={() => setIsTaskDetailsDialogOpen(false)}
-      />
+      {/*<button onClick={() => {*/}
+      {/*  setIsTaskDetailsDialogOpen(true)*/}
+      {/*}}>*/}
+      {/*  Add Task*/}
+      {/*</button>*/}
+      {/*<AddTaskDialog*/}
+      {/*  isOpen={isTaskDetailsDialogOpen}*/}
+      {/*  onSave={handleAddTask}*/}
+      {/*  onClose={() => setIsTaskDetailsDialogOpen(false)}*/}
+      {/*/>*/}
 
       <div style={{width: '100vh', height: '100vh', border: '2px solid black', marginTop: '20px'}}>
         <ProcessOperationsProvider processId={parsedProcessId}>
