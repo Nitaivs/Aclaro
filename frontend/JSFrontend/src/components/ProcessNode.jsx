@@ -1,7 +1,7 @@
 import {Handle, Position} from "@xyflow/react";
 import PlusButton from "./PlusButton.jsx";
 
-export default function ProcessNode({data: {label, processId }}) {
+export default function ProcessNode({data: {label}}) {
   return (
     <div style={{
       borderRadius: 6,
