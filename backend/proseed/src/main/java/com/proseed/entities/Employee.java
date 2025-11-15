@@ -56,5 +56,7 @@ public class Employee {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Department department;
 }
