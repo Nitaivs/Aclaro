@@ -156,8 +156,12 @@ public class TaskController {
      */
     @DeleteMapping("/{taskId}/employees/{employeeId}")
     public ResponseEntity<Void> removeEmployeeFromTask(@PathVariable Long taskId, @PathVariable Long employeeId) {
-        taskService.removeEmployeeFromTask(taskId, employeeId);
-        return ResponseEntity.noContent().build();
+        try {
+            taskService.removeEmployeeFromTask(taskId, employeeId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     /**
