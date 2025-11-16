@@ -1,15 +1,19 @@
 import {Dialog, DialogTitle, DialogContent, TextField} from '@mui/material';
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 
 export default function EditTaskDetailsDialog({currentName, currentDescription, onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState(currentName || "");
   const [descriptionInput, setDescriptionInput] = useState(currentDescription || "");
-  const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
   const [nameError, setNameError] = useState(false);
+  const [defaultName, setDefaultName] = useState(currentName || "")
+  const [defaultDescription, setDefaultDescription] = useState(currentDescription || "")
 
   useEffect(() => {
-    setIsDialogOpen(isOpen);
-  }, [isOpen]);
+    setDefaultName(currentName);
+    setDefaultDescription(currentDescription);
+    setNameInput(currentName);
+    setDescriptionInput(currentDescription);
+  }, [currentName, currentDescription]);
 
   /**
    * @function handleOnSave
@@ -27,14 +31,18 @@ export default function EditTaskDetailsDialog({currentName, currentDescription, 
       return;
     }
     onSave(nameInput, descriptionInput);
-    setNameError(false);
+    handleOnClose();
+  }
+
+  function handleOnClose() {
     setNameInput(currentName || "");
     setDescriptionInput(currentDescription || "");
+    setNameError(false);
     onClose();
   }
 
   return (
-    <Dialog open={isDialogOpen}>
+    <Dialog open={isOpen}>
       <DialogTitle>Edit Task Details</DialogTitle>
       <DialogContent>
         <TextField
@@ -47,7 +55,7 @@ export default function EditTaskDetailsDialog({currentName, currentDescription, 
           variant="outlined"
           error={nameError}
           helperText={nameError ? "Task name is required" : ""}
-          defaultValue={currentName || ''}
+          defaultValue={defaultName || ''}
           onChange={(e) => setNameInput(e.target.value)}
         />
 
@@ -57,7 +65,7 @@ export default function EditTaskDetailsDialog({currentName, currentDescription, 
           type="text"
           fullWidth
           variant="outlined"
-          defaultValue={currentDescription || ''}
+          defaultValue={defaultDescription || ''}
           onChange={(e) => setDescriptionInput(e.target.value)}
         />
 
@@ -68,10 +76,7 @@ export default function EditTaskDetailsDialog({currentName, currentDescription, 
         </button>
 
         <button onClick={() => {
-          setNameInput(currentName ||"");
-          setDescriptionInput(currentDescription || "");
-          setNameError(false);
-          onClose();
+          handleOnClose();
         }}>
           Cancel
         </button>
