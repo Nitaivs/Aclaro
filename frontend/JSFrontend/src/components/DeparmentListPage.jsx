@@ -20,7 +20,7 @@ import Collapse from "@mui/material/Collapse";
 
 export default function DepartmentListPage() {
     const { departments, addDepartment, deleteDepartmentById } = useContext(DepartmentContext);
-    const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
+    const [isAddDepartmentDialogOpen, setIsAddDepartmentDialogOpen] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [filterString, setFilterString] = useState("");
