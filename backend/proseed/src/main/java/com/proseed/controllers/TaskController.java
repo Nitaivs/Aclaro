@@ -138,9 +138,14 @@ public class TaskController {
      * @return 204 No Content if deleted, 404 if not found
      */
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        return taskService.delete(id)
-            ? ResponseEntity.noContent().build()
-            : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            return taskService.delete(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalArgumentException ex) {
+            // Deletion blocked (e.g., task has subtasks) -> 400 Bad Request
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     /**
