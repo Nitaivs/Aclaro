@@ -4,6 +4,7 @@ import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import EditTaskDetailsDialog from "./EditTaskDetailsDialog.jsx";
 import ErrorDialog from "./ErrorDialog.jsx";
+import AreYouSureDialog from "./AreYouSureDialog.jsx";
 
 /**
  * @component TaskPage
@@ -20,6 +21,7 @@ export default function TaskPage() {
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   /**
    * @function handleUpdateTask
@@ -77,7 +79,7 @@ export default function TaskPage() {
       <p>taskId: {taskId}</p>
       <p>description: {foundTask.taskDescription}</p>
       <button onClick={() => setIsTaskDetailsDialogOpen(true)}>Edit Task Details</button>
-      <button onClick={() => handleDeleteTask()}>Delete Task</button>
+      <button onClick={() => setShowDeleteDialog(true)}>Delete Task</button>
       <EditTaskDetailsDialog
         currentName={foundTask.taskName}
         currentDescription={foundTask.taskDescription}
@@ -91,6 +93,13 @@ export default function TaskPage() {
         title="Error Deleting Task"
         message={errorMessage}
       />
+      <AreYouSureDialog
+        isOpen={showDeleteDialog}
+        onCancel={() => setShowDeleteDialog(false)}
+        onConfirm={handleDeleteTask}
+        title="Confirm Delete Task"
+        message={`Are you sure you want to delete the task "${foundTask.taskName}"? This action cannot be undone.`}
+        />
     </div>
   )
 }
