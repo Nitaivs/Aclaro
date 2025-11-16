@@ -27,7 +27,7 @@ export default function Router() {
         <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
         //TODO: remove this route once demo is deleted
         <Route path="/rfd" element={<ReactFlowDemo/>}/>
-        <Route path="/departments/:departmentId" element={<DepartmentPage/>}/>
+        <Route path="/departments/:departmentId" element={<DepartmentListPage/>}/>
       </Routes>
     </BrowserRouter>
   )
