@@ -1,7 +1,9 @@
 import {Link, useParams} from "react-router";
 import {use, useState} from 'react';
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
+import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import EditTaskDetailsDialog from "./EditTaskDetailsDialog.jsx";
+import ErrorDialog from "./ErrorDialog.jsx";
 
 /**
  * @component TaskPage
@@ -11,10 +13,13 @@ import EditTaskDetailsDialog from "./EditTaskDetailsDialog.jsx";
  */
 export default function TaskPage() {
   const {processId, taskId} = useParams();
-  const {tasks, updateTask} = use(TaskContext);
+  const {tasks, updateTask, deleteTask} = use(TaskContext);
+  const {deleteTaskIdFromProcess} = use(ProcessContext);
   const parsedTaskId = taskId ? parseInt(taskId) : undefined;
   const foundTask = tasks.find(t => t.taskId === parsedTaskId);
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   /**
    * @function handleUpdateTask
@@ -43,6 +48,8 @@ export default function TaskPage() {
       deleteTaskIdFromProcess(processId ,taskId);
     } catch (error) {
       console.error("Error deleting task:", error);
+      setErrorMessage(error.message);
+      setShowErrorDialog(true);
     }
   }
 
@@ -61,7 +68,7 @@ export default function TaskPage() {
 
   return (
     <div>
-      <Link to={`/process/${processId}`}>
+      <Link to={`/process/${foundTask.processId}`}>
         <button>
           Go back to process {processId}
         </button>
@@ -70,12 +77,19 @@ export default function TaskPage() {
       <p>taskId: {taskId}</p>
       <p>description: {foundTask.taskDescription}</p>
       <button onClick={() => setIsTaskDetailsDialogOpen(true)}>Edit Task Details</button>
+      <button onClick={() => handleDeleteTask()}>Delete Task</button>
       <EditTaskDetailsDialog
         currentName={foundTask.taskName}
         currentDescription={foundTask.taskDescription}
         onSave={handleUpdateTask}
         isOpen={isTaskDetailsDialogOpen}
         onClose={() => setIsTaskDetailsDialogOpen(false)}
+      />
+      <ErrorDialog
+        isOpen={showErrorDialog}
+        onClose={() => setShowErrorDialog(false)}
+        title="Error Deleting Task"
+        message={errorMessage}
       />
     </div>
   )
