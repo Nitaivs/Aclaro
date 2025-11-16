@@ -5,6 +5,7 @@ import TaskPage from "./TaskPage.jsx";
 import EmployeeListPage from "./EmployeeListPage.jsx";
 import EmployeePage from "./EmployeePage.jsx";
 import ProcessListPage from "./ProcessListPage.jsx";
+import DepartmentPage from "./DeparmentPage.jsx";
 //TODO: remove this import once demo is deleted
 import ReactFlowDemo from "./ReactFlowDemo.jsx";
 
@@ -26,6 +27,7 @@ export default function Router() {
         <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
         //TODO: remove this route once demo is deleted
         <Route path="/rfd" element={<ReactFlowDemo/>}/>
+        <Route path="/departments/:departmentId" element={<DepartmentPage/>}/>
       </Routes>
     </BrowserRouter>
   )
