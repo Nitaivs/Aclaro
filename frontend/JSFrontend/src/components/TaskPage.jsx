@@ -36,6 +36,16 @@ export default function TaskPage() {
     setIsTaskDetailsDialogOpen(false);
   }
 
+  async function handleDeleteTask() {
+    try {
+      await deleteTask(taskId);
+      //TODO: A bit of a hack to refresh process task list, rewrite
+      deleteTaskIdFromProcess(processId ,taskId);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  }
+
   if (!foundTask) {
     return (
       <div>
