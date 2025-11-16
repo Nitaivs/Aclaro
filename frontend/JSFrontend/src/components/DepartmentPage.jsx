@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { use, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { DepartmentContext } from "../Context/DepartmentContext/DepartmentContext.jsx";
 import { useParams } from "react-router";
 
@@ -19,10 +19,52 @@ export default function DepartmentPage() {
         setIsEditDepartmentDialogOpen(false);
     }
 
-    return (
-        <div>
+    if (!parsedDepartmentId) {
+        return (
+          <div>
             <h1>Department Page</h1>
-            <h2>Not ready yet :/</h2>
+            <p>Error: Invalid deparment ID.</p>
+            <Link to="/departments">
+              <button>
+                Return to deparment list
+              </button>
+            </Link>
+          </div>
+        );
+      }
+
+      if (!foundDepartment) {
+        return (
+          <div>
+            <h1>Department Page</h1>
+            <p>Error: Department with id: {parsedDepartmentId} not found.</p>
+            <Link to="/departments">
+              <button>
+                Return to department list
+              </button>
+            </Link>
+          </div>
+        );
+      }
+
+      return (
+        <div>
+          <Link to="/departments">
+            <button>
+              Return to deparment list
+            </button>
+          </Link>
+          <h2>Department Page</h2>
+          <h1>{foundDepartment.name}</h1>
+          <button onClick={() => setIsEditDepartmentDialogOpen(true)}>
+            Edit Department
+          </button>
+          <EditEmployeeDialog
+            currentName={foundDepartment.name}
+            isOpen={isEditDepartmentDialogOpen}
+            onClose={() => setIsEditDepartmentDialogOpen(false)}
+            onSave={handleUpdateDepartment}
+          />
         </div>
-    );
+      );
 }
