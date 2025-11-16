@@ -124,6 +124,8 @@ export function TaskProvider({children}) {
       await fetchAllTasks();
     } catch (error) {
       console.error("Error deleting task from DB:", error);
+      // Re-throw the error to inform the caller
+      throw error;
     }
   }
 
