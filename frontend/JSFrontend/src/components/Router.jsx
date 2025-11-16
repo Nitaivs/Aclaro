@@ -5,7 +5,7 @@ import TaskPage from "./TaskPage.jsx";
 import EmployeeListPage from "./EmployeeListPage.jsx";
 import EmployeePage from "./EmployeePage.jsx";
 import ProcessListPage from "./ProcessListPage.jsx";
-import DepartmentPage from "./DeparmentPage.jsx";
+import DepartmentPage from "./DepartmentPage.jsx";
 //TODO: remove this import once demo is deleted
 import ReactFlowDemo from "./ReactFlowDemo.jsx";
 

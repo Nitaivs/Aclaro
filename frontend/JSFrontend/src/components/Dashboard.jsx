@@ -25,6 +25,14 @@ export default function Dashboard() {
           </button>
         </Link>
       </div>
+      <div>
+        <Link to="/departments/">
+          <button style={
+            {fontSize: '20px', padding: '10px 20px', marginTop: '20px'}
+          }>Department List
+          </button>
+        </Link>
+      </div>
     </>
   )
 }
