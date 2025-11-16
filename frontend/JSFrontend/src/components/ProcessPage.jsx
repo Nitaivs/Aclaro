@@ -81,8 +81,8 @@ export default function ProcessPage() {
       return;
     }
     // Layout constants
-    const horizontalSpacing = 300;
-    const verticalSpacing = 160;
+    const horizontalSpacing = 250;
+    const verticalSpacing = 120;
     const nodes = [];
     const edges = [];
 
@@ -274,24 +274,24 @@ export default function ProcessPage() {
       </div>
 
       {/*TODO: remove after making sure it's no longer needed*/}
-      {/*<ul>*/}
-      {/*  {foundProcess.taskIds.map((taskId) => {*/}
-      {/*    const task = tasks.find(t => t.taskId === taskId);*/}
-      {/*    if (!task) {*/}
-      {/*      return;*/}
-      {/*    }*/}
-      {/*    return (*/}
-      {/*      <li key={task.taskId}>*/}
-      {/*        <TaskCard*/}
-      {/*          processId={parsedProcessId}*/}
-      {/*          taskId={task.taskId}*/}
-      {/*          taskName={task.taskName}*/}
-      {/*          taskDescription={task.taskDescription}*/}
-      {/*        />*/}
-      {/*      </li>*/}
-      {/*    )*/}
-      {/*  })}*/}
-      {/*</ul>*/}
+      <ul>
+        {foundProcess.taskIds.map((taskId) => {
+          const task = tasks.find(t => t.taskId === taskId);
+          if (!task) {
+            return;
+          }
+          return (
+            <li key={task.taskId}>
+              <TaskCard
+                processId={parsedProcessId}
+                taskId={task.taskId}
+                taskName={task.taskName}
+                taskDescription={task.taskDescription}
+              />
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }
