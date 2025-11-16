@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { DepartmentContext } from "../Context/EmployeeContext/EmployeeContext.jsx";
+import { DepartmentContext } from "../Context/DepartmentContext/DepartmentContext.jsx";
 import AddDepartmentDialog from "./AddDepartmentDialog.jsx";
 import { Link } from "react-router";
 import {
