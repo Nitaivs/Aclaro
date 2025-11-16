@@ -2,11 +2,22 @@ import {useState, useEffect} from "react";
 import {TaskContext} from "./TaskContext.jsx";
 import axios from "axios";
 
+/**
+ * @Component TaskProvider
+ * @description Provides task-related state and functions to its children via TaskContext.
+ * @param children The child components that will have access to the task context.
+ * @returns {JSX.Element} The TaskProvider component.
+ */
 export function TaskProvider({children}) {
   const BASE_URL = "http://localhost:8080/api/";
   const [tasks, setTasks] = useState([]);
   const [initialized, setInitialized] = useState(false);
 
+  //TODO: improve error handling across all functions
+
+  /**
+   * Effect hook that initializes tasks from the database when the component mounts.
+   */
   useEffect(() => {
     if (!initialized) {
       console.log("initializing tasks");
@@ -51,19 +62,27 @@ export function TaskProvider({children}) {
   /**
    * @function addTask
    * @description Adds a new task to the database and updates the local state.
-   * @param processId The ID of the process to which the task belongs.
-   * @param name The name of the task.
-   * @param description The description of the task.
+   * @param processId The ID of the process to which the task belongs. Required.
+   * @param name The name of the task. Required.
+   * @param description The description of the task. Default is null.
+   * @param parentTaskId The ID of the parent task, if any. Default is null.
    * @returns {Promise<void>} A promise that resolves when the task is added and the state is updated.
    */
-  async function addTask(processId, name, description) {
+  async function addTask(processId, name, description = null, parentTaskId = null) {
+    if (!processId || !name) {
+      console.error("Process ID and task name are required to add a task.");
+      //TODO: throw error to inform user
+      return;
+    }
     try {
+      console.log("Adding task to DB with processId:", processId, "name:", name, "description:", description, "parentTaskId:", parentTaskId);
       const response = await axios.post(`${BASE_URL}tasks?processId=${processId}`, {
         processId: processId,
         taskName: name,
-        taskDescription: description || null,
+        taskDescription: description,
+        parentTaskId: parentTaskId
       });
-      console.log(response.data);
+      console.log("added task", response);
       setTasks([...tasks, response.data]);
       //TODO: hack to refresh tasks in process, rewrite
       await fetchAllTasks()

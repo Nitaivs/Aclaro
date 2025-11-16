@@ -1,4 +1,4 @@
-import ProcessesContainer from "./ProcessesContainer.jsx";
+import {Link} from "react-router"
 
 /**
  * @component Dashboard
@@ -6,9 +6,25 @@ import ProcessesContainer from "./ProcessesContainer.jsx";
  * @return {JSX.Element} The rendered Dashboard component.
  */
 export default function Dashboard() {
-    return (
-        <>
-            <ProcessesContainer/>
-        </>
-    )
+  return (
+    <>
+      <div>
+        <h1>ProSeed</h1>
+        <Link to="/processes">
+          <button style={
+            {fontSize: '20px', padding: '10px 20px', marginTop: '20px'}
+          }>Process list
+          </button>
+        </Link>
+      </div>
+      <div>
+        <Link to="/employees">
+          <button style={
+            {fontSize: '20px', padding: '10px 20px', marginTop: '20px'}
+          }>Employee List
+          </button>
+        </Link>
+      </div>
+    </>
+  )
 }

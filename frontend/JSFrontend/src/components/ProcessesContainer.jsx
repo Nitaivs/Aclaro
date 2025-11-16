@@ -39,7 +39,6 @@ export default function ProcessesContainer() {
 
   return (
     <div>
-      <h1>ProSeed</h1>
       <button onClick={() => setIsDialogOpen(true)}>Add process</button>
       <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
         <DialogTitle>Add New Process</DialogTitle>
