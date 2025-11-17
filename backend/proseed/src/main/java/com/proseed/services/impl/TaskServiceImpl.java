@@ -51,12 +51,13 @@ public class TaskServiceImpl implements TaskService {
 
         // Set parent if provided
         setParentWithId(task, parentId);
+
         return taskRepository.save(task);
     }
 
     @Override
     @Transactional
-    public Optional<Task> update(Long id, Task task, Long parentId) {
+    public Optional<Task> update(Long id, Task task, Long parentId, Long processId) {
         // Resolve and reparent subtasks safely to avoid orphanRemoval accidental deletes.
         return taskRepository.findById(id).map(existing -> {
             existing.setTaskName(task.getTaskName());
@@ -103,6 +104,9 @@ public class TaskServiceImpl implements TaskService {
 
             // Set or clear parent as needed
             setParentWithId(existing, parentId);
+
+            //set or update process
+            setProcessWithId(existing, processId);
 
             return taskRepository.save(existing);
         });
@@ -172,6 +176,16 @@ public class TaskServiceImpl implements TaskService {
             task.setParentTask(parent);
         } else {
             task.setParentTask(null);
+        }
+    }
+
+    private void setProcessWithId(Task task, Long processId) {
+        if (processId != null) {
+            ProcessEntity process = processRepository.findById(processId)
+                .orElseThrow(() -> new IllegalArgumentException("Process not found with id: " + processId));
+            task.setProcess(process);
+        } else {
+            task.setProcess(null);
         }
     }
 

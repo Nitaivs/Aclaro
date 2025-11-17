@@ -121,7 +121,7 @@ public class TaskController {
             Task updatedTask = TaskMapper.fromTaskDTO(updatedTaskDto);
             // Recursively assign employees to this task and all subtasks
             assignEmployeesRecursively(updatedTask, updatedTaskDto);
-            return taskService.update(id, updatedTask, updatedTaskDto.getParentTaskId())
+            return taskService.update(id, updatedTask, updatedTaskDto.getParentTaskId(), updatedTaskDto.getProcessId())
                 .map(TaskMapper::toTaskDTO)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -156,8 +156,12 @@ public class TaskController {
      */
     @DeleteMapping("/{taskId}/employees/{employeeId}")
     public ResponseEntity<Void> removeEmployeeFromTask(@PathVariable Long taskId, @PathVariable Long employeeId) {
-        taskService.removeEmployeeFromTask(taskId, employeeId);
-        return ResponseEntity.noContent().build();
+        try {
+            taskService.removeEmployeeFromTask(taskId, employeeId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     /**
