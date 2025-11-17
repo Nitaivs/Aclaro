@@ -62,6 +62,7 @@ export default function EmployeeListPage() {
      * @returns {Promise<void>} A promise that resolves when the employee is deleted or an error occurs.
      */
     async function handleDeleteEmployee(id) {
+        console.log(id);
         try {
             await deleteEmployeeById(id);
         } catch (error) {
@@ -129,8 +130,9 @@ export default function EmployeeListPage() {
                         </ListItem>
                     ) : (
                         filtered.map((emp, idx) => (
-                            <div key={emp.id ?? idx}>
-                                <Link to={`/employees/${emp.id}`}>
+                            console.log(emp),
+                            <div key={emp.employeeId ?? idx}>
+                                <Link to={`/employees/${emp.employeeId}`}>
                                     <ListItem
                                         alignItems="flex-start"
                                         secondaryAction={
@@ -141,7 +143,7 @@ export default function EmployeeListPage() {
                                                     color="error"
                                                     onClick={(e) => {
                                                         e.preventDefault();
-                                                        handleDeleteEmployee(emp.id);
+                                                        handleDeleteEmployee(emp.employeeId);
                                                     }}
                                                 >
                                                     X
