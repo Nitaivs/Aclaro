@@ -121,7 +121,7 @@ public class TaskController {
             Task updatedTask = TaskMapper.fromTaskDTO(updatedTaskDto);
             // Recursively assign employees to this task and all subtasks
             assignEmployeesRecursively(updatedTask, updatedTaskDto);
-            return taskService.update(id, updatedTask, updatedTaskDto.getParentTaskId())
+            return taskService.update(id, updatedTask, updatedTaskDto.getParentTaskId(), updatedTaskDto.getProcessId())
                 .map(TaskMapper::toTaskDTO)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
