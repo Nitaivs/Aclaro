@@ -125,22 +125,18 @@ export function EmployeeProvider({children}) {
    * @param lastName - The last name of the employee to add.
    * @returns {Promise<void>} A promise that resolves when the employee is added and state is updated.
    */
-  async function addEmployee(firstName, lastName) {
+async function addEmployee(firstName, lastName) {
     try {
-      console.log(`Adding employee with name ${name} to DB`);
-      // const response = await axios.post(`${BASE_URL}employees`, {name});
-      // console.log(response);
-      // setEmployees([...employees, response.data]);
-      //TODO: remove mock response once backend is ready
-      // const mockResponse = {data: {name: name, id: Math.floor(Math.random() * 10000)}};
-      const mockResponse = {data: {firstName: firstName, lastName: lastName, id: Math.floor(Math.random() * 10000)}};
-      console.log(mockResponse);
-      setEmployees([...employees, mockResponse.data]);
+        console.log(`Adding employee ${firstName} ${lastName} to DB`);
+        const response = await axios.post(`${BASE_URL}employees`, { firstName, lastName });
+        console.log("Added employee:", response.data);
+        setEmployees(prev => [...prev, response.data]);
+        return response.data;
     } catch (error) {
-      console.error(`Error adding employee with name ${name} to DB:`, error);
-      throw error; // Rethrow error to inform caller
+        console.error(`Error adding employee ${firstName} ${lastName} to DB:`, error);
+        throw error;
     }
-  }
+}
 
   return (
     <EmployeeContext.Provider value={{
