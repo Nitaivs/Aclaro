@@ -174,8 +174,6 @@ public class TaskServiceImpl implements TaskService {
             Task parent = taskRepository.findById(parentId)
                 .orElseThrow(() -> new IllegalArgumentException("Parent task not found with id: " + parentId));
             task.setParentTask(parent);
-        } else {
-            task.setParentTask(null);
         }
     }
 
