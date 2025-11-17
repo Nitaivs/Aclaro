@@ -180,12 +180,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void setProcessWithId(Task task, Long processId) {
+        // Only set/replace the process when a non-null processId is provided.
+        // A null processId indicates "no change" rather than explicit clearing.
         if (processId != null) {
             ProcessEntity process = processRepository.findById(processId)
-                .orElseThrow(() -> new IllegalArgumentException("Process not found with id: " + processId));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Process not found with id: " + processId));
             task.setProcess(process);
-        } else {
-            task.setProcess(null);
         }
     }
 
