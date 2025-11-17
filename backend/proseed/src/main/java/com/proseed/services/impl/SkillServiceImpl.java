@@ -1,24 +1,30 @@
 package com.proseed.services.impl;
 
+import com.proseed.entities.Employee;
 import com.proseed.entities.EmployeeSkill;
 import com.proseed.services.SkillService;
 
 import jakarta.transaction.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 
+import com.proseed.repos.EmployeeRepository;
 import com.proseed.repos.EmployeeSkillRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class SkillServiceImpl implements SkillService {
     private final EmployeeSkillRepository repository;
+    private final EmployeeRepository employeeRepository;
 
-    public SkillServiceImpl(EmployeeSkillRepository repository) {
+    public SkillServiceImpl(EmployeeSkillRepository repository, EmployeeRepository employeeRepository) {
         this.repository = repository;
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
@@ -53,7 +59,15 @@ public class SkillServiceImpl implements SkillService {
             () -> new EntityNotFoundException("Skill not found with id: " + id)
         );
 
-        // TODO: IMPLEMENT DELETE LOGIC
-        return false;
+        // Remove skill from associated employees
+        Set<Employee> employees = skill.getEmployees();
+        if (employees != null && !employees.isEmpty()) {
+            for (Employee e : new HashSet<>(employees)) {
+                e.getEmployeeSkills().remove(skill);
+                employeeRepository.save(e);
+            }
+        }
+        repository.delete(skill);
+        return true;
     }
 }

@@ -38,7 +38,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public Task create(Long processId, Task task) {
+    public Task create(Long processId, Task task, Long parentId) {
         ProcessEntity process = processRepository.findById(processId)
             .orElseThrow(() -> new IllegalArgumentException("Process not found with id: " + processId));
         task.setProcess(process);
@@ -48,12 +48,15 @@ public class TaskServiceImpl implements TaskService {
         if (task.getSubTasks() != null) {
             task.getSubTasks().forEach(sub -> prepareSubTasks(task, sub, process));
         }
+
+        // Set parent if provided
+        setParentWithId(task, parentId);
         return taskRepository.save(task);
     }
 
     @Override
     @Transactional
-    public Optional<Task> update(Long id, Task task) {
+    public Optional<Task> update(Long id, Task task, Long parentId) {
         // Resolve and reparent subtasks safely to avoid orphanRemoval accidental deletes.
         return taskRepository.findById(id).map(existing -> {
             existing.setTaskName(task.getTaskName());
@@ -97,6 +100,9 @@ public class TaskServiceImpl implements TaskService {
                 existing.getSubTasks().clear();
                 existing.getSubTasks().addAll(resolved);
             }
+
+            // Set or clear parent as needed
+            setParentWithId(existing, parentId);
 
             return taskRepository.save(existing);
         });
@@ -159,10 +165,27 @@ public class TaskServiceImpl implements TaskService {
         if (id != null) idPath.remove(id); else objPath.remove(node);
     }
 
+    private void setParentWithId(Task task, Long parentId) {
+        if (parentId != null) {
+            Task parent = taskRepository.findById(parentId)
+                .orElseThrow(() -> new IllegalArgumentException("Parent task not found with id: " + parentId));
+            task.setParentTask(parent);
+        } else {
+            task.setParentTask(null);
+        }
+    }
+
     @Override
     @Transactional
     public boolean delete(Long id) {
-        return taskRepository.findById(id).map(t -> { taskRepository.delete(t); return true; }).orElse(false);
+        //checks if task exists and deletes it if it doesn't have subtasks
+        return taskRepository.findById(id).map(t -> {
+            if (t.getSubTasks() != null && !t.getSubTasks().isEmpty()) {
+                throw new IllegalArgumentException("Cannot delete task with id " + id + " because it has subtasks.");
+            }
+            taskRepository.delete(t);
+            return true;
+        }).orElse(false);
     }
 
     @Override

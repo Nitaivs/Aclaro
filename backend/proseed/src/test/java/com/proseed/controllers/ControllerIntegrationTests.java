@@ -133,11 +133,12 @@ class ControllerIntegrationTests {
             .andExpect(jsonPath("$.completed").value(true));
     System.out.println("[TEST] Updated task present: " + taskRepository.findById(taskId).isPresent());
 
+    // Attempt to delete task that still has subtasks should fail with 400
     mockMvc.perform(delete("/api/tasks/{id}", taskId))
-            .andExpect(status().isNoContent());
-    System.out.println("[TEST] Deleted task present: " + taskRepository.findById(taskId).isPresent());
+            .andExpect(status().isBadRequest());
+    System.out.println("[TEST] Delete blocked for task with subtasks (expected). Present? " + taskRepository.findById(taskId).isPresent());
 
-        assertThat(taskRepository.findById(taskId)).isEmpty();
+        assertThat(taskRepository.findById(taskId)).isPresent();
         processRepository.deleteById(process.getProcessId());
         System.out.println("[TEST] taskControllerCrudFlow: END");
     }

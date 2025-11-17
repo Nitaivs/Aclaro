@@ -23,7 +23,7 @@ export default function Router() {
         <Route path="/" element={<Dashboard/>}/>
         <Route path="/processes" element={<ProcessListPage/>}/>
         <Route path="/process/:processId" element={<ProcessPage/>}/>
-        <Route path="/process/:processId/task/:taskId" element={<TaskPage/>}/>
+        <Route path="/tasks/:taskId" element={<TaskPage/>}/>
         <Route path="/employees" element={<EmployeeListPage/>}/>
         <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
         //TODO: remove this route once demo is deleted

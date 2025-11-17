@@ -101,7 +101,7 @@ public class TaskController {
             Task task = TaskMapper.fromTaskDTO(taskDto);
             // Recursively assign employees to this task and all subtasks
             assignEmployeesRecursively(task, taskDto);
-            Task saved = taskService.create(processId, task);
+            Task saved = taskService.create(processId, task, taskDto.getParentTaskId());
             return ResponseEntity.status(HttpStatus.CREATED).body(TaskMapper.toTaskDTO(saved));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -121,7 +121,7 @@ public class TaskController {
             Task updatedTask = TaskMapper.fromTaskDTO(updatedTaskDto);
             // Recursively assign employees to this task and all subtasks
             assignEmployeesRecursively(updatedTask, updatedTaskDto);
-            return taskService.update(id, updatedTask)
+            return taskService.update(id, updatedTask, updatedTaskDto.getParentTaskId())
                 .map(TaskMapper::toTaskDTO)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -138,9 +138,14 @@ public class TaskController {
      * @return 204 No Content if deleted, 404 if not found
      */
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        return taskService.delete(id)
-            ? ResponseEntity.noContent().build()
-            : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            return taskService.delete(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalArgumentException ex) {
+            // Deletion blocked (e.g., task has subtasks) -> 400 Bad Request
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     /**

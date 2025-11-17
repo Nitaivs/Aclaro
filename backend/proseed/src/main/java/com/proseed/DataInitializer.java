@@ -134,6 +134,56 @@ public class DataInitializer implements CommandLineRunner {
         task3.setProcess(process2);
         task3.setEmployees(new HashSet<>(List.of(carol)));
 
+        Task subTask1 = new Task();
+        subTask1.setTaskName("Sub Task");
+        subTask1.setTaskDescription("This is a sub-task of Design API.");
+        subTask1.setCompleted(false);
+        subTask1.setProcess(process1);
+        subTask1.setParentTask(task1);
+
+        if (task1.getSubTasks() == null) {
+            task1.setSubTasks(new HashSet<>());
+        }
+        task1.getSubTasks().add(subTask1);
+
+        Task subTask2 = new Task();
+        subTask2.setTaskName("Sub Task 2");
+        subTask2.setTaskDescription("This is another sub-task of Design API.");
+        subTask2.setCompleted(false);
+        subTask2.setProcess(process1);
+        subTask2.setParentTask(task1);
+        task1.getSubTasks().add(subTask2);
+
+        Task subTask3 = new Task();
+        subTask3.setTaskName("Sub Task 3");
+        subTask3.setTaskDescription("This is a sub-task of sub task 1.");
+        subTask3.setCompleted(false);
+        subTask3.setProcess(process1);
+        subTask3.setParentTask(subTask1);
+        if (subTask1.getSubTasks() == null) {
+            subTask1.setSubTasks(new HashSet<>());
+        }
+        subTask1.getSubTasks().add(subTask3);
+
+        Task subTask4 = new Task();
+        subTask4.setTaskName("Sub Task 4");
+        subTask4.setTaskDescription("This is a sub-task of sub task 2.");
+        subTask4.setCompleted(false);
+        subTask4.setProcess(process1);
+        subTask4.setParentTask(subTask3);
+        if (subTask3.getSubTasks() == null) {
+            subTask3.setSubTasks(new HashSet<>());
+        }
+        subTask3.getSubTasks().add(subTask4);
+
+        Task subTask5 = new Task();
+        subTask5.setTaskName("Sub Task 5");
+        subTask5.setTaskDescription("This is a sub-task of sub task 2.");
+        subTask5.setCompleted(false);
+        subTask5.setProcess(process1);
+        subTask5.setParentTask(subTask3);
+        subTask3.getSubTasks().add(subTask5);
+
         taskRepository.saveAll(List.of(task1, task2, task3));
     }
 }
