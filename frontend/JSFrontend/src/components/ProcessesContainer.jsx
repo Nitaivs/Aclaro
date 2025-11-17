@@ -69,7 +69,6 @@ export default function ProcessesContainer() {
           <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
         </div>
       </Dialog>
-
       <ul>
         {processes.map((process) => (
           <li key={process.processId}>
