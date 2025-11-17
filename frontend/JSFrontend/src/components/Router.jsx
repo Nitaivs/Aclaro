@@ -7,6 +7,10 @@ import EmployeePage from "./EmployeePage.jsx";
 import ProcessListPage from "./ProcessListPage.jsx";
 import Navbar from "./Navbar.jsx";
 import TaskListPage from "./TaskListPage.jsx";
+import DepartmentPage from "./DepartmentPage.jsx";
+import DepartmentListPage from "./DepartmentListPage.jsx";
+//TODO: remove this import once demo is deleted
+import ReactFlowDemo from "./ReactFlowDemo.jsx";
 
 /**
  * @component Router
@@ -27,6 +31,10 @@ export default function Router() {
         <Route path="/tasks/:taskId" element={<TaskPage/>}/>
         <Route path="/employees" element={<EmployeeListPage/>}/>
         <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
+        //TODO: remove this route once demo is deleted
+        <Route path="/rfd" element={<ReactFlowDemo/>}/>
+        <Route path="/departments/" element={<DepartmentListPage/>}/>
+        <Route path="/departments/:departmentId" element={<DepartmentPage/>} />
       </Routes>
     </BrowserRouter>
   )

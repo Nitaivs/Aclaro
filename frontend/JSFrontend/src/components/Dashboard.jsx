@@ -36,6 +36,14 @@ export default function Dashboard() {
         }>Log State
         </button>
       </div>
+      <div>
+        <Link to="/departments/">
+          <button style={
+            {fontSize: '20px', padding: '10px 20px', marginTop: '20px'}
+          }>Department List
+          </button>
+        </Link>
+      </div>
     </>
   )
 }
