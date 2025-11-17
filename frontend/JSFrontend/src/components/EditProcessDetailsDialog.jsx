@@ -14,12 +14,16 @@ import {useState, useEffect} from 'react';
 export default function EditProcessDetailsDialog({currentName, currentDescription, onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState(currentName || "");
   const [descriptionInput, setDescriptionInput] = useState(currentDescription || "");
-  const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
   const [nameError, setNameError] = useState(false);
+  const [defaultName, setDefaultName] = useState(currentName || "")
+  const [defaultDescription, setDefaultDescription] = useState(currentDescription || "")
 
   useEffect(() => {
-    setIsDialogOpen(isOpen);
-  }, [isOpen]);
+    setDefaultName(currentName);
+    setDefaultDescription(currentDescription);
+    setNameInput(currentName);
+    setDescriptionInput(currentDescription);
+  }, [currentName, currentDescription]);
 
   /**
    * @function handleOnSave
@@ -38,11 +42,18 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
     }
     setNameError(false);
     onSave(nameInput, descriptionInput);
+    handleOnClose();
+  }
+
+  function handleOnClose() {
+    setNameInput(currentName || "");
+    setDescriptionInput(currentDescription || "");
+    setNameError(false);
     onClose();
   }
 
   return (
-    <Dialog open={isDialogOpen}>
+    <Dialog open={isOpen}>
       <DialogTitle>Edit Process Details</DialogTitle>
       <DialogContent>
         <TextField
@@ -54,7 +65,7 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
           variant="outlined"
           error={nameError}
           helperText={nameError ? "Process name is required" : ""}
-          defaultValue={currentName || ''}
+          defaultValue={defaultName || ''}
           onChange={(e) => setNameInput(e.target.value)}
         />
 
@@ -64,7 +75,7 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
           type="text"
           fullWidth
           variant="outlined"
-          defaultValue={currentDescription || ''}
+          defaultValue={defaultDescription || ''}
           onChange={(e) => setDescriptionInput(e.target.value)}
         />
 
@@ -75,10 +86,7 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
         </button>
 
         <button onClick={() => {
-          setNameInput(currentName || "");
-          setDescriptionInput(currentDescription || "");
-          setNameError(false);
-          onClose();
+          handleOnClose();
         }}>
           Cancel
         </button>
