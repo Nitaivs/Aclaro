@@ -52,7 +52,7 @@ export function TaskProvider({children}) {
     try {
       console.log("Fetching all tasks from DB");
       const response = await axios.get(`${BASE_URL}tasks`);
-      console.log(response);
+      console.log(`Tasks:`, response.data)
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks from DB:", error);

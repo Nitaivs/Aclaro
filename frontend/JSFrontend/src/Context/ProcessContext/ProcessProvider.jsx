@@ -51,7 +51,7 @@ export function ProcessProvider({children}) {
     try {
       console.log("Fetching all processes from DB");
       const response = await axios.get(`${BASE_URL}processes`);
-      console.log(response);
+      console.log(`Processes:`, response.data);
       setProcesses(response.data);
     } catch (error) {
       console.error("Error fetching processes from DB:", error);
