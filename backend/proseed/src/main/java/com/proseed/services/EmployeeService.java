@@ -15,4 +15,6 @@ public interface EmployeeService {
      */
     Optional<EmployeeDTO> updatePartial(Long id, EmployeeDTO patch);
     boolean delete(Long id);
+    com.proseed.entities.Department addDepartmentToEmployee(Employee employee, Long departmentId);
+    com.proseed.entities.Role addRoleToEmployee(Employee employee, Long roleId);
 }

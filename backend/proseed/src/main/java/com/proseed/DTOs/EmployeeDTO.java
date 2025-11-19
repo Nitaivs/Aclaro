@@ -15,6 +15,6 @@ public class EmployeeDTO {
     private String firstName;
     private String lastName;
     private Long departmentId;
-    private String roleName;
+    private Long roleId;
     private List<String> skills;
 }

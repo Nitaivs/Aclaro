@@ -7,10 +7,12 @@ import com.proseed.entities.EmployeeSkill;
 import com.proseed.repos.DepartmentRepository;
 import com.proseed.repos.EmployeeRepository;
 import com.proseed.repos.EmployeeSkillRepository;
+import com.proseed.entities.Role;
 import com.proseed.repos.RoleRepository;
 import com.proseed.services.EmployeeService;
 import com.proseed.entities.Task;
 import com.proseed.repos.TaskRepository;
+import com.proseed.entities.Department;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -81,24 +83,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public Optional<EmployeeDTO> updatePartial(Long id, EmployeeDTO patch) {
+        if (id == null || patch == null) {
+            throw new IllegalArgumentException("ID and patch data must not be null");
+        }
         return repository.findById(id).map(existing -> {
             if (patch.getFirstName() != null) existing.setFirstName(patch.getFirstName());
             if (patch.getLastName() != null) existing.setLastName(patch.getLastName());
-            if (patch.getDepartmentId() != null) {
-                existing.setDepartment(
-                departmentRepository.findById(patch.getDepartmentId())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                        "Department not found with id " + patch.getDepartmentId()))
-                );
-            }
-            if (patch.getRoleName() != null) {
-                existing.getRole().setRoleName(patch.getRoleName());
-                //TODO
-            }
+            if (patch.getDepartmentId() != null) addDepartmentToEmployee(existing, patch.getDepartmentId());
+            if (patch.getRoleId() != null) addRoleToEmployee(existing, patch.getRoleId());
             if (patch.getSkills() != null) {
-
             }
-
             Employee saved = repository.save(existing);
             return EmployeeMapper.toEmployeeDTO(saved);
         });
@@ -130,9 +124,51 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employeeSkillRepository.save(skill);
             }
             employee.getEmployeeSkills().clear();
-            repository.save(employee); // Flush join table
+            repository.save(employee);
         }
         repository.delete(employee);
         return true;
+    }
+
+    @Override
+    @Transactional
+    /**
+     * Assigns a department to an employee.
+     * @param employee The employee to whom the department will be assigned.
+     * @param departmentId The ID of the department to assign.
+     * @return The assigned Department entity.
+     * @throws EntityNotFoundException if the department does not exist.
+     */
+    public Department addDepartmentToEmployee(Employee employee, Long departmentId) {
+        Department department = departmentRepository.findById(departmentId).orElseThrow(() ->
+            new EntityNotFoundException("Department not found with id " + departmentId));
+
+        employee.setDepartment(department);
+        repository.save(employee);
+        return department;
+    }
+
+    @Override
+    @Transactional
+    /**
+     * Assigns a role to an employee.
+     * @param employee The employee to whom the role will be assigned.
+     * @param roleId The ID of the role to assign.
+     * @return The assigned Role entity.
+     * @throws EntityNotFoundException if the role does not exist.
+     */
+    public Role addRoleToEmployee(Employee employee, Long roleId) {
+        Role role = roleRepository.findById(roleId).orElseThrow(() ->
+            new EntityNotFoundException("Role not found with id " + roleId));
+        Role oldRole = employee.getRole();
+        if (oldRole != null) {
+            oldRole.getEmployees().remove(employee);
+            roleRepository.save(oldRole);
+        }
+        employee.setRole(role);
+        role.getEmployees().add(employee);
+        roleRepository.save(role);
+        repository.save(employee);
+        return role;
     }
 }
