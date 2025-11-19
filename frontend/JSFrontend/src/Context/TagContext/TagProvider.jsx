@@ -11,7 +11,7 @@ import axios from "axios";
  */
 export function TagProvider({children}) {
   const [departments, setDepartments] = useState([]);
-  const [Skills, setSkills] = useState([]);
+  const [skills, setSkills] = useState([]);
 
   const [initialized, setInitialized] = useState(false);
   const BASE_URL = "http://localhost:8080/api/";
@@ -114,6 +114,7 @@ export function TagProvider({children}) {
   return (
     <TagContext.Provider value={{
       departments,
+      skills,
       initializeTagsFromDB,
       fetchAllDepartments,
       addDepartment,
