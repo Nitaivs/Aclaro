@@ -8,6 +8,7 @@ import {EmployeeProvider} from "./Context/EmployeeContext/EmployeeProvider.jsx"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    {/*TODO: refactor context providers placement (?)*/}
     <ProcessProvider>
       <TaskProvider>
         <EmployeeProvider>
