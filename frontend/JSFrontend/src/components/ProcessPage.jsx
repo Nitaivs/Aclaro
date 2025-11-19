@@ -204,11 +204,6 @@ export default function ProcessPage() {
       <div>
         <p>Invalid process ID</p>
         <p>{parsedProcessId}</p>
-        <Link to="/processes">
-          <button>
-            Return to Processes
-          </button>
-        </Link>
       </div>
     )
   }
@@ -217,48 +212,27 @@ export default function ProcessPage() {
     return (
       <div>
         <p>Process not found</p>
-        <Link to="/processes">
-          <button>
-            Return to Processes
-          </button>
-        </Link>
       </div>
     )
   }
 
   return (
-    <div>
-      <Link to="/processes">
-        <button>
-          Return to Processes
-        </button>
-      </Link>
-      {/*<h1>{foundProcess.processName}</h1>*/}
-      {/*<p>Process ID: {foundProcess.processId}</p>*/}
-      {/*<p>Description: {foundProcess.processDescription}</p>*/}
-      <div>
-        <button onClick={() => setIsProcessDetailsDialogOpen(true)}>
-          Edit Process Details
-        </button>
-        <EditProcessDetailsDialog
-          currentName={foundProcess.processName}
-          currentDescription={foundProcess.processDescription}
-          onSave={handleUpdateProcess}
-          isOpen={isProcessDetailsDialogOpen}
-          onClose={() => setIsProcessDetailsDialogOpen(false)}
-        />
+    <div style={{marginLeft: '240px'}}>
+      <div style={{padding: '20px'}}>
+        <h1>{foundProcess.processName}</h1>
+        <p>Process ID: {foundProcess.processId}</p>
+        <p>Description: {foundProcess.processDescription}</p>
+          <button onClick={() => setIsProcessDetailsDialogOpen(true)}>
+            Edit Process Details
+          </button>
+          <EditProcessDetailsDialog
+            currentName={foundProcess.processName}
+            currentDescription={foundProcess.processDescription}
+            onSave={handleUpdateProcess}
+            isOpen={isProcessDetailsDialogOpen}
+            onClose={() => setIsProcessDetailsDialogOpen(false)}
+          />
       </div>
-
-      {/*<button onClick={() => {*/}
-      {/*  setIsTaskDetailsDialogOpen(true)*/}
-      {/*}}>*/}
-      {/*  Add Task*/}
-      {/*</button>*/}
-      {/*<AddTaskDialog*/}
-      {/*  isOpen={isTaskDetailsDialogOpen}*/}
-      {/*  onSave={handleAddTask}*/}
-      {/*  onClose={() => setIsTaskDetailsDialogOpen(false)}*/}
-      {/*/>*/}
 
       <div style={{width: '100vh', height: '100vh', border: '2px solid black', marginTop: '20px'}}>
         <ProcessOperationsProvider processId={parsedProcessId}>
@@ -272,26 +246,6 @@ export default function ProcessPage() {
           />
         </ProcessOperationsProvider>
       </div>
-
-      {/*TODO: remove after making sure it's no longer needed*/}
-      <ul>
-        {foundProcess.taskIds.map((taskId) => {
-          const task = tasks.find(t => t.taskId === taskId);
-          if (!task) {
-            return;
-          }
-          return (
-            <li key={task.taskId}>
-              <TaskCard
-                processId={parsedProcessId}
-                taskId={task.taskId}
-                taskName={task.taskName}
-                taskDescription={task.taskDescription}
-              />
-            </li>
-          )
-        })}
-      </ul>
     </div>
   )
 }

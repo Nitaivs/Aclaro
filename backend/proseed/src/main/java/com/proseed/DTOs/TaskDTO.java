@@ -18,4 +18,5 @@ public class TaskDTO {
     private List<Long> employeeIds;
     private List<TaskDTO> subTasks;
     private Long parentTaskId;
+    private Long processId;
 }
