@@ -7,7 +7,7 @@ import EmployeePage from "./EmployeePage.jsx";
 import ProcessListPage from "./ProcessListPage.jsx";
 import Navbar from "./Navbar.jsx";
 import TaskListPage from "./TaskListPage.jsx";
-import DepartmentListPage from "./DepartmentListPage.jsx";
+import TagListPage from "./TagListPage.jsx";
 import DepartmentPage from "./DepartmentPage.jsx";
 
 /**
@@ -29,7 +29,7 @@ export default function Router() {
         <Route path="/tasks/:taskId" element={<TaskPage/>}/>
         <Route path="/employees" element={<EmployeeListPage/>}/>
         <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
-        <Route path="/departments/" element={<DepartmentListPage/>}/>
+        <Route path="/tags/" element={<TagListPage/>}/>
         <Route path="/departments/:departmentId" element={<DepartmentPage/>} />
       </Routes>
     </BrowserRouter>
