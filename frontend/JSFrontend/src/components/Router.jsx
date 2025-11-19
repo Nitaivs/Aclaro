@@ -7,6 +7,8 @@ import EmployeePage from "./EmployeePage.jsx";
 import ProcessListPage from "./ProcessListPage.jsx";
 import Navbar from "./Navbar.jsx";
 import TaskListPage from "./TaskListPage.jsx";
+import DepartmentListPage from "./DepartmentListPage.jsx";
+import DepartmentPage from "./DepartmentPage.jsx";
 
 /**
  * @component Router
