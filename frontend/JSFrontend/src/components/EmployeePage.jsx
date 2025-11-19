@@ -6,7 +6,7 @@ import EditEmployeeDialog from "./EditEmployeeDialog.jsx";
 
 /**
  * @component EmployeePage
- * @description A page that displays the employeelist component
+ * @description A page that displays the employee's details.
  * @returns {JSX.Element} The rendered EmployeePage component.
  */
 export default function EmployeePage() {
