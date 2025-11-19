@@ -44,27 +44,19 @@ export function EmployeeProvider({children}) {
    * @description Fetches all employees from the database and updates the state.
    * @returns {Promise<void>} A promise that resolves when the employees are fetched and state is updated.
    */
-  async function fetchAllEmployees() {
+async function fetchAllEmployees() {
     try {
-      console.log("Fetching all employees from DB");
-      //TODO: replace mock response once backend is ready
-      const response = {
-        data: [
-          {
-            firstName: "John", lastName: "Doe", id: 1
-          },
-          {
-            firstName: "Jane", lastName: "Doe", id: 2
-          }]
-      }
-      //TODO: update endpoint if needed
-      // const response = await axios.get(`${BASE_URL}employees`);
-      console.log("Employees:", response.data)
-      setEmployees(response.data);
+        console.log("Fetching all employees from DB");
+        const response = await axios.get(`${BASE_URL}employees`);
+        const data = Array.isArray(response.data) ? response.data : response.data?.employees ?? [];
+        console.log("Employees:", data);
+        setEmployees(data);
+        return data;
     } catch (error) {
-      console.error("Error fetching employees from DB:", error);
+        console.error("Error fetching employees from DB:", error);
+        throw error;
     }
-  }
+}
 
   /**
    * @function fetchEmployeeById
@@ -92,13 +84,31 @@ export function EmployeeProvider({children}) {
     }
   }
 
-  //TODO: implement adding departments to employees
-  function updateEmployee(id, updatedFields) {
-    //TODO: implement update request to backend when backend is ready
-    setEmployees(employees.map(employee =>
-      employee.id === id ? {...employee, ...updatedFields} : employee
-    ));
-  }
+  /**
+   * @function updateEmployee
+   * @description Updates an employee's details in the database.
+   * Sends a patch request and updates the state with the updated employee details.
+   * @param {*} id is the employee id to update
+   * @param {*} updatedFields - An object containing the fields to update.
+   * @returns
+   */
+    async function updateEmployee(id, updatedFields) {
+        try {
+            console.log(`Updating employee with id ${id} on DB`, updatedFields);
+            const response = await axios.patch(`${BASE_URL}employees/${id}`, updatedFields);
+            const updatedEmployee = response.data;
+            setEmployees(prev =>
+                prev.some(e => e.id === id)
+                    ? prev.map(e => (e.id === id ? updatedEmployee : e))
+                    : [...prev, updatedEmployee]
+            );
+            fetchAllEmployees()
+            return updatedEmployee;
+        } catch (error) {
+            console.error(`Error updating employee with id ${id} on DB:`, error);
+            throw error;
+        }
+    }
 
   /**
    * @function deleteEmployeeById Deletes an employee by their ID from the database.
@@ -111,6 +121,7 @@ export function EmployeeProvider({children}) {
       console.log(`Deleting employee with id ${id} from DB`);
       const response = await axios.delete(`${BASE_URL}employees/${id}`);
       console.log(response);
+      fetchAllEmployees()
       setEmployees(employees.filter(employee => employee.id !== id));
     } catch (error) {
       console.error(`Error deleting employee with id ${id} from DB:`, error);
@@ -125,22 +136,19 @@ export function EmployeeProvider({children}) {
    * @param lastName - The last name of the employee to add.
    * @returns {Promise<void>} A promise that resolves when the employee is added and state is updated.
    */
-  async function addEmployee(firstName, lastName) {
+async function addEmployee(firstName, lastName) {
     try {
-      console.log(`Adding employee with name ${name} to DB`);
-      // const response = await axios.post(`${BASE_URL}employees`, {name});
-      // console.log(response);
-      // setEmployees([...employees, response.data]);
-      //TODO: remove mock response once backend is ready
-      // const mockResponse = {data: {name: name, id: Math.floor(Math.random() * 10000)}};
-      const mockResponse = {data: {firstName: firstName, lastName: lastName, id: Math.floor(Math.random() * 10000)}};
-      console.log(mockResponse);
-      setEmployees([...employees, mockResponse.data]);
+        console.log(`Adding employee ${firstName} ${lastName} to DB`);
+        const response = await axios.post(`${BASE_URL}employees`, { firstName, lastName });
+        console.log("Added employee:", response.data);
+        setEmployees(prev => [...prev, response.data]);
+        fetchAllEmployees()
+        return response.data;
     } catch (error) {
-      console.error(`Error adding employee with name ${name} to DB:`, error);
-      throw error; // Rethrow error to inform caller
+        console.error(`Error adding employee ${firstName} ${lastName} to DB:`, error);
+        throw error;
     }
-  }
+}
 
   return (
     <EmployeeContext.Provider value={{

@@ -1,7 +1,9 @@
 import Card from '@mui/material/Card';
 import {Link} from 'react-router';
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
-import {use, useEffect} from "react";
+import {use, useEffect, useState} from "react";
+import {Dialog, DialogTitle} from "@mui/material";
+import AreYouSureDialog from "./AreYouSureDialog.jsx";
 
 /**
  * @component ProcessCard
@@ -15,6 +17,7 @@ import {use, useEffect} from "react";
 export default function ProcessCard(props) {
   const {processes, deleteProcess} = use(ProcessContext);
   const foundProcess = processes.find(p => p.processId === props.id);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   useEffect(() => {
     console.log("Processes updated:", processes);
   }, [processes]);
@@ -33,7 +36,17 @@ export default function ProcessCard(props) {
             <h2>{foundProcess.processName}</h2>
             <p>{foundProcess.processDescription}</p>
           </Link>
-          <button onClick={() => deleteProcess(foundProcess.processId)}>Delete</button>
+          <AreYouSureDialog
+            isOpen={isDialogOpen}
+            onCancel={() => setIsDialogOpen(false)}
+            title="Delete Process"
+            message={`Are you sure you want to delete the process "${foundProcess.processName}" and all associated tasks? This action cannot be undone.`}
+            onConfirm={async () => {
+              await deleteProcess(props.id);
+              setIsDialogOpen(false);
+            }}
+          />
+          <button onClick={() => setIsDialogOpen(true)}>delete</button>
         </Card>
       </div>
     );
