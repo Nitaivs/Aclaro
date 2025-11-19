@@ -1,4 +1,4 @@
-import {useContext, useState} from "react";
+import {useContext, useState, useMemo, useEffect} from "react";
 import {TagContext} from "../Context/TagContext/TagContext.jsx";
 import AddDepartmentDialog from "./AddDepartmentDialog.jsx";
 import {Link} from "react-router";
@@ -19,14 +19,29 @@ import Collapse from "@mui/material/Collapse";
 
 
 export default function TagListPage() {
-  const {departments, addDepartment, deleteDepartmentById} = useContext(TagContext);
+  const {departments, skills, addDepartment, deleteDepartmentById} = useContext(TagContext);
   const [isAddDepartmentDialogOpen, setIsAddDepartmentDialogOpen] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [filterString, setFilterString] = useState("");
   const [removeMode, setRemoveMode] = useState(false);
 
-  const filtered = (departments || []).filter(dep => `${dep?.name || ''}`.toLowerCase().includes(filterString.trim().toLowerCase()));
+  // Combine departments and skills into a single array with type indicators
+  const combinedTags = useMemo (() => {
+    const departmentsWithType = (departments || []).map(dept => ({...dept, type: 'department'}));
+    const skillsWithType = (skills || []).map(skill => ({...skill, type: 'skill'}));
+    return [...departmentsWithType, ...skillsWithType];
+  }, [departments, skills]);
+
+  const filtered = useMemo(() => {
+    const query = (filterString || "").trim().toLowerCase();
+    return combinedTags.filter(tag => {
+      // Determine name based on tag type. If type is 'department', use departmentName, else use skillName.
+      // If neither exists, default to an empty string.
+      const name = (tag.type === 'department' ? tag.departmentName : tag.skillName) || "";
+      return name.toLowerCase().includes(query);
+    });
+  }, [combinedTags, filterString]);
 
   /**
    * @function handleAddDepartment
@@ -72,7 +87,7 @@ export default function TagListPage() {
 
       <h1>Tag list</h1>
       <button onClick={() => setIsAddDepartmentDialogOpen(true)}>
-        Add department
+        Add tag
       </button>
       <button onClick={() => setRemoveMode(!removeMode)}>
         {removeMode ? "Exit" : "Remove Departments"}
@@ -112,14 +127,14 @@ export default function TagListPage() {
           {filtered.length === 0 ? (
             <ListItem>
               <ListItemText
-                primary="No departments found"
-                secondary={filterString ? `No departments match "${filterString}".` : "There are currently no department to display."}
+                primary="No tags found"
+                secondary={filterString ? `No tags match "${filterString}".` : "There are currently no tags to display."}
               />
             </ListItem>
           ) : (
-            filtered.map((dep, idx) => (
-              <div key={dep.id ?? idx}>
-                <Link to={`/departments/${dep.id}`}>
+            filtered.map((tag, idx) => (
+              <div key={tag.id ?? idx}>
+                <Link to={`/departments/${tag.departmentId}`}>
                   <ListItem
                     alignItems="flex-start"
                     secondaryAction={
@@ -130,7 +145,7 @@ export default function TagListPage() {
                           color="error"
                           onClick={(e) => {
                             e.preventDefault();
-                            handleDeleteDepartment(dep.id);
+                            handleDeleteDepartment(tag.id);
                           }}
                         >
                           X
@@ -139,11 +154,8 @@ export default function TagListPage() {
                     }
                   />
                   <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                      <Avatar></Avatar>
-                    </ListItemAvatar>
                     <p>
-                      {dep.name}
+                      {tag.departmentName || tag.skillName}
                     </p>
                   </ListItem>
                   {idx < filtered.length - 1 && <Divider component="li"/>}
