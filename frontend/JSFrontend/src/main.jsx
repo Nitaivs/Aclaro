@@ -5,6 +5,7 @@ import App from './App.jsx'
 import {ProcessProvider} from "./Context/ProcessContext/ProcessProvider.jsx";
 import {TaskProvider} from "./Context/TaskContext/TaskProvider.jsx"
 import {EmployeeProvider} from "./Context/EmployeeContext/EmployeeProvider.jsx"
+import {TagProvider} from "./Context/TagContext/TagProvider.jsx";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -12,7 +13,9 @@ createRoot(document.getElementById('root')).render(
     <ProcessProvider>
       <TaskProvider>
         <EmployeeProvider>
-          <App/>
+          <TagProvider>
+            <App/>
+          </TagProvider>
         </EmployeeProvider>
       </TaskProvider>
     </ProcessProvider>
