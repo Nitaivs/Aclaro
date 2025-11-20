@@ -22,6 +22,16 @@ export default function ProcessCard(props) {
     console.log("Processes updated:", processes);
   }, [processes]);
 
+  function handleDeleteProcess() {
+    try {
+      deleteProcess(props.id);
+      setIsDialogOpen(false);
+    } catch (error) {
+      //TODO: add error alert to UI
+      console.error("Error deleting process:", error);
+    }
+  }
+
   if (!foundProcess) {
     return (
       <div>
@@ -45,6 +55,7 @@ export default function ProcessCard(props) {
               await deleteProcess(props.id);
               setIsDialogOpen(false);
             }}
+            onConfirm={() => handleDeleteProcess()}
           />
           <button onClick={() => setIsDialogOpen(true)}>delete</button>
         </Card>
