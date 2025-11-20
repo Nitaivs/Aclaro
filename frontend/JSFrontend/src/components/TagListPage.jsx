@@ -129,8 +129,8 @@ export default function TagListPage() {
             </ListItem>
           ) : (
             filtered.map((tag, idx) => (
-              <div key={tag.id ?? idx}>
-                <Link to={`/tags/${tag.type}/${tag.departmentId || tag.skillId}`} style={{textDecoration: 'none', color: 'inherit'}}>
+              <div key={`${tag.type}-${tag.id}`}>
+                <Link to={`/tags/${tag.type}/${tag.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
                   <ListItem
                     alignItems="flex-start"
                     secondaryAction={
@@ -151,7 +151,7 @@ export default function TagListPage() {
                   />
                   <ListItem alignItems="flex-start">
                     <p>
-                      {tag.departmentName || tag.skillName}
+                      {tag.name}
                     </p>
                   </ListItem>
                   {idx < filtered.length - 1 && <Divider component="li"/>}
