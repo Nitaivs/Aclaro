@@ -103,7 +103,7 @@ export function TaskProvider({children}) {
       console.log("Updating task with ID:", taskId, "with fields:", updatedFields);
       const response = await axios.put(`${BASE_URL}tasks/${taskId}`, updatedFields);
       console.log("Updated task:", response.data);
-      setTasks(tasks.map(t => t.taskId === taskId ? response.data : t));
+      setTasks(tasks.map(t => t.id === taskId ? response.data : t));
     } catch (error) {
       console.error("Error updating task in DB:", error);
     }
