@@ -56,11 +56,11 @@ public class TaskMapper {
     public static Task fromTaskDTO(TaskDTO dto) {
         Task t = new Task();
         // preserve id when provided so service can resolve existing entities
-        if (dto.getTaskId() != null) {
-            t.setId(dto.getTaskId());
+        if (dto.getId() != null) {
+            t.setId(dto.getId());
         }
-        t.setName(dto.getTaskName());
-        t.setDescription(dto.getTaskDescription());
+        t.setName(dto.getName());
+        t.setDescription(dto.getDescription());
         t.setCompleted(dto.getCompleted() != null ? dto.getCompleted() : false);
 
         // map subtasks recursively
