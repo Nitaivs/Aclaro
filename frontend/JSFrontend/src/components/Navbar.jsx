@@ -38,6 +38,11 @@ export default function Navbar() {
             Employees
           </button>
         </Link>
+        <Link to="/tags">
+          <button>
+            Tags
+          </button>
+        </Link>
       </div>
     </nav>
   )
