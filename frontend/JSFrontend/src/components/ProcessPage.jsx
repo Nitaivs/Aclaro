@@ -34,7 +34,7 @@ export default function ProcessPage() {
   const {processId} = useParams();
   const {processes, updateProcess} = use(ProcessContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
-  const foundProcess = processes.find(p => p.processId === parsedProcessId);
+  const foundProcess = processes.find(p => p.id === parsedProcessId);
   const {tasks} = use(TaskContext);
   const [associatedTasks, setAssociatedTasks] = useState([]);
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
@@ -67,7 +67,7 @@ export default function ProcessPage() {
     }
     const associated = [];
     for (const taskId of foundProcess.taskIds) {
-      const task = tasks.find(t => t.taskId === taskId);
+      const task = tasks.find(t => t.id === taskId);
       if (task) {
         associated.push(task);
       }
@@ -88,25 +88,25 @@ export default function ProcessPage() {
 
     function buildTree() {
       const rootNode = {
-        id: `process-${foundProcess.processId}`,
+        id: `process-${foundProcess.id}`,
         type: 'processNode',
-        data: {label: foundProcess.processName},
+        data: {label: foundProcess.name},
         children: []
       }
 
-      const taskMap = new Map(associatedTasks.map(task => [task.taskId, task]))
+      const taskMap = new Map(associatedTasks.map(task => [task.id, task]))
 
       function buildSubtree(task) {
         const node = {
-          id: `task-${task.taskId}`,
+          id: `task-${task.id}`,
           type: 'taskNode',
-          data: {label: task.taskName, taskId: task.taskId},
+          data: {label: task.name, taskId: task.id},
           children: []
         };
 
         if (task.subTasks && task.subTasks.length > 0) {
           for (const subTask of task.subTasks) {
-            const fullSubTask = taskMap.get(subTask.taskId);
+            const fullSubTask = taskMap.get(subTask.id);
             if (fullSubTask) {
               node.children.push(buildSubtree(fullSubTask));
             }
@@ -174,8 +174,8 @@ export default function ProcessPage() {
    */
   function handleUpdateProcess(newName, newDescription) {
     updateProcess(parsedProcessId, {
-      processName: newName || foundProcess.processName,
-      processDescription: newDescription || foundProcess.processDescription
+      name: newName || foundProcess.name,
+      description: newDescription || foundProcess.description,
     });
     setIsProcessDetailsDialogOpen(false);
   }
@@ -219,15 +219,15 @@ export default function ProcessPage() {
   return (
     <div style={{marginLeft: '240px'}}>
       <div style={{padding: '20px'}}>
-        <h1>{foundProcess.processName}</h1>
-        <p>Process ID: {foundProcess.processId}</p>
-        <p>Description: {foundProcess.processDescription}</p>
+        <h1>{foundProcess.name}</h1>
+        <p>Process ID: {foundProcess.id}</p>
+        <p>Description: {foundProcess.description}</p>
           <button onClick={() => setIsProcessDetailsDialogOpen(true)}>
             Edit Process Details
           </button>
           <EditProcessDetailsDialog
-            currentName={foundProcess.processName}
-            currentDescription={foundProcess.processDescription}
+            currentName={foundProcess.name}
+            currentDescription={foundProcess.description}
             onSave={handleUpdateProcess}
             isOpen={isProcessDetailsDialogOpen}
             onClose={() => setIsProcessDetailsDialogOpen(false)}
