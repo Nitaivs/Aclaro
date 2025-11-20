@@ -30,7 +30,7 @@ export default function Router() {
         <Route path="/employees" element={<EmployeeListPage/>}/>
         <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
         <Route path="/tags/" element={<TagListPage/>}/>
-        <Route path="/departments/:departmentId" element={<DepartmentPage/>} />
+        <Route path="/tags/department/:departmentId" element={<DepartmentPage/>} />
       </Routes>
     </BrowserRouter>
   )
