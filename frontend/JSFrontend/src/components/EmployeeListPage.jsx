@@ -34,7 +34,6 @@ export default function EmployeeListPage() {
     // Filter employees based on the filterString
     const filtered = employees.filter(emp => `
     ${emp?.firstName || ''} ${emp?.lastName || ''}`.toLowerCase().includes(filterString.trim().toLowerCase())
-
     );
 
     /**
@@ -131,8 +130,8 @@ export default function EmployeeListPage() {
                     ) : (
                         filtered.map((emp, idx) => (
                             console.log(emp),
-                            <div key={emp.employeeId ?? idx}>
-                                <Link to={`/employees/${emp.employeeId}`}>
+                            <div key={emp.id ?? idx}>
+                                <Link to={`/employees/${emp.id}`}>
                                     <ListItem
                                         alignItems="flex-start"
                                         secondaryAction={
@@ -143,7 +142,7 @@ export default function EmployeeListPage() {
                                                     color="error"
                                                     onClick={(e) => {
                                                         e.preventDefault();
-                                                        handleDeleteEmployee(emp.employeeId);
+                                                        handleDeleteEmployee(emp.id);
                                                     }}
                                                 >
                                                     X
