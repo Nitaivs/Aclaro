@@ -102,7 +102,7 @@ async function fetchAllEmployees() {
                     ? prev.map(e => (e.id === id ? updatedEmployee : e))
                     : [...prev, updatedEmployee]
             );
-            fetchAllEmployees()
+            await fetchAllEmployees()
             return updatedEmployee;
         } catch (error) {
             console.error(`Error updating employee with id ${id} on DB:`, error);
@@ -121,7 +121,7 @@ async function fetchAllEmployees() {
       console.log(`Deleting employee with id ${id} from DB`);
       const response = await axios.delete(`${BASE_URL}employees/${id}`);
       console.log(response);
-      fetchAllEmployees()
+      await fetchAllEmployees()
       setEmployees(employees.filter(employee => employee.id !== id));
     } catch (error) {
       console.error(`Error deleting employee with id ${id} from DB:`, error);
@@ -142,7 +142,7 @@ async function addEmployee(firstName, lastName) {
         const response = await axios.post(`${BASE_URL}employees`, { firstName, lastName });
         console.log("Added employee:", response.data);
         setEmployees(prev => [...prev, response.data]);
-        fetchAllEmployees()
+        await fetchAllEmployees()
         return response.data;
     } catch (error) {
         console.error(`Error adding employee ${firstName} ${lastName} to DB:`, error);
