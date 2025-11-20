@@ -14,10 +14,12 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState("");
   const [nameError, setNameError] = useState(false);
   const [selectedType, setSelectedType] = useState("department");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function handleOnSave() {
     if (!nameInput) {
       setNameError(true);
+      setErrorMessage("Tag name is required");
       return;
     }
     onSave(nameInput);
