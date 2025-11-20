@@ -53,7 +53,7 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
           variant="outlined"
           required={true}
           error={nameError}
-          helperText={nameError ? "Tag name is required" : ""}
+          helperText={nameError ? errorMessage : ""}
           value={nameInput}
           onChange={(e) => setNameInput(e.target.value)}
         />
