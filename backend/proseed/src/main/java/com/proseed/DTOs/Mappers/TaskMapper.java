@@ -47,7 +47,7 @@ public class TaskMapper {
             employeeIds,
             subTasks,
             task.getParentTask() != null ? task.getParentTask().getId() : null,
-            task.getProcess() != null ? task.getProcess().getProcessId() : null
+            task.getProcess() != null ? task.getProcess().getId() : null
         );
 
         return dto;

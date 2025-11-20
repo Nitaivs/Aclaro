@@ -47,7 +47,7 @@ public class SkillServiceImpl implements SkillService {
     @Transactional
     public Optional<EmployeeSkill> update(Long id, EmployeeSkill skill) {
         return repository.findById(id).map(existing -> {
-            existing.setSkillName(skill.getSkillName());
+            existing.setName(skill.getName());
             return repository.save(existing);
         });
     }

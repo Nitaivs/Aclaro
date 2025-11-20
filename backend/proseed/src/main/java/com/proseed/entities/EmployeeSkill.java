@@ -16,10 +16,10 @@ public class EmployeeSkill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "skill_id", nullable = false, unique = true)
-    private Long skillId;
+    private Long id;
 
     @Column(nullable = false, length = 40)
-    private String skillName;
+    private String name;
 
     @ManyToMany(mappedBy = "employeeSkills", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude

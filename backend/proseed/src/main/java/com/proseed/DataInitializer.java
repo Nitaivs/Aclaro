@@ -47,13 +47,13 @@ public class DataInitializer implements CommandLineRunner {
 
         // Employee Skills
     EmployeeSkill javaSkill = new EmployeeSkill();
-    javaSkill.setSkillName("Java");
+    javaSkill.setName("Java");
     EmployeeSkill springSkill = new EmployeeSkill();
-    springSkill.setSkillName("Spring Boot");
+    springSkill.setName("Spring Boot");
     EmployeeSkill sqlSkill = new EmployeeSkill();
-    sqlSkill.setSkillName("SQL");
+    sqlSkill.setName("SQL");
     EmployeeSkill reactSkill = new EmployeeSkill();
-    reactSkill.setSkillName("React");
+    reactSkill.setName("React");
     employeeSkillRepository.saveAll(List.of(javaSkill, springSkill, sqlSkill, reactSkill));
 
         // Departments
@@ -104,11 +104,11 @@ public class DataInitializer implements CommandLineRunner {
 
         // Processes
     ProcessEntity process1 = new ProcessEntity();
-    process1.setProcessName("Backend Development");
-    process1.setProcessDescription("Sample description abc123");
+    process1.setName("Backend Development");
+    process1.setDescription("Sample description abc123");
     ProcessEntity process2 = new ProcessEntity();
-    process2.setProcessName("Frontend Development");
-    process2.setProcessDescription("Sample description xyz789");
+    process2.setName("Frontend Development");
+    process2.setDescription("Sample description xyz789");
     processRepository.saveAll(List.of(process1, process2));
 
         // Tasks

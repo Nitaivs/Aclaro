@@ -16,9 +16,9 @@ public class ProcessMapper {
      */
     public static ProcessDTO toDTO(ProcessEntity processEntity) {
         return new ProcessDTO(
-            processEntity.getProcessId(),
-            processEntity.getProcessName(),
-            processEntity.getProcessDescription(),
+            processEntity.getId(),
+            processEntity.getName(),
+            processEntity.getDescription(),
             /* If tasks exist, maps their IDs. Otherwise, returns an empty list. */
             processEntity.getTasks() != null
                 ? processEntity.getTasks().stream().map(Task::getId)
@@ -35,7 +35,7 @@ public class ProcessMapper {
                 .collect(Collectors.toList())
             : List.of();
         return new ProcessWithTaskInfoDTO(
-            processEntity.getProcessId(),
+            processEntity.getId(),
             taskDtos
         );
     }

@@ -15,13 +15,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ProcessEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long processId;
+    private Long id;
 
     @Column(nullable = false)
-    private String processName;
+    private String name;
 
     @Column(nullable = true, length = 1000)
-    private String processDescription;
+    private String description;
 
 
     @JsonIgnore

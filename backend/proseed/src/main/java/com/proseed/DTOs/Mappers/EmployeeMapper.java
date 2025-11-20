@@ -16,7 +16,7 @@ public class EmployeeMapper {
             employee.getRole() != null ? employee.getRole().getRoleId() : null,
             employee.getEmployeeSkills() != null ?
                 employee.getEmployeeSkills().stream()
-                        .map(EmployeeSkill::getSkillId)
+                        .map(EmployeeSkill::getId)
                         .collect(Collectors.toList())
                     : List.of()
         );
