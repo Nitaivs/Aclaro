@@ -83,9 +83,7 @@ export function TagProvider({children}) {
   async function addDepartment(name) {
     try {
       console.log(`Adding department with name ${name} to DB`);
-      // const response = await axios.post(`${BASE_URL}departments`, {name});
-      //TODO: remove mock response once backend is ready
-      const response = {data: [{name: name, id: Math.floor(Math.random() * 10000) }]}
+      const response = await axios.post(`${BASE_URL}departments`, {name});
       console.log(response);
       setDepartments([...departments, response.data]);
     } catch (error) {
