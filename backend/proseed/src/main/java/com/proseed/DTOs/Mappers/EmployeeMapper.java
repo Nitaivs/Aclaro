@@ -13,10 +13,10 @@ public class EmployeeMapper {
             employee.getFirstName(),
             employee.getLastName(),
             employee.getDepartment() != null ? employee.getDepartment().getDepartmentId() : null,
-            employee.getRole() != null ? employee.getRole().getRoleName() : "",
+            employee.getRole() != null ? employee.getRole().getRoleId() : null,
             employee.getEmployeeSkills() != null ?
                 employee.getEmployeeSkills().stream()
-                        .map(EmployeeSkill::getSkillName)
+                        .map(EmployeeSkill::getSkillId)
                         .collect(Collectors.toList())
                     : List.of()
         );
