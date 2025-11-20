@@ -34,10 +34,7 @@ export default function TagListPage() {
   const filtered = useMemo(() => {
     const query = (filterString || "").trim().toLowerCase();
     return combinedTags.filter(tag => {
-      // Determine name based on tag type. If type is 'department', use departmentName, else use skillName.
-      // If neither exists, default to an empty string.
-      const name = (tag.type === 'department' ? tag.departmentName : tag.skillName) || "";
-      return name.toLowerCase().includes(query);
+      return tag.name.toLowerCase().includes(query);
     });
   }, [combinedTags, filterString]);
 
