@@ -78,8 +78,8 @@ export function TaskProvider({children}) {
       console.log("Adding task to DB with processId:", processId, "name:", name, "description:", description, "parentTaskId:", parentTaskId);
       const response = await axios.post(`${BASE_URL}tasks?processId=${processId}`, {
         processId: processId,
-        taskName: name,
-        taskDescription: description,
+        name,
+        description,
         parentTaskId: parentTaskId
       });
       console.log("added task", response);
