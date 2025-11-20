@@ -1,6 +1,6 @@
 import {useContext, useState, useMemo, useEffect} from "react";
 import {TagContext} from "../Context/TagContext/TagContext.jsx";
-import AddDepartmentDialog from "./AddDepartmentDialog.jsx";
+import AddTagDialog from "./AddTagDialog.jsx";
 import {Link} from "react-router";
 import {
   Alert,
@@ -18,7 +18,7 @@ import Collapse from "@mui/material/Collapse";
 
 export default function TagListPage() {
   const {departments, skills, addDepartment, deleteDepartmentById} = useContext(TagContext);
-  const [isAddDepartmentDialogOpen, setIsAddDepartmentDialogOpen] = useState(false);
+  const [isAddTagDialogOpen, setIsAddDepartmentDialogOpen] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [filterString, setFilterString] = useState("");
@@ -91,8 +91,8 @@ export default function TagListPage() {
         {removeMode ? "Exit" : "Remove Departments"}
       </button>
 
-      <AddDepartmentDialog
-        isOpen={isAddDepartmentDialogOpen}
+      <AddTagDialog
+        isOpen={isAddTagDialogOpen}
         onSave={handleAddDepartment}
         onClose={() => setIsAddDepartmentDialogOpen(false)}
       />
@@ -132,7 +132,7 @@ export default function TagListPage() {
           ) : (
             filtered.map((tag, idx) => (
               <div key={tag.id ?? idx}>
-                <Link to={`/departments/${tag.departmentId}`}>
+                <Link to={`/tags/${tag.type}/${tag.departmentId || tag.skillId}`} style={{textDecoration: 'none', color: 'inherit'}}>
                   <ListItem
                     alignItems="flex-start"
                     secondaryAction={
