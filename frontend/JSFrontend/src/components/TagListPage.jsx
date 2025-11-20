@@ -42,7 +42,8 @@ export default function TagListPage() {
    * @function handleAddDepartment
    * @description Handles the addition of a new department.
    * Calls the addDepartment function from TagContext and manages error handling.
-   * @param name - The name of the new department.
+   * @param {string} type - The type of tag to add ("department" or "skill").
+   * @param {string} name - The name of the new department.
    * @returns {Promise<void>} A promise that resolves when the department is added or an error occurs.
    */
   async function handleAddDepartment(type, name) {
