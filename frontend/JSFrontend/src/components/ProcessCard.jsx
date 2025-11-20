@@ -10,7 +10,6 @@ import AreYouSureDialog from "./AreYouSureDialog.jsx";
  * The card serves as a link to the detailed process page.
  * @param props The properties for the ProcessCard component.
  * @param {int} props.id The ID of the process.
- * @param {string} props.processName The name of the process.
  * @returns {JSX.Element} The rendered ProcessCard component.
  */
 export default function ProcessCard(props) {
