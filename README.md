@@ -9,11 +9,7 @@ This Gitlab by LRZ project is here to be utilized for **completely managing your
 So, you will use it
 
 - to create and update your **product backlog** with epics and user stories (=gitlab issues)
-
----
-
 - to agree on and maintain your **sprint backlog for each sprint**
-
 - update the **user stories and tasks within a sprint**
 
 For some hints on SCRUM in Gitlab see section further below.
@@ -42,9 +38,8 @@ The following table shows which SCRUM Artifacts translate into which Gitlab Feat
 | Points and estimation | Weights                            |
 | Product backlog       | Issue lists and Prioritized labels |
 | Sprint / iteration    | Milestones                         |
-
-| Burndown chart | Burndown charts |
-| Agile board | Issue boards |
+| Burndown chart        | Burndown charts                    |
+| Agile board           | Issue boards                       |
 
 ## Backend - Running locally
 
@@ -57,7 +52,6 @@ This repository contains a Spring Boot backend in `backend/proseed`. The backend
 Prerequisites
 
 - Java 21 (or compatible JDK used by the project)
-
 - Gradle (wrapper included) - use the included `gradlew`
 - MariaDB server for the `dev-maria`/`prod` profiles (if you plan to run those)
 
@@ -87,406 +81,28 @@ Flyway troubleshooting
 
 delete history from the database for a quick fix
 
----
-
 # API endpoints - how to test
 
 ## Base URL
 
-All endpoints are mounted under the /api prefix when running locally (default):
-
 http://localhost:8080/api
 
-Make sure the backend is running (from `backend/proseed`):
-
-```bash
-./gradlew bootRun
-```
+(Ensure the app is running via `.\gradlew.bat bootRun`.)
 
 ---
 
-## Endpoints (detailed)
-
-Notes:
-
-- All endpoints return JSON when successful and set appropriate HTTP status codes.
-- Common error responses used by the API:
-  - 400 Bad Request — validation failure or missing/invalid query parameters (for example missing processId when creating a task).
-  - 404 Not Found — resource with the requested id doesn't exist.
-  - 409 Conflict — attempted operation violates constraints (rare; e.g., delete when referenced).
-  - 500 Internal Server Error — unexpected server-side error.
-
-When testing from a browser-hosted page on a different port/origin, ensure CORS is enabled (controllers are annotated with `@CrossOrigin`).
+## Endpoints
 
 ### Processes
 
-- GET /api/processes
-
-  - Description: Return all processes as an array of ProcessDTO.
-  - Success: 200 OK, body: [ProcessDTO,...]
-  - Example ProcessDTO:
-    ```json
-    {
-      "processId": 1,
-      "processName": "Backend Development",
-      "processDescription": "...",
-      "taskIds": [1, 2, 3]
-    }
-    ```
-
-- GET /api/processes/{id}
-
-  - Description: Return a single process (top-level fields + list of task IDs).
-  - Success: 200 OK, body: ProcessDTO
-  - Not found: 404 Not Found
-
-- GET /api/processes/{id}/tasks
-
-  - Description: Return a ProcessWithTaskInfoDTO containing the process and full task DTOs (including nested subtasks).
-  - Success: 200 OK, body: ProcessWithTaskInfoDTO
-  - Not found: 404 Not Found
-  - Example ProcessWithTaskInfoDTO (truncated):
-    ```json
-    {
-      "processId": 1,
-      "processName": "Backend Development",
-      "processDescription": "...",
-      "tasks": [
-        {
-          "taskId": 1,
-          "taskName": "Design API",
-          "employeeIds": [1, 3],
-          "subTasks": []
-        }
-      ]
-    }
-    ```
-
-- POST /api/processes
-
-  - Description: Create a new process.
-  - Request body: ProcessEntity JSON. Required fields: `processName`.
-  - Success: 201 Created, body: created ProcessEntity (JSON) with assigned `processId`.
-  - Example request body:
-    ```json
-    {
-      "processName": "New Process",
-      "processDescription": "Optional description"
-    }
-    ```
-  - Errors: 400 Bad Request when required fields are missing.
-
-- PUT /api/processes/{id}
-
-  - Description: Update an existing process.
-  - Request body: ProcessEntity JSON.
-  - Success: 200 OK, body: updated ProcessDTO
-  - Not found: 404 Not Found
-
-- DELETE /api/processes/{id}
-  - Description: Delete a process.
-  - Success: 204 No Content
-  - Not found: 404 Not Found
-
----
-
-### Employees
-
-- GET /api/employees
-
-  - Description: Return all employees as EmployeeDTOs.
-  - Success: 200 OK
-  - Example EmployeeDTO:
-    ```json
-    {
-      "employeeId": 1,
-      "firstName": "Alice",
-      "lastName": "Smith",
-      "departmentId": 1,
-      "roleName": "ADMIN",
-      "skills": ["Java"]
-    }
-    ```
-
-- GET /api/employees/{id}
-
-  - Success: 200 OK, body: EmployeeDTO
-  - Not found: 404 Not Found
-
-- POST /api/employees
-
-  - Description: Create a new employee.
-  - Request body: Employee JSON (fields used by the entity/service).
-  - Success: 201 Created, body: created Employee JSON (includes `employeeId`).
-  - Errors: 400 Bad Request for invalid payload.
-
-- PUT /api/employees/{id}
-
-  - Description: Update an existing employee.
-  - Success: 200 OK (updated Employee) or 404 Not Found
-
-- PATCH /api/employees/{id}
-
-  - Description: Partially update an existing employee. Only provided fields (e.g. `firstName`, `lastName`) are changed.
-  - Success: 200 OK (updated EmployeeDTO) or 404 Not Found
-  - Example:
-    ```bash
-    curl -X PATCH "http://localhost:8080/api/employees/1" \
-      -H "Content-Type: application/json" \
-      -d '{"lastName":"Smith-Updated"}'
-    ```
-
-- PATCH /api/employees/{id}/skills
-
-  - Description: Set (replace) the employee's skills with the provided list of skill IDs. The service will update join-table associations accordingly.
-  - Request body: JSON array of skill IDs, e.g. `[1, 3, 5]`
-  - Success: 200 OK (no body)
-  - Not found: 404 Not Found if employee or any skill id does not exist.
-  - Bad request: 400 Bad Request for invalid payload.
-
-- DELETE /api/employees/{id}
-  - Success: 204 No Content or 404 Not Found
-
----
-
-### Tasks
-
-- GET /api/tasks
-
-  - Description: Return all tasks as TaskDTOs.
-  - Success: 200 OK
-  - Example TaskDTO:
-    ```json
-    {
-      "taskId": 1,
-      "taskName": "Design API",
-      "taskDescription": "...",
-      "completed": false,
-      "employeeIds": [1, 3],
-      "subTasks": []
-    }
-    ```
-
-- GET /api/tasks/{id}
-
-  - Success: 200 OK, body: TaskDTO
-  - Not found: 404 Not Found
-
-- GET /api/tasks/{id}/employees
-
-  - Description: Return TaskWithEmployeesDTO (task + list of EmployeeDTOs for assigned employees).
-  - Success: 200 OK
-  - Not found: 404 Not Found
-
-- POST /api/tasks?processId={processId}
-
-  - Description: Create a new task and attach it to an existing process.
-  - Query param: `processId` (required) — ID of the process to attach to.
-  - Request body: TaskDTO JSON.
-  - Success: 201 Created, body: created TaskDTO (includes `taskId`).
-  - Errors: 400 Bad Request when `processId` is missing or invalid; 400 for invalid body.
-
-- PUT /api/tasks/{id}
-
-  - Description: Update a task (including assigning employees and nested subtasks).
-  - Request body: TaskDTO JSON.
-  - Success: 200 OK, body: updated TaskDTO
-  - Not found: 404 Not Found
-
-  - Example: set an existing task (id=5) as a subtask of task id=2
-
-    Request (PUT /api/tasks/2) body (TaskDTO JSON):
-
-    ```json
-    {
-      "taskId": 2,
-      "taskName": "Parent Task",
-      "taskDescription": "Parent task description",
-      "completed": false,
-      "employeeIds": [1],
-      "subTasks": [
-        {
-          "taskId": 5
-        }
-      ]
-    }
-    ```
-
-    curl example:
-
-    ```bash
-    curl -v -X PUT "http://localhost:8080/api/tasks/2" \
-      -H "Content-Type: application/json" \
-      -d '{"taskId":2,"taskName":"Parent Task","taskDescription":"Parent task description","completed":false,"employeeIds":[1],"subTasks":[{"taskId":5}]}'
-    ```
-
-    Notes: the `subTasks` array accepts TaskDTOs; to attach an existing task as a subtask include its `taskId` (other fields may be omitted). The server will map the DTOs to entities and preserve the nesting. If the referenced subtask id doesn't exist the request may fail with 400/404
-
-- DELETE /api/tasks/{id}
-
-  - Success: 204 No Content
-  - Not found: 404 Not Found
-
-- DELETE /api/tasks/{taskId}/employees/{employeeId}
-  - Description: Remove a single employee assignment from a task. Idempotent; returns 204 even if the employee was not assigned.
-  - Success: 204 No Content
-  - Not found task: 404 Not Found (if the task id does not exist). Employee id not found: 404.
-  - Example:
-    ```bash
-    curl -X DELETE "http://localhost:8080/api/tasks/1/employees/3" -w "\nHTTP %{http_code}\n"
-    ```
-
----
-
-### Departments
-
-- GET /api/departments
-
-  - Description: Return all departments.
-  - Success: 200 OK, body: [Department,...]
-
-- GET /api/departments/{id}
-
-  - Description: Return single Department by id.
-  - Success: 200 OK, body: Department
-  - Not found: 404 Not Found
-
-- POST /api/departments
-
-  - Description: Create a new department.
-  - Request body: Department JSON (e.g. `{ "departmentName": "Engineering", "description": "..." }`)
-  - Success: 201 Created, body: created Department
-
-- PUT /api/departments/{id}
-
-  - Description: Update an existing department.
-  - Success: 200 OK, body: updated Department or 404 Not Found
-
-- DELETE /api/departments/{id}
-  - Description: Delete a department.
-  - Success: 204 No Content
-  - Failure: 409 Conflict if the department is referenced by employees (constraint violation) — response body contains a user-friendly message; 404 if not found.
-
----
-
-### Roles
-
-- GET /api/roles
-
-  - Description: Return all roles.
-  - Success: 200 OK
-
-- GET /api/roles/{id}
-
-  - Description: Return single Role by id.
-  - Success: 200 OK or 404 Not Found
-
-- POST /api/roles
-
-  - Description: Create a role. Request body: Role JSON (e.g. `{ "roleName": "ADMIN" }`).
-  - Success: 201 Created
-
-- PUT /api/roles/{id}
-
-  - Description: Update role.
-  - Success: 200 OK or 404 Not Found
-
-- DELETE /api/roles/{id}
-  - Description: Delete a role.
-  - Success: 204 No Content
-  - Failure: 409 Conflict if deletion is blocked by references (e.g. assigned employees)
-
----
-
-### Skills (EmployeeSkill)
-
-- GET /api/skills
-
-  - Description: Return all skills.
-  - Success: 200 OK
-
-- GET /api/skills/{id}
-
-  - Description: Return single skill by id.
-  - Success: 200 OK or 404 Not Found
-
-- POST /api/skills
-
-  - Description: Create a skill. Request body: `{ "skillName": "Java" }`.
-  - Success: 201 Created
-
-- PUT /api/skills/{id}
-
-  - Description: Update a skill.
-  - Success: 200 OK or 404 Not Found
-
-- DELETE /api/skills/{id}
-  - Description: Delete a skill. The service unlinks the skill from all employees before removing the skill record.
-  - Success: 204 No Content
-  - Not found: 404 Not Found
-
----
-
-### Task hierarchy & cycle prevention
-
-To keep the task hierarchy a proper tree, the backend actively rejects any attempt (POST or PUT) that would introduce a cycle.
-
-What is a cycle?
-
-- A task listed as a subtask of itself directly.
-- A task becoming (directly or indirectly) a child of one of its own descendants (e.g. A -> B and then updating B to have A as a subtask).
-- Repeated occurrence of the same existing task id within a single submitted subtree chain.
-
-Validation points:
-
-- On create (POST /api/tasks?processId=...) the entire submitted subtree is walked before persisting; if a cycle or duplicate reference is detected the request fails with 400.
-- On update (PUT /api/tasks/{id}) each referenced existing subtask is checked to ensure it is not an ancestor of the task being updated and not the task itself.
-
-Example invalid create payload (self-reference through nested subTasks):
-
-```json
-{
-  "taskName": "A",
-  "completed": false,
-  "subTasks": [
-    {
-      "taskId": 10,
-      "subTasks": [{ "taskId": 10 }]
-    }
-  ]
-}
-```
-
-Example invalid update attempting to make parent its own descendant:
-
-```json
-// Existing: A(taskId=2) already has subtask B(taskId=5)
-// Request tries to set A as a subtask of B
-PUT /api/tasks/5
-{
-  "taskId": 5,
-  "taskName": "B",
-  "subTasks": [ { "taskId": 2 } ]
-}
-```
-
-Error response shape (simplified):
-
-```json
-{
-  "timestamp": "2025-11-12T21:40:00Z",
-  "status": 400,
-  "error": "Bad Request",
-  "message": "Circular subtask relationship detected: task 2 cannot be a child of its descendant 5",
-  "path": "/api/tasks/5"
-}
-```
-
-If you receive a 400 with a circular message, adjust the hierarchy so that each task appears only once in any parent chain and never points back upward.
-
-Happy path reparenting strategy:
-
-1. Retrieve current tree (GET /api/processes/{id}/tasks or GET /api/tasks/{id}).
-2. Decide new parent for existing task(s).
-3. Issue PUT on the new parent including minimal subTasks array with the taskId(s) you want to attach.
-4. Verify with GET that the subtree updated as expected.
+- GET /processes
+  - Returns: List<ProcessDTO> (200 OK) or Empty list when none found.
+- GET /processes/{id}
+  - Returns: single ProcessDTO with task IDs (200 OK). 404 if not found.
+- POST /processes
+  - Creates a process. Body: ProcessEntity JSON. (processName - not nullable,
+    processDescription - nullable)
+- PUT /processes/{id}
+  - Updates a process. Body: ProcessEntity JSON. Response: 200 OK (updated DTO) or 404.
+- DELETE processes/{id}
+  - Deletes a process. Response: 204 No Content / 404 Not Found.

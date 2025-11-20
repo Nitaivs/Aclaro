@@ -1,60 +1,32 @@
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import {use, useState} from "react";
-import {ProcessOperationsContext} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
-import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
-import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
+import {useEffect, useState} from "react";
 
-export default function AddTaskDialog({isOpen, onClose, parentTaskId}) {
-  const {addTask} = use(TaskContext);
-  const {processId} = use(ProcessOperationsContext);
-  const {fetchProcessById} = use(ProcessContext);
+export default function AddTaskDialog({onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
   const [nameError, setNameError] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
 
-  //TODO: improve error handling across file
+  useEffect(() => {
+    setIsDialogOpen(isOpen);
+  }, [isOpen]);
 
-  /**
-   * @function handleAddTask
-   * @description Handles the save action for adding a new task.
-   * Calls the addTask function from context with the provided inputs.
-   * The addTask function should be passed from the ProcessPage component via context.
-   * @returns {Promise<void>}
-   */
-  async function handleAddTask() {
-    try {
-      if (!processId) {
-        console.error("No processId available in context");
-        handleOnClose();
-        return;
-      }
-      if (!nameInput) {
-        setNameError(true);
-        return;
-      }
-      console.log(`Adding task to process ${processId} with name: ${nameInput}, description: ${descriptionInput}, parentTaskId: ${parentTaskId}`);
-      const result = await addTask(processId, nameInput, descriptionInput, parentTaskId);
-      console.log("Task added successfully:", result);
-      setNameError(false);
-      //TODO: hack to refresh process task list, rewrite
-      await fetchProcessById(processId);
-      handleOnClose()
-    } catch (error) {
-      console.error("Error adding task:", error);
+  function handleOnSave() {
+    if (!nameInput) {
+      setNameError(true);
+      return;
     }
-  }
-
-  function handleOnClose() {
+    onSave(nameInput, descriptionInput);
     setNameInput("");
     setDescriptionInput("");
     onClose();
   }
 
   return (
-    <Dialog open={isOpen}>
-      <DialogTitle>Add New Task</DialogTitle>
+    <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+      <DialogTitle>Add New Process</DialogTitle>
       <div style={{padding: '0 24px 24px 24px'}}>
         <TextField
           autoFocus
@@ -78,7 +50,7 @@ export default function AddTaskDialog({isOpen, onClose, parentTaskId}) {
           value={descriptionInput}
           onChange={(e) => setDescriptionInput(e.target.value)}
         />
-        <button onClick={() => handleAddTask()}>Add</button>
+        <button onClick={() => handleOnSave()}>Add</button>
         <button onClick={() => {
           setNameInput("");
           setDescriptionInput("");

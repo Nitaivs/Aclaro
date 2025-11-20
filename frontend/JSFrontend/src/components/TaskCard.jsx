@@ -31,7 +31,7 @@ export default function TaskCard({processId, taskId, taskName, taskDescription})
   return (
     <div>
       <Card>
-        <Link to={`/tasks/${taskId}`}>
+        <Link to={`/process/${processId}/task/${taskId}`}>
           <h2>{taskName}</h2>
           <p>{taskDescription}</p>
         </Link>

@@ -14,8 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employee_id", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private Long employeeId;
 
     @Column(nullable = false)
@@ -41,8 +40,8 @@ public class Employee {
     @JsonIgnore // Prevent recursion
     @JoinTable(
         name = "employee_skills_mapping",
-        joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employee_id"),
-        inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "skill_id")
+        joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employeeId"),
+        inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "skillId")
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -53,10 +52,4 @@ public class Employee {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private EmployeeProfile profile;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Department department;
 }
