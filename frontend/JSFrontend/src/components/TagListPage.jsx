@@ -81,12 +81,6 @@ export default function TagListPage() {
 
   return (
     <div>
-      <Link to={"/"}>
-        <button>
-          Return to dashboard
-        </button>
-      </Link>
-
       <h1>Tag list</h1>
       <button onClick={() => setIsAddDepartmentDialogOpen(true)}>
         Add tag
