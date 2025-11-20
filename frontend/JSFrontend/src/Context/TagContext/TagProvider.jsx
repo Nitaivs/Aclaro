@@ -111,6 +111,18 @@ export function TagProvider({children}) {
     }
   }
 
+  async function addSkill(name) {
+    try {
+      console.log(`Adding skill with name ${name} to DB`);
+      const response = await axios.post(`${BASE_URL}skills`, {name});
+      console.log(response);
+      setSkills([...skills, response.data]);
+    } catch (error) {
+      console.error(`Error adding skill with name ${name} to DB:`, error);
+      throw error;
+    }
+  }
+
   return (
     <TagContext.Provider value={{
       departments,
@@ -118,6 +130,7 @@ export function TagProvider({children}) {
       initializeTagsFromDB,
       fetchAllDepartments,
       addDepartment,
+      addSkill,
       deleteDepartmentById
     }}>
       {children}
