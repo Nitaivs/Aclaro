@@ -10,8 +10,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemAvatar,
-  Avatar,
   Divider,
   IconButton
 } from "@mui/material";
