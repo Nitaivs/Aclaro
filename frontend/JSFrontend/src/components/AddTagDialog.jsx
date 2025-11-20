@@ -2,14 +2,13 @@ import {Dialog, DialogTitle, TextField} from '@mui/material';
 import {useState} from 'react';
 
 /**
- * @Component AddDepartmentDialog
- * @description A dialog component for adding a new department.
- * @param onSave Callback function to handle saving the new department.
+ * @Component AddTagDialog
+ * @description A dialog component for adding a new tag.
+ * @param onSave Callback function to handle saving the new tag.
  * @param isOpen Boolean to control the dialog open state.
  * @param onClose Callback function to handle closing the dialog.
- * @returns {JSX.Element} The AddDepartmentDialog component.
+ * @returns {JSX.Element} The AddTagDialog component.
  */
-
 export default function AddTagDialog({onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState("");
   const [nameError, setNameError] = useState(false);
