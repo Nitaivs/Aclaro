@@ -14,7 +14,7 @@ public class EmployeeDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private com.proseed.entities.Department department; // Contains id and name
+    private com.proseed.DTOs.DepartmentDTO department; // Contains id and name
     private com.proseed.DTOs.RoleDTO role; // Contains id and name
     private List<com.proseed.DTOs.SkillDTO> skills; // Contains id and name
 }
