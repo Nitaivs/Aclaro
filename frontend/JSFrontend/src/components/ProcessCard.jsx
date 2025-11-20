@@ -10,13 +10,13 @@ import AreYouSureDialog from "./AreYouSureDialog.jsx";
  * @description A card component that displays information about a process.
  * The card serves as a link to the detailed process page.
  * @param props The properties for the ProcessCard component.
- * @param props.id The ID of the process.
- * @param props.processName The name of the process.
+ * @param {int} props.id The ID of the process.
+ * @param {string} props.processName The name of the process.
  * @returns {JSX.Element} The rendered ProcessCard component.
  */
 export default function ProcessCard(props) {
   const {processes, deleteProcess} = use(ProcessContext);
-  const foundProcess = processes.find(p => p.processId === props.id);
+  const foundProcess = processes.find(p => p.id === props.id);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   useEffect(() => {
     console.log("Processes updated:", processes);
@@ -43,18 +43,14 @@ export default function ProcessCard(props) {
       <div>
         <Card>
           <Link to={`/process/${props.id}`}>
-            <h2>{foundProcess.processName}</h2>
-            <p>{foundProcess.processDescription}</p>
+            <h2>{foundProcess.name}</h2>
+            <p>{foundProcess.description}</p>
           </Link>
           <AreYouSureDialog
             isOpen={isDialogOpen}
             onCancel={() => setIsDialogOpen(false)}
             title="Delete Process"
-            message={`Are you sure you want to delete the process "${foundProcess.processName}" and all associated tasks? This action cannot be undone.`}
-            onConfirm={async () => {
-              await deleteProcess(props.id);
-              setIsDialogOpen(false);
-            }}
+            message={`Are you sure you want to delete the process "${foundProcess.name}" and all associated tasks? This action cannot be undone.`}
             onConfirm={() => handleDeleteProcess()}
           />
           <button onClick={() => setIsDialogOpen(true)}>delete</button>
