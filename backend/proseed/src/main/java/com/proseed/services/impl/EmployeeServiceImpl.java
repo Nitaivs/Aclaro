@@ -91,7 +91,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (patch.getLastName() != null) existing.setLastName(patch.getLastName());
             if (patch.getDepartmentId() != null) addDepartmentToEmployee(existing, patch.getDepartmentId());
             if (patch.getRoleId() != null) addRoleToEmployee(existing, patch.getRoleId());
-            if (patch.getSkills() != null) {
+            if (patch.getSkillIds() != null) {
+                setSkillsToEmployee(existing.getEmployeeId(), patch.getSkillIds());
             }
             Employee saved = repository.save(existing);
             return EmployeeMapper.toEmployeeDTO(saved);
@@ -171,4 +172,36 @@ public class EmployeeServiceImpl implements EmployeeService {
         repository.save(employee);
         return role;
     }
+
+    @Override
+    @Transactional
+    /**
+     * Replaces the skills of an employee with the provided list of skill IDs.
+     * @param employee The employee to whom the skill will be assigned.
+     * @param skillIds The IDs of the skills to assign.
+     * @throws EntityNotFoundException if the skill does not exist.
+     */
+    public void setSkillsToEmployee(Long employeeId, List<Long> skillIds) {
+        Employee employee = repository.findById(employeeId).orElseThrow(() ->
+            new EntityNotFoundException("Employee not found with id " + employeeId));
+        // Clear existing skills
+        if (employee.getEmployeeSkills() != null) {
+            for (EmployeeSkill skill : new HashSet<> (employee.getEmployeeSkills())) {
+                skill.getEmployees().remove(employee);
+                employeeSkillRepository.save(skill);
+            }
+            employee.getEmployeeSkills().clear();
+            repository.save(employee);
+        }
+        // Add new skills
+        for (Long skillId : skillIds) {
+            EmployeeSkill skill = employeeSkillRepository.findById(skillId).orElseThrow(() ->
+                new EntityNotFoundException("EmployeeSkill not found with id " + skillId));
+            employee.getEmployeeSkills().add(skill);
+            skill.getEmployees().add(employee);
+            employeeSkillRepository.save(skill);
+            repository.save(employee);
+        }
+    }
+
 }

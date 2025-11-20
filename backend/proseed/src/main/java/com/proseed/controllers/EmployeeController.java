@@ -74,6 +74,26 @@ public class EmployeeController {
         }
     }
 
+    /**
+     * Sets the skills of an employee to the provided list of skill IDs.
+     * @param id employee id
+     * @param skillIds list of skill IDs to set
+     * @return 200 OK if successful, 404 if employee or any skill not found, 400 for bad request
+     */
+    @PatchMapping("/{id}/skills")
+    public ResponseEntity<?> setEmployeeSkills(@PathVariable Long id, @RequestBody List<Long> skillIds) {
+        try {
+            employeeService.setSkillsToEmployee(id, skillIds);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         try{
