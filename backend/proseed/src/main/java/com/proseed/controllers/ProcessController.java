@@ -3,7 +3,9 @@ package com.proseed.controllers;
 import com.proseed.DTOs.ProcessDTO;
 import com.proseed.entities.ProcessEntity;
 import com.proseed.services.ProcessService;
+import com.proseed.DTOs.ProcessWithTaskInfoDTO;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,10 +45,23 @@ public class ProcessController {
         }
     }
 
+    @GetMapping("/{id}/tasks")
+    public ResponseEntity<?> getProcessWithTaskInfo(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(processService.getProcessWithTaskInfo(id));
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+        }
+    }
+
     @PostMapping
     public ResponseEntity<ProcessEntity> createProcess(@RequestBody ProcessEntity process) {
-        ProcessEntity saved = processService.create(process);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        try {
+            ProcessEntity saved = processService.create(process);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch (DataIntegrityViolationException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PutMapping("/{id}")
