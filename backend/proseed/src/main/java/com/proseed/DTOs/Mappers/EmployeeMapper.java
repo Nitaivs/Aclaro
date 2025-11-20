@@ -13,7 +13,7 @@ public class EmployeeMapper {
             employee.getFirstName(),
             employee.getLastName(),
             employee.getDepartment() != null ? employee.getDepartment().getId() : null,
-            employee.getRole() != null ? employee.getRole().getRoleId() : null,
+            employee.getRole() != null ? employee.getRole().getId() : null,
             employee.getEmployeeSkills() != null ?
                 employee.getEmployeeSkills().stream()
                         .map(EmployeeSkill::getId)
