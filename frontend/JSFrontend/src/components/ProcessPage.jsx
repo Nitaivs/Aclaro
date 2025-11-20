@@ -38,7 +38,6 @@ export default function ProcessPage() {
   const {tasks} = use(TaskContext);
   const [associatedTasks, setAssociatedTasks] = useState([]);
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
-  // const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
@@ -81,8 +80,9 @@ export default function ProcessPage() {
       return;
     }
     // Layout constants
-    const horizontalSpacing = 250;
+    const horizontalSpacing = 280;
     const verticalSpacing = 120;
+
     const nodes = [];
     const edges = [];
 
@@ -179,24 +179,6 @@ export default function ProcessPage() {
     });
     setIsProcessDetailsDialogOpen(false);
   }
-
-  /**
-   * @function handleAddTask
-   * @description Handles the addition of a new task to the current process.
-   * Calls the addTask function from TaskContext with the process ID, task name, and task description.
-   * @param {string} taskName - The name of the task to be added.
-   * @param {string} taskDescription - The description of the task to be added.
-   * @returns {Promise<void>} A promise that resolves when the task has been added.
-   */
-  // async function handleAddTask(taskName, taskDescription, parentTaskId = null) {
-  //   try {
-  //     await addTask(parsedProcessId, taskName, taskDescription);
-  //     //TODO: A bit of a hack to refresh process task list, rewrite
-  //     await fetchProcessById(parsedProcessId);
-  //   } catch (error) {
-  //     console.error("Error adding task:", error);
-  //   }
-  // }
 
   // Render error messages for invalid or not found process
   if (!parsedProcessId) {
