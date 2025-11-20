@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long taskId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore // Prevent recursion
@@ -24,10 +24,10 @@ public class Task {
     private ProcessEntity process;
 
     @Column(nullable = false)
-    private String taskName;
+    private String name;
 
     @Column(length = 1000)
-    private String taskDescription;
+    private String description;
 
     @Column(nullable = false)
     private boolean isCompleted; // This can be changed later for more states

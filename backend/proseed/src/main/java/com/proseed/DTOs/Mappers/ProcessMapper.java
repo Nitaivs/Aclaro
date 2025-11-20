@@ -4,7 +4,6 @@ import com.proseed.DTOs.ProcessDTO;
 import com.proseed.entities.ProcessEntity;
 import com.proseed.entities.Task;
 import com.proseed.DTOs.TaskDTO;
-import com.proseed.DTOs.Mappers.TaskMapper;
 import com.proseed.DTOs.ProcessWithTaskInfoDTO;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +21,7 @@ public class ProcessMapper {
             processEntity.getProcessDescription(),
             /* If tasks exist, maps their IDs. Otherwise, returns an empty list. */
             processEntity.getTasks() != null
-                ? processEntity.getTasks().stream().map(Task::getTaskId)
+                ? processEntity.getTasks().stream().map(Task::getId)
                                 .collect(Collectors.toList())
                 : List.of()
         );

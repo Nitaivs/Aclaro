@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Component
 @Profile("dev") //this is only run in dev mode to fill some sample data
@@ -114,29 +113,29 @@ public class DataInitializer implements CommandLineRunner {
 
         // Tasks
         Task task1 = new Task();
-        task1.setTaskName("Design API");
-        task1.setTaskDescription("Design RESTful API endpoints.");
+        task1.setName("Design API");
+        task1.setDescription("Design RESTful API endpoints.");
         task1.setCompleted(false);
         task1.setProcess(process1);
         task1.setEmployees(new HashSet<>(List.of(alice, carol)));
 
         Task task2 = new Task();
-        task2.setTaskName("Database Migration");
-        task2.setTaskDescription("Migrate legacy data to new schema.");
+        task2.setName("Database Migration");
+        task2.setDescription("Migrate legacy data to new schema.");
         task2.setCompleted(false);
         task2.setProcess(process1);
         task2.setEmployees(new HashSet<>(List.of(bob)));
 
         Task task3 = new Task();
-        task3.setTaskName("UI Prototype");
-        task3.setTaskDescription("Create initial React UI prototype.");
+        task3.setName("UI Prototype");
+        task3.setDescription("Create initial React UI prototype.");
         task3.setCompleted(false);
         task3.setProcess(process2);
         task3.setEmployees(new HashSet<>(List.of(carol)));
 
         Task subTask1 = new Task();
-        subTask1.setTaskName("Sub Task");
-        subTask1.setTaskDescription("This is a sub-task of Design API.");
+        subTask1.setName("Sub Task");
+        subTask1.setDescription("This is a sub-task of Design API.");
         subTask1.setCompleted(false);
         subTask1.setProcess(process1);
         subTask1.setParentTask(task1);
@@ -147,16 +146,16 @@ public class DataInitializer implements CommandLineRunner {
         task1.getSubTasks().add(subTask1);
 
         Task subTask2 = new Task();
-        subTask2.setTaskName("Sub Task 2");
-        subTask2.setTaskDescription("This is another sub-task of Design API.");
+        subTask2.setName("Sub Task 2");
+        subTask2.setDescription("This is another sub-task of Design API.");
         subTask2.setCompleted(false);
         subTask2.setProcess(process1);
         subTask2.setParentTask(task1);
         task1.getSubTasks().add(subTask2);
 
         Task subTask3 = new Task();
-        subTask3.setTaskName("Sub Task 3");
-        subTask3.setTaskDescription("This is a sub-task of sub task 1.");
+        subTask3.setName("Sub Task 3");
+        subTask3.setDescription("This is a sub-task of sub task 1.");
         subTask3.setCompleted(false);
         subTask3.setProcess(process1);
         subTask3.setParentTask(subTask1);
@@ -166,8 +165,8 @@ public class DataInitializer implements CommandLineRunner {
         subTask1.getSubTasks().add(subTask3);
 
         Task subTask4 = new Task();
-        subTask4.setTaskName("Sub Task 4");
-        subTask4.setTaskDescription("This is a sub-task of sub task 2.");
+        subTask4.setName("Sub Task 4");
+        subTask4.setDescription("This is a sub-task of sub task 2.");
         subTask4.setCompleted(false);
         subTask4.setProcess(process1);
         subTask4.setParentTask(subTask3);
@@ -177,8 +176,8 @@ public class DataInitializer implements CommandLineRunner {
         subTask3.getSubTasks().add(subTask4);
 
         Task subTask5 = new Task();
-        subTask5.setTaskName("Sub Task 5");
-        subTask5.setTaskDescription("This is a sub-task of sub task 2.");
+        subTask5.setName("Sub Task 5");
+        subTask5.setDescription("This is a sub-task of sub task 2.");
         subTask5.setCompleted(false);
         subTask5.setProcess(process1);
         subTask5.setParentTask(subTask3);
