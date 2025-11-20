@@ -236,6 +236,14 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
       -d '{"lastName":"Smith-Updated"}'
     ```
 
+- PATCH /api/employees/{id}/skills
+
+  - Description: Set (replace) the employee's skills with the provided list of skill IDs. The service will update join-table associations accordingly.
+  - Request body: JSON array of skill IDs, e.g. `[1, 3, 5]`
+  - Success: 200 OK (no body)
+  - Not found: 404 Not Found if employee or any skill id does not exist.
+  - Bad request: 400 Bad Request for invalid payload.
+
 - DELETE /api/employees/{id}
   - Success: 204 No Content or 404 Not Found
 
