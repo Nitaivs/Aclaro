@@ -69,9 +69,9 @@ export function ProcessProvider({children}) {
       console.log("Fetching process by ID from DB:", processId);
       const response = await axios.get(`${BASE_URL}processes/${processId}`);
       console.log("Fetched process:", response.data);
-      const existingProcess = processes.find(p => p.processId === processId);
+      const existingProcess = processes.find(p => p.id === processId);
       if (existingProcess) {
-        setProcesses(processes.map(p => p.processId === processId ? response.data : p));
+        setProcesses(processes.map(p => p.id === processId ? response.data : p));
         return;
       }
       setProcesses([...processes, response.data]);
@@ -88,14 +88,14 @@ export function ProcessProvider({children}) {
    * @param taskId the ID of the task to delete
    */
   function deleteTaskIdFromProcess(processId, taskId) {
-    const foundProcess = processes.find(p => p.processId === processId);
+    const foundProcess = processes.find(p => p.id === processId);
     if (!foundProcess) {
       console.error("Process not found:", processId);
       return;
     }
     const updatedTaskIds = foundProcess.taskIds.filter(id => id !== taskId);
     const updatedProcess = {...foundProcess, taskIds: updatedTaskIds};
-    setProcesses(processes.map(p => p.processId === processId ? updatedProcess : p));
+    setProcesses(processes.map(p => p.id === processId ? updatedProcess : p));
   }
 
   /**
@@ -109,8 +109,8 @@ export function ProcessProvider({children}) {
     try {
       console.log("Adding process to DB");
       const response = await axios.post(`${BASE_URL}processes`, {
-        processName: name,
-        processDescription: description
+        name,
+        description
       });
       const newProcess = response.data;
       console.log("Process added to DB:", newProcess);
@@ -136,7 +136,7 @@ export function ProcessProvider({children}) {
     } catch (error) {
       console.error("Error deleting process from DB:", error);
     }
-    setProcesses(processes.filter(process => process.processId !== processId));
+    setProcesses(processes.filter(process => process.id !== processId));
   }
 
   /**
@@ -148,7 +148,7 @@ export function ProcessProvider({children}) {
    */
   async function updateProcess(processId, updatedFields) {
     try {
-      const foundProcess = processes.find(p => p.processId === processId);
+      const foundProcess = processes.find(p => p.id === processId);
       if (!foundProcess) {
         console.error("Process not found:", processId);
         return;
@@ -158,7 +158,7 @@ export function ProcessProvider({children}) {
       console.log("response:", response.data);
       //TODO: replace with response data once backend updates description
       const updatedProcess = {...foundProcess, ...updatedFields};
-      setProcesses(processes.map(p => p.processId === processId ? updatedProcess : p));
+      setProcesses(processes.map(p => p.id === processId ? updatedProcess : p));
     } catch (error) {
       console.error("Error updating process in DB:", error);
     }
