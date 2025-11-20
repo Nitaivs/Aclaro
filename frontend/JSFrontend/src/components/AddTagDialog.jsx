@@ -24,7 +24,7 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
 
     if (nameInput.length > 30) {
       setNameError(true);
-      setErrorMessage("Tag name must be less than 30 characters or less");
+      setErrorMessage("Tag name must be 30 characters or less in length");
       return;
     }
 
