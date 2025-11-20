@@ -6,7 +6,6 @@ import com.proseed.entities.Task;
 import com.proseed.DTOs.TaskDTO;
 import com.proseed.entities.Employee;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +24,7 @@ public class TaskMapper {
             : List.of();
 
         return new TaskWithEmployeesDTO(
-            task.getTaskId(),
+            task.getId(),
             employees,
             subTasks
         );
@@ -41,14 +40,14 @@ public class TaskMapper {
             : List.of();
 
         TaskDTO dto = new TaskDTO(
-            task.getTaskId(),
-            task.getTaskName(),
-            task.getTaskDescription(),
+            task.getId(),
+            task.getName(),
+            task.getDescription(),
             task.isCompleted(),
             employeeIds,
             subTasks,
-            task.getParentTask() != null ? task.getParentTask().getTaskId() : null,
-            task.getProcess() != null ? task.getProcess().getProcessId() : null
+            task.getParentTask() != null ? task.getParentTask().getId() : null,
+            task.getProcess() != null ? task.getProcess().getId() : null
         );
 
         return dto;
@@ -57,11 +56,11 @@ public class TaskMapper {
     public static Task fromTaskDTO(TaskDTO dto) {
         Task t = new Task();
         // preserve id when provided so service can resolve existing entities
-        if (dto.getTaskId() != null) {
-            t.setTaskId(dto.getTaskId());
+        if (dto.getId() != null) {
+            t.setId(dto.getId());
         }
-        t.setTaskName(dto.getTaskName());
-        t.setTaskDescription(dto.getTaskDescription());
+        t.setName(dto.getName());
+        t.setDescription(dto.getDescription());
         t.setCompleted(dto.getCompleted() != null ? dto.getCompleted() : false);
 
         // map subtasks recursively

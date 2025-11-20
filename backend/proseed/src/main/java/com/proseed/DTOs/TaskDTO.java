@@ -11,9 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskDTO {
-    private Long taskId;
-    private String taskName;
-    private String taskDescription;
+    private Long id;
+    private String name;
+    private String description;
     private Boolean completed;
     private List<Long> employeeIds;
     private List<TaskDTO> subTasks;

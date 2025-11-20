@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskWithEmployeesDTO {
-    private Long taskId;
+    private Long id;
     private List<EmployeeDTO> assignedEmployees;
     private List<TaskWithEmployeesDTO> subTasks;
 }
