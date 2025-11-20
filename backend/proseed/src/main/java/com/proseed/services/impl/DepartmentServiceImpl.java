@@ -51,7 +51,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             throw new IllegalArgumentException("ID cannot be null");
         }
         return repository.findById(id).map(existing -> {
-            existing.setDepartmentName(updated.getDepartmentName());
+            existing.setName(updated.getName());
             return repository.save(existing);
         });
     }

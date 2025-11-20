@@ -59,11 +59,11 @@ public class DataInitializer implements CommandLineRunner {
 
         // Departments
     Department deptBackend = new Department();
-    deptBackend.setDepartmentName("Backend");
+    deptBackend.setName("Backend");
     Department deptFrontend = new Department();
-    deptFrontend.setDepartmentName("Frontend");
+    deptFrontend.setName("Frontend");
     Department deptOps = new Department();
-    deptOps.setDepartmentName("Operations");
+    deptOps.setName("Operations");
     departmentRepository.saveAll(List.of(deptBackend, deptFrontend, deptOps));
 
         // Employees & Profiles
