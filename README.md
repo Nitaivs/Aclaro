@@ -127,9 +127,9 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
   - Example ProcessDTO:
     ```json
     {
-      "processId": 1,
-      "processName": "Backend Development",
-      "processDescription": "...",
+      "id": 1,
+      "name": "Backend Development",
+      "description": "...",
       "taskIds": [1, 2, 3]
     }
     ```
@@ -148,13 +148,13 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
   - Example ProcessWithTaskInfoDTO (truncated):
     ```json
     {
-      "processId": 1,
-      "processName": "Backend Development",
-      "processDescription": "...",
+      "id": 1,
+      "name": "Backend Development",
+      "description": "...",
       "tasks": [
         {
-          "taskId": 1,
-          "taskName": "Design API",
+          "id": 1,
+          "name": "Design API",
           "employeeIds": [1, 3],
           "subTasks": []
         }
@@ -165,13 +165,13 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 - POST /api/processes
 
   - Description: Create a new process.
-  - Request body: ProcessEntity JSON. Required fields: `processName`.
-  - Success: 201 Created, body: created ProcessEntity (JSON) with assigned `processId`.
+  - Request body: ProcessEntity JSON. Required fields: `name`.
+  - Success: 201 Created, body: created ProcessEntity (JSON) with assigned `id`.
   - Example request body:
     ```json
     {
-      "processName": "New Process",
-      "processDescription": "Optional description"
+      "name": "New Process",
+      "description": "Optional description"
     }
     ```
   - Errors: 400 Bad Request when required fields are missing.
@@ -199,7 +199,7 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
   - Example EmployeeDTO:
     ```json
     {
-      "employeeId": 1,
+      "id": 1,
       "firstName": "Alice",
       "lastName": "Smith",
       "departmentId": 1,
@@ -217,7 +217,7 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 
   - Description: Create a new employee.
   - Request body: Employee JSON (fields used by the entity/service).
-  - Success: 201 Created, body: created Employee JSON (includes `employeeId`).
+  - Success: 201 Created, body: created Employee JSON (includes `id`).
   - Errors: 400 Bad Request for invalid payload.
 
 - PUT /api/employees/{id}
@@ -236,6 +236,14 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
       -d '{"lastName":"Smith-Updated"}'
     ```
 
+- PATCH /api/employees/{id}/skills
+
+  - Description: Set (replace) the employee's skills with the provided list of skill IDs. The service will update join-table associations accordingly.
+  - Request body: JSON array of skill IDs, e.g. `[1, 3, 5]`
+  - Success: 200 OK (no body)
+  - Not found: 404 Not Found if employee or any skill id does not exist.
+  - Bad request: 400 Bad Request for invalid payload.
+
 - DELETE /api/employees/{id}
   - Success: 204 No Content or 404 Not Found
 
@@ -250,9 +258,9 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
   - Example TaskDTO:
     ```json
     {
-      "taskId": 1,
-      "taskName": "Design API",
-      "taskDescription": "...",
+      "id": 1,
+      "name": "Design API",
+      "description": "...",
       "completed": false,
       "employeeIds": [1, 3],
       "subTasks": []
@@ -275,7 +283,7 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
   - Description: Create a new task and attach it to an existing process.
   - Query param: `processId` (required) — ID of the process to attach to.
   - Request body: TaskDTO JSON.
-  - Success: 201 Created, body: created TaskDTO (includes `taskId`).
+  - Success: 201 Created, body: created TaskDTO (includes `id`).
   - Errors: 400 Bad Request when `processId` is missing or invalid; 400 for invalid body.
 
 - PUT /api/tasks/{id}
@@ -291,14 +299,14 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 
     ```json
     {
-      "taskId": 2,
-      "taskName": "Parent Task",
-      "taskDescription": "Parent task description",
+      "id": 2,
+      "name": "Parent Task",
+      "description": "Parent task description",
       "completed": false,
       "employeeIds": [1],
       "subTasks": [
         {
-          "taskId": 5
+          "id": 5
         }
       ]
     }
@@ -309,10 +317,10 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
     ```bash
     curl -v -X PUT "http://localhost:8080/api/tasks/2" \
       -H "Content-Type: application/json" \
-      -d '{"taskId":2,"taskName":"Parent Task","taskDescription":"Parent task description","completed":false,"employeeIds":[1],"subTasks":[{"taskId":5}]}'
+      -d '{"id":2,"name":"Parent Task","description":"Parent task description","completed":false,"employeeIds":[1],"subTasks":[{"id":5}]}'
     ```
 
-    Notes: the `subTasks` array accepts TaskDTOs; to attach an existing task as a subtask include its `taskId` (other fields may be omitted). The server will map the DTOs to entities and preserve the nesting. If the referenced subtask id doesn't exist the request may fail with 400/404
+    Notes: the `subTasks` array accepts TaskDTOs; to attach an existing task as a subtask include its `id` (other fields may be omitted). The server will map the DTOs to entities and preserve the nesting. If the referenced subtask id doesn't exist the request may fail with 400/404
 
 - DELETE /api/tasks/{id}
 
@@ -346,7 +354,7 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 - POST /api/departments
 
   - Description: Create a new department.
-  - Request body: Department JSON (e.g. `{ "departmentName": "Engineering", "description": "..." }`)
+  - Request body: Department JSON (e.g. `{ "name": "Engineering", "description": "..." }`)
   - Success: 201 Created, body: created Department
 
 - PUT /api/departments/{id}
@@ -375,7 +383,7 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 
 - POST /api/roles
 
-  - Description: Create a role. Request body: Role JSON (e.g. `{ "roleName": "ADMIN" }`).
+  - Description: Create a role. Request body: Role JSON (e.g. `{ "name": "ADMIN" }`).
   - Success: 201 Created
 
 - PUT /api/roles/{id}
@@ -404,7 +412,7 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 
 - POST /api/skills
 
-  - Description: Create a skill. Request body: `{ "skillName": "Java" }`.
+  - Description: Create a skill. Request body: `{ "name": "Java" }`.
   - Success: 201 Created
 
 - PUT /api/skills/{id}
@@ -438,12 +446,12 @@ Example invalid create payload (self-reference through nested subTasks):
 
 ```json
 {
-  "taskName": "A",
+  "name": "A",
   "completed": false,
   "subTasks": [
     {
-      "taskId": 10,
-      "subTasks": [{ "taskId": 10 }]
+      "id": 10,
+      "subTasks": [{ "id": 10 }]
     }
   ]
 }
@@ -452,13 +460,13 @@ Example invalid create payload (self-reference through nested subTasks):
 Example invalid update attempting to make parent its own descendant:
 
 ```json
-// Existing: A(taskId=2) already has subtask B(taskId=5)
+// Existing: A(id=2) already has subtask B(id=5)
 // Request tries to set A as a subtask of B
 PUT /api/tasks/5
 {
-  "taskId": 5,
-  "taskName": "B",
-  "subTasks": [ { "taskId": 2 } ]
+  "id": 5,
+  "name": "B",
+  "subTasks": [ { "id": 2 } ]
 }
 ```
 
@@ -480,5 +488,5 @@ Happy path reparenting strategy:
 
 1. Retrieve current tree (GET /api/processes/{id}/tasks or GET /api/tasks/{id}).
 2. Decide new parent for existing task(s).
-3. Issue PUT on the new parent including minimal subTasks array with the taskId(s) you want to attach.
+3. Issue PUT on the new parent including minimal subTasks array with the id(s) you want to attach.
 4. Verify with GET that the subtree updated as expected.

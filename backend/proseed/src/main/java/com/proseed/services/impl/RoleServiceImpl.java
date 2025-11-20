@@ -43,7 +43,7 @@ public class RoleServiceImpl implements RoleService {
             throw new IllegalArgumentException("ID cannot be null");
         }
         return repository.findById(id).map(existing -> {
-            existing.setRoleName(updated.getRoleName());
+            existing.setName(updated.getName());
             return repository.save(existing);
         });
     }
