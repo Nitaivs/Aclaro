@@ -17,15 +17,15 @@ import Collapse from "@mui/material/Collapse";
 
 
 export default function TagListPage() {
-  const {departments, skills, addDepartment, deleteDepartmentById} = useContext(TagContext);
+  const {departments, skills, addDepartment, addSkill, deleteDepartmentById} = useContext(TagContext);
   const [isAddTagDialogOpen, setIsAddDepartmentDialogOpen] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [filterString, setFilterString] = useState("");
   const [removeMode, setRemoveMode] = useState(false);
 
-  // Combine departments and skills into a single array with type indicators
-  const combinedTags = useMemo (() => {
+  //Combine departments and skills into a single list with type information
+  const combinedTags = useMemo(() => {
     const departmentsWithType = (departments || []).map(dept => ({...dept, type: 'department'}));
     const skillsWithType = (skills || []).map(skill => ({...skill, type: 'skill'}));
     return [...departmentsWithType, ...skillsWithType];
@@ -48,11 +48,18 @@ export default function TagListPage() {
    * @param name - The name of the new department.
    * @returns {Promise<void>} A promise that resolves when the department is added or an error occurs.
    */
-  async function handleAddDepartment(name) {
+  async function handleAddDepartment(type, name) {
     try {
-      await addDepartment(name);
+      if (type === "department") {
+        await addDepartment(name);
+      } else if (type === "skill") {
+        await addSkill(name);
+      } else {
+        setErrorMessage("Error adding tag: Unknown tag type: " + type);
+        setShowErrorAlert(true);
+      }
     } catch (error) {
-      console.error("Error adding employee:", error);
+      console.error("Error adding tag: ", error);
       setErrorMessage(error.message)
       setShowErrorAlert(true);
     }
