@@ -43,10 +43,29 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
     <Dialog open={isOpen}>
       <DialogTitle>Add a new tag</DialogTitle>
       <div style={{padding: '0 24px 24px 24px'}}>
+        <label>
+          <input
+            type={"radio"}
+            name={"tagType"}
+            value={"department"}
+            checked={selectedType === "department"}
+            onChange={() => setSelectedType("department")}
+          /> Department
+        </label>
+        <label>
+          <input
+            type={"radio"}
+            name={"tagType"}
+            value={"skill"}
+            checked={selectedType === "skill"}
+            onChange={() => setSelectedType("skill")}
+            style={{marginLeft: '12px'}}
+          /> Skill
+        </label>
         <TextField
           autoFocus
           margin="dense"
-          label="Department Name"
+          label="Tag Name"
           type="text"
           fullWidth
           variant="outlined"
