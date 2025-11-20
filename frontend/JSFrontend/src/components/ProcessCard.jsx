@@ -2,7 +2,6 @@ import Card from '@mui/material/Card';
 import {Link} from 'react-router';
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import {use, useEffect, useState} from "react";
-import {Dialog, DialogTitle} from "@mui/material";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
 
 /**
