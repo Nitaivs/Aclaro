@@ -1,5 +1,5 @@
 import {Handle, Position, useReactFlow} from "@xyflow/react";
-import {Link} from 'react-router';
+import {Link, useNavigate, useLocation} from 'react-router';
 import PlusButton from "./PlusButton.jsx";
 
 /**
@@ -19,10 +19,19 @@ export default function TaskNode({data: {label, taskId}, id}) {
   const {getEdges} = useReactFlow();
   const edges = getEdges();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  function openTaskModal() {
+    navigate(`/tasks/${taskId}`, {state: {background: location}});
+  }
+
   const hasOutgoingEdges = edges.some(edge => edge.source === id);
   return (
     <div style={{ position:'relative'}}>
-      <div style={{
+      <div
+        onClick={openTaskModal}
+        style={{
         borderRadius: 6,
         background: 'lightgreen',
         padding: 4,
@@ -31,11 +40,11 @@ export default function TaskNode({data: {label, taskId}, id}) {
         boxShadow: '2px 2px 5px rgba(0,0,0,0.3)'
       }}>
         <Handle type="target" position={Position.Left}/>
-        <Link to={`/tasks/${taskId}`} style={{textDecoration: 'none'}}>
+        {/*<Link to={`/tasks/${taskId}`} style={{textDecoration: 'none'}}>*/}
           <div style={{padding: 12, fontWeight: 'bold', textAlign: 'center', color: 'black'}}>
             {label}
           </div>
-        </Link>
+        {/*</Link>*/}
         {hasOutgoingEdges && <Handle type="source" position={Position.Right}/>}
       </div>
         <PlusButton parentTaskId={taskId} onClick={() => console.log("clicked")} position="right"/>
