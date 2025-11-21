@@ -39,14 +39,14 @@ export default function TagListPage() {
   }, [combinedTags, filterString]);
 
   /**
-   * @function handleAddDepartment
+   * @function handleAddTag
    * @description Handles the addition of a new department.
    * Calls the addDepartment function from TagContext and manages error handling.
    * @param {string} type - The type of tag to add ("department" or "skill").
    * @param {string} name - The name of the new department.
    * @returns {Promise<void>} A promise that resolves when the department is added or an error occurs.
    */
-  async function handleAddDepartment(type, name) {
+  async function handleAddTag(type, name) {
     try {
       if (type === "department") {
         await addDepartment(name);
@@ -75,7 +75,7 @@ export default function TagListPage() {
 
       <AddTagDialog
         isOpen={isAddTagDialogOpen}
-        onSave={handleAddDepartment}
+        onSave={handleAddTag}
         onClose={() => setIsAddDepartmentDialogOpen(false)}
       />
 
