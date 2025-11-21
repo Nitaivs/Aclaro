@@ -92,6 +92,20 @@ export function TagProvider({children}) {
     }
   }
 
+  async function deleteTagById(id, type) {
+    try {
+      console.log(`Deleting tag with id ${id} from DB`);
+      if (type === "department") {
+        await deleteDepartmentById(id);
+      } else if (type === "skill") {
+        await deleteSkillById(id);
+      }
+    } catch (error) {
+      console.error(`Error deleting tag with id ${id} from DB:`, error);
+      throw error;
+    }
+  }
+
   /**
    * @function deleteDepartmentById
    * @description Deletes a department by its ID from the database and updates the state.
