@@ -68,7 +68,7 @@ export default function EditDepartmentDialog({currentName, onSave, isOpen, onClo
                     error={nameError}
                     helperText={nameError ? "First name is required" : ""}
                     defaultValue={defaultName || ''}
-                    onChange={(e) => setFirstNameInput(e.target.value)}
+                    onChange={(e) => setNameInput(e.target.value)}
                 />
                 <button onClick={() => {
                     handleOnSave();

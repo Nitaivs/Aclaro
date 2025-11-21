@@ -7,7 +7,6 @@ export default function EditEmployeeDialog({ currentFirstName, currentLastName, 
     const [lastNameInput, setLastNameInput] = useState(currentLastName || "");
     const [departmentId, setDepartmentId] = useState(currentDepartment || "");
     const [nameError, setNameError] = useState(false);
-
     const { departments = [] } = useContext(TagContext);
 
     useEffect(() => {
@@ -24,6 +23,11 @@ export default function EditEmployeeDialog({ currentFirstName, currentLastName, 
         if (!firstNameInput || !lastNameInput) {
             setNameError(true);
             return;
+        }
+        // Set the departmentId to null if it's invalid or somehow fucky
+        const parsedDept = Number(departmentId);
+        if (departmentId !== "" && departmentId != null && !Number.isInteger(parsedDept)) {
+            setDepartmentId(null);
         }
         // NOTE: onSave now receives departmentId as the third argument
         onSave(firstNameInput, lastNameInput, departmentId);

@@ -16,12 +16,12 @@ export default function EmployeePage() {
   const foundEmployee = employees.find(e => e.id === parseInt(employeeId));
   const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] = useState(false);
 
-  function handleUpdateEmployee(newFirstName, newLastName) {
+  function handleUpdateEmployee(newFirstName, newLastName, newDepartment) {
     if (newFirstName === foundEmployee.firstName && newLastName === foundEmployee.lastName) {
       setIsEditEmployeeDialogOpen(false);
       return;
     }
-    updateEmployee(foundEmployee.id, {firstName: newFirstName, lastName: newLastName});
+    updateEmployee(foundEmployee.id, {firstName: newFirstName, lastName: newLastName, department: newDepartment});
     setIsEditEmployeeDialogOpen(false);
   }
 
