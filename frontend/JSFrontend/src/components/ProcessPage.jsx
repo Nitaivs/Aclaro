@@ -10,10 +10,12 @@ import '@xyflow/react/dist/style.css'
 import {ReactFlow} from "@xyflow/react";
 import ProcessNode from "./ProcessNode.jsx";
 import TaskNode from "./TaskNode.jsx";
-import {
-  ProcessOperationsContext,
-  ProcessOperationsProvider
-} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
+import {ProcessOperationsProvider} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
+import {IconButton} from "@mui/material";
+import editIcon from '../assets/edit.svg';
+import deleteIcon from '../assets/delete.svg';
+import '../style/DetailPanel.css';
+import '../style/ReactFlow.css';
 
 // Define custom node types for React Flow
 const nodeTypes = {
@@ -226,6 +228,36 @@ export default function ProcessPage() {
       </div>
 
       <div style={{width: '100vh', height: '100vh', border: '2px solid black', marginTop: '20px'}}>
+    <div className="detail-container">
+      {/* Header */}
+      <div className="detail-header">
+        <h2>
+          Process
+        </h2>
+      </div>
+      {/* Process Details */}
+      <div className="detail-content">
+        <div className="detail-info">
+          <h2 className="detail-title">{foundProcess.name}</h2>
+          <p className="detail-description">{foundProcess.description}</p>
+        </div>
+        <div className="detail-actions">
+          <IconButton onClick={() => setIsProcessDetailsDialogOpen(true)} size="large">
+            <img src={editIcon} alt="Edit Process Details" className="icon-img"/>
+          </IconButton>
+          <IconButton onClick={() => setIsDeleteDialogOpen(true)} size="large">
+            <img src={deleteIcon} alt="Delete Process" className="icon-img"/>
+          </IconButton>
+        </div>
+      </div>
+      <EditProcessDetailsDialog
+        currentName={foundProcess.name}
+        currentDescription={foundProcess.description}
+        onSave={handleUpdateProcess}
+        isOpen={isProcessDetailsDialogOpen}
+        onClose={() => setIsProcessDetailsDialogOpen(false)}
+      />
+      <div className="react-flow-container">
         <ProcessOperationsProvider processId={parsedProcessId}>
           <ReactFlow
             nodes={nodes}
