@@ -5,18 +5,18 @@ import { TagContext } from "../Context/TagContext/TagContext.jsx";
 export default function EditEmployeeDialog({ currentFirstName, currentLastName, onSave, isOpen, onClose, currentDepartment }) {
     const [firstNameInput, setFirstNameInput] = useState(currentFirstName || "");
     const [lastNameInput, setLastNameInput] = useState(currentLastName || "");
-    const [departmentId, setDepartmentId] = useState(currentDepartment || "");
+    const [department, setDepartment] = useState(currentDepartment || "");
     const [nameError, setNameError] = useState(false);
     const { departments = [] } = useContext(TagContext);
 
     useEffect(() => {
         setFirstNameInput(currentFirstName || "");
         setLastNameInput(currentLastName || "");
-        setDepartmentId(currentDepartment || "");
+        setDepartment(currentDepartment || "");
     }, [currentFirstName, currentLastName, currentDepartment]);
 
     function handleOnSave() {
-        if (firstNameInput === currentFirstName && lastNameInput === currentLastName && departmentId === (currentDepartment || "")) {
+        if (firstNameInput === currentFirstName && lastNameInput === currentLastName) {
             handleClose();
             return;
         }
@@ -24,13 +24,8 @@ export default function EditEmployeeDialog({ currentFirstName, currentLastName, 
             setNameError(true);
             return;
         }
-        // Set the departmentId to null if it's invalid or somehow fucky
-        const parsedDept = Number(departmentId);
-        if (departmentId !== "" && departmentId != null && !Number.isInteger(parsedDept)) {
-            setDepartmentId(null);
-        }
         // NOTE: onSave now receives departmentId as the third argument
-        onSave(firstNameInput, lastNameInput, departmentId);
+        onSave(firstNameInput, lastNameInput, department);
         handleClose();
     }
 
@@ -38,7 +33,7 @@ export default function EditEmployeeDialog({ currentFirstName, currentLastName, 
         // reset local inputs to current props so dialog shows original values next time it's opened
         setFirstNameInput(currentFirstName || "");
         setLastNameInput(currentLastName || "");
-        setDepartmentId(currentDepartment || "");
+        setDepartment(currentDepartment || "");
         setNameError(false);
         onClose();
     }
@@ -79,21 +74,20 @@ export default function EditEmployeeDialog({ currentFirstName, currentLastName, 
                     <Select
                         labelId="department-select-label"
                         label="Department"
-                        value={departmentId || ""}
-                        onChange={(e) => setDepartmentId(e.target.value)}
+                        value={department?.id || ""}
+                        onChange={(e) => {
+                            const selectedDept = departments.find(dept => dept.id === e.target.value);
+                            setDepartment(selectedDept || "");
+                        }}
                     >
                         <MenuItem value="">
                             <em>None</em>
                         </MenuItem>
-                        {departments.map((dept) => {
-                            const id = dept.id || dept._id || dept.departmentId || dept.value;
-                            const name = dept.name || dept.title || dept.label || String(id);
-                            return (
-                                <MenuItem key={id} value={id}>
-                                    {name}
-                                </MenuItem>
-                            );
-                        })}
+                        {departments.map((dept) => (
+                            <MenuItem key={dept.id} value={dept.id}>
+                                {dept.name}
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
 
