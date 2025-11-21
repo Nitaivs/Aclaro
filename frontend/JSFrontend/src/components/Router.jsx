@@ -1,4 +1,4 @@
-import { Route, Routes, BrowserRouter } from "react-router";
+import {Route, Routes, BrowserRouter, useLocation} from "react-router";
 import Dashboard from "./Dashboard.jsx";
 import ProcessPage from "./ProcessPage.jsx";
 import TaskPage from "./TaskPage.jsx";
@@ -9,6 +9,33 @@ import Navbar from "./Navbar.jsx";
 import TaskListPage from "./TaskListPage.jsx";
 import TagListPage from "./TagListPage.jsx";
 import DepartmentPage from "./DepartmentPage.jsx";
+import TaskModal from "./TaskModal.jsx";
+
+function AppRoutes() {
+  const location = useLocation();
+  const background = location.state && location.state.background;
+
+  return (
+    <>
+      <Routes location={background || location}>
+        <Route path="/" element={<Dashboard/>}/>
+        <Route path="/processes" element={<ProcessListPage/>}/>
+        <Route path="/process/:processId" element={<ProcessPage/>}/>
+        <Route path="/tasks" element={<TaskListPage/>}/>
+        <Route path="/tasks/:taskId" element={<TaskPage/>}/>
+        <Route path="/employees" element={<EmployeeListPage/>}/>
+        <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
+        <Route path="/tags/" element={<TagListPage/>}/>
+        <Route path="/tags/department/:departmentId" element={<DepartmentPage/>}/>
+      </Routes>
+      {background && (
+        <Routes>
+          <Route path={"/tasks/:taskId"} element={<TaskModal/>}/>
+        </Routes>
+      )}
+    </>
+  );
+}
 
 /**
  * @component Router
@@ -19,19 +46,8 @@ import DepartmentPage from "./DepartmentPage.jsx";
 export default function Router() {
   return (
     <BrowserRouter>
-      {/*TODO: refactor router and move navbar to a more fitting place*/}
       <Navbar/>
-      <Routes>
-        <Route path="/" element={<Dashboard/>}/>
-        <Route path="/processes" element={<ProcessListPage/>}/>
-        <Route path="/process/:processId" element={<ProcessPage/>}/>
-        <Route path="/tasks" element={<TaskListPage/>}/>
-        <Route path="/tasks/:taskId" element={<TaskPage/>}/>
-        <Route path="/employees" element={<EmployeeListPage/>}/>
-        <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
-        <Route path="/tags/" element={<TagListPage/>}/>
-        <Route path="/tags/department/:departmentId" element={<DepartmentPage/>} />
-      </Routes>
+      <AppRoutes/>
     </BrowserRouter>
   )
 }
