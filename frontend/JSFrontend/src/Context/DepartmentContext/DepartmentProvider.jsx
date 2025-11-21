@@ -12,7 +12,7 @@ import axios from "axios";
 export function EmployeeProvider({ children }) {
     const [departments, setDepartments] = useState([]);
     const [initialized, setInitialized] = useState(false);
-    const BASE_URL = "/api/";
+    const BASE_URL = "http://localhost:8080/api/";
     //TODO: move BASE_URL to config file
 
     /**
