@@ -1,11 +1,10 @@
 import {useParams, useNavigate} from "react-router";
 import {use, useEffect} from "react";
-import TaskCard from "./TaskCard.jsx";
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {useState} from "react";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import EditProcessDetailsDialog from "./EditProcessDetailsDialog.jsx";
-import AddTaskDialog from "./AddTaskDialog.jsx";
+import AreYouSureDialog from "./AreYouSureDialog.jsx";
 import '@xyflow/react/dist/style.css'
 import {ReactFlow} from "@xyflow/react";
 import ProcessNode from "./ProcessNode.jsx";
@@ -40,6 +39,7 @@ export default function ProcessPage() {
   const navigate = useNavigate();
   const [associatedTasks, setAssociatedTasks] = useState([]);
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
@@ -210,24 +210,6 @@ export default function ProcessPage() {
   }
 
   return (
-    <div style={{marginLeft: '240px'}}>
-      <div style={{padding: '20px'}}>
-        <h1>{foundProcess.name}</h1>
-        <p>Process ID: {foundProcess.id}</p>
-        <p>Description: {foundProcess.description}</p>
-          <button onClick={() => setIsProcessDetailsDialogOpen(true)}>
-            Edit Process Details
-          </button>
-          <EditProcessDetailsDialog
-            currentName={foundProcess.name}
-            currentDescription={foundProcess.description}
-            onSave={handleUpdateProcess}
-            isOpen={isProcessDetailsDialogOpen}
-            onClose={() => setIsProcessDetailsDialogOpen(false)}
-          />
-      </div>
-
-      <div style={{width: '100vh', height: '100vh', border: '2px solid black', marginTop: '20px'}}>
     <div className="detail-container">
       {/* Header */}
       <div className="detail-header">
@@ -257,6 +239,14 @@ export default function ProcessPage() {
         isOpen={isProcessDetailsDialogOpen}
         onClose={() => setIsProcessDetailsDialogOpen(false)}
       />
+      <AreYouSureDialog
+        isOpen={isDeleteDialogOpen}
+        onCancel={() => setIsDeleteDialogOpen(false)}
+        title="Delete Process"
+        message={`Are you sure you want to delete the process "${foundProcess.name}" and all associated tasks? This action cannot be undone.`}
+        onConfirm={() => handleDeleteProcess()}
+      />
+      {/* React Flow Diagram */}
       <div className="react-flow-container">
         <ProcessOperationsProvider processId={parsedProcessId}>
           <ReactFlow
