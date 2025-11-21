@@ -14,7 +14,7 @@ import {
   IconButton
 } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
-
+import TagItem from "./TagItem.jsx";
 
 export default function TagListPage() {
   const {departments, skills, addDepartment, addSkill, deleteDepartmentById} = useContext(TagContext);
@@ -39,14 +39,14 @@ export default function TagListPage() {
   }, [combinedTags, filterString]);
 
   /**
-   * @function handleAddDepartment
+   * @function handleAddTag
    * @description Handles the addition of a new department.
    * Calls the addDepartment function from TagContext and manages error handling.
    * @param {string} type - The type of tag to add ("department" or "skill").
    * @param {string} name - The name of the new department.
    * @returns {Promise<void>} A promise that resolves when the department is added or an error occurs.
    */
-  async function handleAddDepartment(type, name) {
+  async function handleAddTag(type, name) {
     try {
       if (type === "department") {
         await addDepartment(name);
@@ -63,23 +63,6 @@ export default function TagListPage() {
     }
   }
 
-  /**
-   * @function handleDeleteDepartment
-   * @description Handles the deletion of a department.
-   * Calls the deleteDepartmentById function from TagContext and manages error handling.
-   * @param {number} id - The ID of the department to delete.
-   * @returns {Promise<void>} A promise that resolves when the department is deleted or an error occurs.
-   */
-  async function handleDeleteDepartment(id) {
-    try {
-      await deleteDepartmentById(id);
-    } catch (error) {
-      console.error("Error deleting employee:", error);
-      setErrorMessage(error.message || String(error));
-      setShowErrorAlert(true);
-    }
-  }
-
   return (
     <div>
       <h1>Tag list</h1>
@@ -92,7 +75,7 @@ export default function TagListPage() {
 
       <AddTagDialog
         isOpen={isAddTagDialogOpen}
-        onSave={handleAddDepartment}
+        onSave={handleAddTag}
         onClose={() => setIsAddDepartmentDialogOpen(false)}
       />
 
@@ -131,32 +114,24 @@ export default function TagListPage() {
           ) : (
             filtered.map((tag, idx) => (
               <div key={`${tag.type}-${tag.id}`}>
-                <Link to={`/tags/${tag.type}/${tag.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
-                  <ListItem
-                    alignItems="flex-start"
-                    secondaryAction={
-                      removeMode ? (
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          color="error"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDeleteDepartment(tag.id);
-                          }}
-                        >
-                          X
-                        </IconButton>
-                      ) : null
-                    }
-                  />
-                  <ListItem alignItems="flex-start">
-                    <p>
-                      {tag.name}
-                    </p>
-                  </ListItem>
-                  {idx < filtered.length - 1 && <Divider component="li"/>}
-                </Link>
+                <ListItem
+                  alignItems="flex-start"
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="edit"
+                    >
+                    </IconButton>
+                  }
+                />
+                <ListItem alignItems="flex-start">
+                  <TagItem type={tag.type}
+                           name={tag.name}
+                           tagId={tag.id}
+                           isEditable={tag.type === "skill"}
+                           isDeletable={true}/>
+                </ListItem>
+                {idx < filtered.length - 1 && <Divider component="li"/>}
               </div>
             ))
           )}
