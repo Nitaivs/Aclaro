@@ -11,10 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDTO {
-    private Long employeeId;
+    private Long id;
     private String firstName;
     private String lastName;
-    private Long departmentId;
-    private Long roleId;
-    private List<Long> skillIds;
+    private com.proseed.DTOs.DepartmentDTO department; // Contains id and name
+    private com.proseed.DTOs.RoleDTO role; // Contains id and name
+    private List<com.proseed.DTOs.SkillDTO> skills; // Contains id and name
 }

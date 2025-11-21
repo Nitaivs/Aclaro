@@ -17,7 +17,7 @@ export default function TaskPage() {
   const {tasks, updateTask, deleteTask} = use(TaskContext);
   const {deleteTaskIdFromProcess} = use(ProcessContext);
   const parsedTaskId = taskId ? parseInt(taskId) : undefined;
-  const foundTask = tasks.find(t => t.taskId === parsedTaskId);
+  const foundTask = tasks.find(t => t.id === parsedTaskId);
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -27,18 +27,18 @@ export default function TaskPage() {
    * @function handleUpdateTask
    * @description Handles the update of task details.
    * Calls the updateTask function from TaskContext with the new name and description.
-   * @param newName the new name for the task. May be undefined, in which case the current name is retained.
-   * @param newDescription the new description for the task. May be undefined, in which case the current description is retained.
+   * @param {string} newName the new name for the task. May be undefined, in which case the current name is retained.
+   * @param {string} newDescription the new description for the task. May be undefined, in which case the current description is retained.
    * @returns {Promise<void>} A promise that resolves when the task update is complete.
    */
   async function handleUpdateTask(newName, newDescription) {
-    if (newName === foundTask.taskName && newDescription === foundTask.taskDescription) {
+    if (newName === foundTask.name && newDescription === foundTask.description) {
       setIsTaskDetailsDialogOpen(false);
       return;
     }
     await updateTask(parsedTaskId, {
-      taskName: newName || foundTask.taskName,
-      taskDescription: newDescription || foundTask.taskDescription
+      name: newName || foundTask.name,
+      description: newDescription || foundTask.description
     });
     setIsTaskDetailsDialogOpen(false);
   }
@@ -75,14 +75,14 @@ export default function TaskPage() {
           Go back to process {processId}
         </button>
       </Link>
-      <h1>{foundTask.taskName}</h1>
+      <h1>{foundTask.name}</h1>
       <p>taskId: {taskId}</p>
-      <p>description: {foundTask.taskDescription}</p>
+      <p>description: {foundTask.description}</p>
       <button onClick={() => setIsTaskDetailsDialogOpen(true)}>Edit Task Details</button>
       <button onClick={() => setShowDeleteDialog(true)}>Delete Task</button>
       <EditTaskDetailsDialog
-        currentName={foundTask.taskName}
-        currentDescription={foundTask.taskDescription}
+        currentName={foundTask.name}
+        currentDescription={foundTask.description}
         onSave={handleUpdateTask}
         isOpen={isTaskDetailsDialogOpen}
         onClose={() => setIsTaskDetailsDialogOpen(false)}
@@ -98,7 +98,7 @@ export default function TaskPage() {
         onCancel={() => setShowDeleteDialog(false)}
         onConfirm={handleDeleteTask}
         title="Confirm Delete Task"
-        message={`Are you sure you want to delete the task "${foundTask.taskName}"? This action cannot be undone.`}
+        message={`Are you sure you want to delete the task "${foundTask.name}"? This action cannot be undone.`}
         />
     </div>
   )

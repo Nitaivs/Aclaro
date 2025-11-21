@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {DepartmentContext} from "./DepartmentContext.jsx";
+import {TagContext} from "./TagContext.jsx";
 import axios from "axios";
 
 /**
@@ -9,8 +9,10 @@ import axios from "axios";
  * @returns {JSX.Element} The EmployeeProvider component.
  * @constructor
  */
-export function DepartmentProvider({children}) {
+export function TagProvider({children}) {
   const [departments, setDepartments] = useState([]);
+  const [skills, setSkills] = useState([]);
+
   const [initialized, setInitialized] = useState(false);
   const BASE_URL = "http://localhost:8080/api/";
   //TODO: move BASE_URL to config file
@@ -20,7 +22,7 @@ export function DepartmentProvider({children}) {
    */
   useEffect(() => {
     if (!initialized) {
-      initializeDepartmentsFromDB();
+      initializeTagsFromDB();
     }
   }, [initialized])
 
@@ -30,14 +32,28 @@ export function DepartmentProvider({children}) {
    * Calls fetchAllDepartments to retrieve all departments and update the state, then sets initialized to true.
    * @returns {Promise<void>} A promise that resolves when the initialization is complete.
    */
-  async function initializeDepartmentsFromDB() {
+  async function initializeTagsFromDB() {
     try {
       console.log("Initializing departments from DB");
       await fetchAllDepartments();
+      await fetchAllSkills();
       setInitialized(true);
     }
     catch (error) {
       console.error("Error fetching departments from DB:", error);
+      throw error;
+    }
+  }
+
+  async function fetchAllSkills() {
+    try {
+      console.log("Fetching all skills from DB");
+      const response = await axios.get(`${BASE_URL}skills`);
+      console.log(`Skills:`, response.data)
+      setSkills(response.data);
+    } catch (error) {
+      console.error("Error fetching skills from DB:", error);
+      throw error;
     }
   }
 
@@ -49,10 +65,7 @@ export function DepartmentProvider({children}) {
   async function fetchAllDepartments() {
     try {
       console.log("Fetching all departments from DB");
-      // const response = await axios.get(`${BASE_URL}departments`);
-      // console.log(response);
-      //TODO: remove mock response once backend is ready
-      const response = {data: [{name: "HR", id: 1}, {name: "Engineering", id: 2}]}
+      const response = await axios.get(`${BASE_URL}departments`);
       console.log("Departments:", response.data)
       setDepartments(response.data);
     }
@@ -70,9 +83,7 @@ export function DepartmentProvider({children}) {
   async function addDepartment(name) {
     try {
       console.log(`Adding department with name ${name} to DB`);
-      // const response = await axios.post(`${BASE_URL}departments`, {name});
-      //TODO: remove mock response once backend is ready
-      const response = {data: [{name: name, id: Math.floor(Math.random() * 10000) }]}
+      const response = await axios.post(`${BASE_URL}departments`, {name});
       console.log(response);
       setDepartments([...departments, response.data]);
     } catch (error) {
@@ -98,15 +109,29 @@ export function DepartmentProvider({children}) {
     }
   }
 
+  async function addSkill(name) {
+    try {
+      console.log(`Adding skill with name ${name} to DB`);
+      const response = await axios.post(`${BASE_URL}skills`, {name});
+      console.log(response);
+      setSkills([...skills, response.data]);
+    } catch (error) {
+      console.error(`Error adding skill with name ${name} to DB:`, error);
+      throw error;
+    }
+  }
+
   return (
-    <DepartmentContext.Provider value={{
+    <TagContext.Provider value={{
       departments,
-      initializeDepartmentsFromDB,
+      skills,
+      initializeTagsFromDB,
       fetchAllDepartments,
       addDepartment,
+      addSkill,
       deleteDepartmentById
     }}>
       {children}
-    </DepartmentContext.Provider>
+    </TagContext.Provider>
   )
 }

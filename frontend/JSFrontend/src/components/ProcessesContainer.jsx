@@ -9,7 +9,6 @@ import TextField from "@mui/material/TextField";
  * @component ProcessesContainer
  * @description A container component that manages and displays a list of processes.
  * Users can add new processes and each process is represented by a ProcessCard component.
- *
  * @return {JSX.Element} The rendered ProcessesContainer component.
  */
 export default function ProcessesContainer() {
@@ -71,8 +70,8 @@ export default function ProcessesContainer() {
       </Dialog>
       <ul>
         {processes.map((process) => (
-          <li key={process.processId}>
-            <ProcessCard id={process.processId}/>
+          <li key={process.id}>
+            <ProcessCard id={process.id}/>
           </li>
         ))}
       </ul>

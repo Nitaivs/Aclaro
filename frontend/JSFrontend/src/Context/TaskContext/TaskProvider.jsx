@@ -52,7 +52,7 @@ export function TaskProvider({children}) {
     try {
       console.log("Fetching all tasks from DB");
       const response = await axios.get(`${BASE_URL}tasks`);
-      console.log(response);
+      console.log(`Tasks:`, response.data)
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks from DB:", error);
@@ -78,8 +78,8 @@ export function TaskProvider({children}) {
       console.log("Adding task to DB with processId:", processId, "name:", name, "description:", description, "parentTaskId:", parentTaskId);
       const response = await axios.post(`${BASE_URL}tasks?processId=${processId}`, {
         processId: processId,
-        taskName: name,
-        taskDescription: description,
+        name,
+        description,
         parentTaskId: parentTaskId
       });
       console.log("added task", response);
@@ -103,7 +103,7 @@ export function TaskProvider({children}) {
       console.log("Updating task with ID:", taskId, "with fields:", updatedFields);
       const response = await axios.put(`${BASE_URL}tasks/${taskId}`, updatedFields);
       console.log("Updated task:", response.data);
-      setTasks(tasks.map(t => t.taskId === taskId ? response.data : t));
+      setTasks(tasks.map(t => t.id === taskId ? response.data : t));
     } catch (error) {
       console.error("Error updating task in DB:", error);
     }

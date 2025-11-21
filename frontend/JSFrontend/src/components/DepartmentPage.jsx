@@ -1,13 +1,14 @@
 import { Link } from "react-router";
 import { useContext, useState } from 'react';
-import { DepartmentContext } from "../Context/DepartmentContext/DepartmentContext.jsx";
+import { TagContext } from "../Context/TagContext/TagContext.jsx";
 import { useParams } from "react-router";
+import EditEmployeeDialog from "./EditEmployeeDialog.jsx";
 //import EditDepartmentDialog from "./EditDepartmentDialog.jsx";
 //TODO: When ready above component is ready, uncomment
 
 
 export default function DepartmentPage() {
-    const { departments, updateDepartment } = useContext(DepartmentContext);
+    const { departments, updateDepartment } = useContext(TagContext);
     const { departmentId } = useParams();
     const parsedDepartmentId = departmentId ? parseInt(departmentId) : undefined;
     const foundDepartment = departments.find(d => d.id === parseInt(departmentId));
@@ -50,7 +51,7 @@ export default function DepartmentPage() {
         <div>
           <Link to="/departments">
             <button>
-              Return to deparment list
+              Return to department list
             </button>
           </Link>
           <h2>Department Page</h2>

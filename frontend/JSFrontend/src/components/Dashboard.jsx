@@ -37,10 +37,10 @@ export default function Dashboard() {
         </button>
       </div>
       <div>
-        <Link to="/departments/">
+        <Link to="/tags/">
           <button style={
             {fontSize: '20px', padding: '10px 20px', marginTop: '20px'}
-          }>Department List
+          }>Tag List
           </button>
         </Link>
       </div>

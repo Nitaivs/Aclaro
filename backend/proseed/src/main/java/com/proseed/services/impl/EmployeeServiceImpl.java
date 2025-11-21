@@ -89,10 +89,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         return repository.findById(id).map(existing -> {
             if (patch.getFirstName() != null) existing.setFirstName(patch.getFirstName());
             if (patch.getLastName() != null) existing.setLastName(patch.getLastName());
-            if (patch.getDepartmentId() != null) addDepartmentToEmployee(existing, patch.getDepartmentId());
-            if (patch.getRoleId() != null) addRoleToEmployee(existing, patch.getRoleId());
-            if (patch.getSkillIds() != null) {
-                setSkillsToEmployee(existing.getEmployeeId(), patch.getSkillIds());
+            if (patch.getDepartment().getId() != null) addDepartmentToEmployee(existing, patch.getId());
+            if (patch.getRole().getId() != null) addRoleToEmployee(existing, patch.getId());
+            if (patch.getSkills() != null) {
+                setSkillsToEmployee(existing.getEmployeeId(),
+                    patch.getSkills().stream()
+                        .map(com.proseed.DTOs.SkillDTO::getId)
+                        .collect(java.util.stream.Collectors.toList()));
             }
             Employee saved = repository.save(existing);
             return EmployeeMapper.toEmployeeDTO(saved);
