@@ -38,13 +38,17 @@ export function TagProvider({children}) {
       await fetchAllDepartments();
       await fetchAllSkills();
       setInitialized(true);
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error fetching departments from DB:", error);
       throw error;
     }
   }
 
+  /**
+   * @function fetchAllSkills
+   * @description Fetches all skills from the database and updates the state.
+   * @returns {Promise<void>} A promise that resolves when the skills are fetched and state is updated.
+   */
   async function fetchAllSkills() {
     try {
       console.log("Fetching all skills from DB");
@@ -68,8 +72,7 @@ export function TagProvider({children}) {
       const response = await axios.get(`${BASE_URL}departments`);
       console.log("Departments:", response.data)
       setDepartments(response.data);
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error fetching departments from DB:", error);
     }
   }
@@ -120,6 +123,7 @@ export function TagProvider({children}) {
       setDepartments(departments.filter(department => department.id !== id));
     } catch (error) {
       console.error(`Error deleting department with id ${id} from DB:`, error);
+      throw error;
     }
   }
 
@@ -158,6 +162,7 @@ export function TagProvider({children}) {
       throw error;
     }
   }
+
   /**
    * @function updateTag
    * @description Handles updating a tag (skill or department) based on its type.
@@ -180,15 +185,65 @@ export function TagProvider({children}) {
     }
   }
 
+  /**
+   * @function updateDepartment
+   * @description Updates a department's name in the database and updates the state.
+   * @param id - The ID of the department to update.
+   * @param newName - The new name of the department.
+   * @returns {Promise<void>} A promise that resolves when the department is updated and state is updated.
+   */
+  async function updateDepartment(id, newName) {
+    try {
+      console.log(`Updating department with id ${id} on DB`, newName);
+      const response = await axios.put(`${BASE_URL}departments/${id}`, newName);
+      const updatedDepartment = response.data;
+      console.log(response.data);
+      setDepartments(prev =>
+        prev.some(d => d.id === id)
+          ? prev.map(d => (d.id === id ? updatedDepartment : d))
+          : [...prev, updatedDepartment]
+      );
+    } catch (error) {
+      console.error(`Error updating department with id ${id} on DB:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * @function updateSkill
+   * @description Updates a skill's name in the database and updates the state.
+   * @param id - The ID of the skill to update.
+   * @param newName - The new name of the skill.
+   * @returns {Promise<void>} A promise that resolves when the skill is updated and state is updated.
+   */
+  async function updateSkill(id, newName) {
+    try {
+      console.log(`Updating skill with id ${id} on DB`, newName);
+      const response = await axios.put(`${BASE_URL}skills/${id}`, newName);
+      const updatedSkill = response.data;
+      console.log(response.data);
+      setSkills(prev =>
+        prev.some(s => s.id === id)
+          ? prev.map(s => (s.id === id ? updatedSkill : s))
+          : [...prev, updatedSkill]
+      );
+    } catch (error) {
+      console.error(`Error updating skill with id ${id} on DB:`, error);
+      throw error;
+    }
+  }
+
   return (
     <TagContext.Provider value={{
       departments,
       skills,
       initializeTagsFromDB,
       fetchAllDepartments,
+      fetchAllSkills,
+      updateTag,
       addDepartment,
       addSkill,
-      deleteDepartmentById
+      deleteTagById
     }}>
       {children}
     </TagContext.Provider>
