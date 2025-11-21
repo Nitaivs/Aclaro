@@ -76,6 +76,12 @@ export default function ProcessPage() {
     return associated;
   }
 
+  /**
+   * @function handleDeleteProcess
+   * @description Handles the deletion of the process.
+   * Calls the deleteProcess function from ProcessContext and navigates back to the processes list.
+   * @returns {Promise<void>} A promise that resolves when the process deletion is complete.
+   */
   async function handleDeleteProcess() {
     try {
       await deleteProcess(foundProcess.id);
