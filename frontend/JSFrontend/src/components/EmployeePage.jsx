@@ -53,26 +53,35 @@ export default function EmployeePage() {
     );
   }
 
-  return (
+const skillsList = Array.isArray(foundEmployee.skills)
+    ? foundEmployee.skills
+            .map(s => (typeof s === 'string' ? s : s && s.name ? s.name : ''))
+            .filter(Boolean)
+            .join(', ')
+    : (foundEmployee.skills || '');
+
+return (
     <div>
-      <Link to="/employees">
-        <button>
-          Return to employee list
+        <Link to="/employees">
+            <button>
+                Return to employee list
+            </button>
+        </Link>
+        <h2>Employee Page</h2>
+        <h1>{foundEmployee.firstName} {foundEmployee.lastName}</h1>
+        <p>Department: {foundEmployee.department?.name || "None"}</p>
+        <p>Skills: {skillsList || "None"}</p>
+        <button onClick={() => setIsEditEmployeeDialogOpen(true)}>
+            Edit Employee
         </button>
-      </Link>
-      <h2>Employee Page</h2>
-      <h1>{foundEmployee.firstName} {foundEmployee.lastName}</h1>
-      <button onClick={() => setIsEditEmployeeDialogOpen(true)}>
-        Edit Employee
-      </button>
-      <EditEmployeeDialog
-        currentFirstName={foundEmployee.firstName}
-        currentLastName={foundEmployee.lastName}
-        isOpen={isEditEmployeeDialogOpen}
-        onClose={() => setIsEditEmployeeDialogOpen(false)}
-        onSave={handleUpdateEmployee}
-        currentDepartment={foundEmployee.department}
-      />
+        <EditEmployeeDialog
+            currentFirstName={foundEmployee.firstName}
+            currentLastName={foundEmployee.lastName}
+            isOpen={isEditEmployeeDialogOpen}
+            onClose={() => setIsEditEmployeeDialogOpen(false)}
+            onSave={handleUpdateEmployee}
+            currentDepartment={foundEmployee.department}
+        />
     </div>
-  );
+);
 }
