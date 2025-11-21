@@ -195,7 +195,7 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 - GET /api/employees
 
   - Description: Return all employees as EmployeeDTOs.
-  - Success: 200 OK
+  - Success: `200 OK` with JSON array.
   - Example EmployeeDTO:
     ```json
     {
@@ -210,15 +210,24 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 
 - GET /api/employees/{id}
 
-  - Success: 200 OK, body: EmployeeDTO
-  - Not found: 404 Not Found
+  - Description: Return a single employee.
+  - Success: `200 OK`, body: `EmployeeDTO`.
+  - Not found: `404 Not Found`.
 
 - POST /api/employees
 
-  - Description: Create a new employee.
-  - Request body: Employee JSON (fields used by the entity/service).
-  - Success: 201 Created, body: created Employee JSON (includes `id`).
-  - Errors: 400 Bad Request for invalid payload.
+  - Description: Create an employee from the entity payload.
+  - Request body (example):
+    ```json
+    {
+      "firstName": "Alice",
+      "lastName": "Tester",
+      "department": { "id": 1 },
+      "role": { "id": 2 }
+    }
+    ```
+  - Success: `201 Created`, body: saved `Employee` (entity JSON, includes generated `id`).
+  - Validation errors: `400 Bad Request`
 
 - PUT /api/employees/{id}
 
@@ -227,25 +236,29 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
 
 - PATCH /api/employees/{id}
 
-  - Description: Partially update an existing employee. Only provided fields (e.g. `firstName`, `lastName`) are changed.
-  - Success: 200 OK (updated EmployeeDTO) or 404 Not Found
-  - Example:
-    ```bash
-    curl -X PATCH "http://localhost:8080/api/employees/1" \
-      -H "Content-Type: application/json" \
-      -d '{"lastName":"Smith-Updated"}'
+  - Description: Partial update; only supplied fields are applied. Supported fields in `EmployeePatchDTO`: `firstName`, `lastName`, `departmentId`, `roleId`, `skillIds` (array of skill ids to replace the entire skill set).
+  - Request body examples:
+    ```json
+    { "firstName": "Alice-Updated" }
     ```
-
-- PATCH /api/employees/{id}/skills
-
-  - Description: Set (replace) the employee's skills with the provided list of skill IDs. The service will update join-table associations accordingly.
-  - Request body: JSON array of skill IDs, e.g. `[1, 3, 5]`
-  - Success: 200 OK (no body)
-  - Not found: 404 Not Found if employee or any skill id does not exist.
-  - Bad request: 400 Bad Request for invalid payload.
+    ```json
+    { "departmentId": 3, "roleId": 2, "skillIds": [4, 5, 6] }
+    ```
+  - Success: `200 OK`, body: updated `EmployeeDTO`.
+  - Not found (employee or referenced ids): `404 Not Found`.
+  - Invalid payload: `400 Bad Request`.
 
 - DELETE /api/employees/{id}
-  - Success: 204 No Content or 404 Not Found
+  - Description: Removes the employee after unlinking tasks/skills/role references.
+  - Success: `204 No Content`.
+  - Not found: `404 Not Found`.
+
+Example PowerShell PATCH (department + role):
+
+```powershell
+$body = @{ departmentId = 2; roleId = 3 } | ConvertTo-Json
+Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Body $body -ContentType "application/json" -UseBasicParsing
+```
 
 ---
 
