@@ -86,6 +86,12 @@ export default function ProcessPage() {
   }
 
   //TODO: refactor. Move into separate utility file and divide into smaller functions
+  /**
+   * @function generateNodesAndEdges
+   * @description Generates nodes and edges for React Flow based on the associated tasks.
+   * Lays out the nodes in a tree structure with specified horizontal and vertical spacing,
+   * and sets the generated nodes and edges in the component state.
+   */
   function generateNodesAndEdges() {
     if (!foundProcess) {
       return;
@@ -97,6 +103,16 @@ export default function ProcessPage() {
     const nodes = [];
     const edges = [];
 
+    /**
+     * @function buildTree
+     * @description Builds a tree structure representing the process and its associated tasks.
+     * The root node represents the process, and child nodes represent tasks and their subtasks.
+     * The root node has an id of the format 'process-{processId}', type 'processNode', and data containing the process name.
+     * The root node's children are the top-level tasks associated with the process.
+     * Each task node has an id of the format 'task-{taskId}', type 'taskNode', and data containing the task name and taskId.
+     * Each task node's children are its subtasks, recursively built in the same manner.
+     * @returns {{id: string, type: string, data: {label: string}, children: *[]}} The root node of the tree structure.
+     */
     function buildTree() {
       const rootNode = {
         id: `process-${foundProcess.id}`,
@@ -107,6 +123,14 @@ export default function ProcessPage() {
 
       const taskMap = new Map(associatedTasks.map(task => [task.id, task]))
 
+      /**
+       * @function buildSubtree
+       * @description Recursively builds a subtree for a given task and its subtasks.
+       * The subtree node has an id of the format 'task-{taskId}', type 'taskNode', and data containing the task's name and id.
+       * The node's children are its subtasks, recursively built in the same manner.
+       * @param task The task object for which to build the subtree.
+       * @returns {{id: string, type: string, data: {label: string, taskId: number}, children: *[]}} The subtree node representing the task and its subtasks.
+       */
       function buildSubtree(task) {
         const node = {
           id: `task-${task.id}`,
@@ -135,11 +159,29 @@ export default function ProcessPage() {
       return rootNode;
     }
 
+    /**
+     * @function calculateSubtreeSize
+     * @description Recursively calculates the size of a subtree rooted at the given node.
+     * The size is defined as the total number of nodes in the subtree, including the root node.
+     * @param node The root node of the subtree.
+     * @returns {*|number} The size of the subtree.
+     */
     function calculateSubtreeSize(node) {
       if (node.children.length === 0) return 1;
       return node.children.reduce((sum, child) => sum + calculateSubtreeSize(child), 0);
     }
 
+    /**
+     * @function layoutTree
+     * @description Recursively lays out the tree structure by assigning x and y positions to each node.
+     * The root node is positioned at (x, (yStart + yEnd) / 2).
+     * Child nodes are positioned horizontally spaced by horizontalSpacing and vertically distributed
+     * within the range [yStart, yEnd] based on their subtree sizes.
+     * @param node The current node to layout.
+     * @param x The x position for the current node.
+     * @param yStart The starting y position for the current node's subtree.
+     * @param yEnd The ending y position for the current node's subtree.
+     */
     function layoutTree(node, x, yStart, yEnd) {
       const yCenter = (yStart + yEnd) / 2;
       nodes.push({
