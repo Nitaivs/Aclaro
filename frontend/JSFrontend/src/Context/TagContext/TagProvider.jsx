@@ -158,6 +158,27 @@ export function TagProvider({children}) {
       throw error;
     }
   }
+  /**
+   * @function updateTag
+   * @description Handles updating a tag (skill or department) based on its type.
+   * @param {number} id - The ID of the skill to update.
+   * @param {string} type - The type of the tag (should be "skill" for this function).
+   * @param {string} newName - The new name of the skill.
+   * @returns {Promise<void>} A promise that resolves when the skill is updated and state is updated.
+   */
+  async function updateTag(id, type, newName) {
+    try {
+      console.log(`Updating skill with id ${id} on DB`, newName);
+      if (type === "skill") {
+        await updateSkill(id, newName);
+      } else if (type === "department") {
+        await updateDepartment(id, newName);
+      }
+    } catch (error) {
+      console.error(`Error updating skill with id ${id} on DB:`, error);
+      throw error;
+    }
+  }
 
   return (
     <TagContext.Provider value={{
