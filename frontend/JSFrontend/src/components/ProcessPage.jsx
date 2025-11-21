@@ -1,5 +1,4 @@
-import {Link} from 'react-router';
-import {useParams} from "react-router";
+import {useParams, useNavigate} from "react-router";
 import {use, useEffect} from "react";
 import TaskCard from "./TaskCard.jsx";
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
@@ -32,10 +31,11 @@ const nodeTypes = {
  */
 export default function ProcessPage() {
   const {processId} = useParams();
-  const {processes, updateProcess} = use(ProcessContext);
+  const {processes, updateProcess, deleteProcess} = use(ProcessContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
   const foundProcess = processes.find(p => p.id === parsedProcessId);
   const {tasks} = use(TaskContext);
+  const navigate = useNavigate();
   const [associatedTasks, setAssociatedTasks] = useState([]);
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
   const [nodes, setNodes] = useState([]);
@@ -72,6 +72,15 @@ export default function ProcessPage() {
       }
     }
     return associated;
+  }
+
+  async function handleDeleteProcess() {
+    try {
+      await deleteProcess(foundProcess.id);
+      navigate('/processes');
+    } catch (error) {
+      console.error("Error deleting process:", error);
+    }
   }
 
   //TODO: refactor. Move into separate utility file and divide into smaller functions
