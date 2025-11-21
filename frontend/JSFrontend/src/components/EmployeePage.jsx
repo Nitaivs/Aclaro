@@ -71,6 +71,7 @@ export default function EmployeePage() {
         isOpen={isEditEmployeeDialogOpen}
         onClose={() => setIsEditEmployeeDialogOpen(false)}
         onSave={handleUpdateEmployee}
+        currentDepartment={foundEmployee.department}
       />
     </div>
   );
