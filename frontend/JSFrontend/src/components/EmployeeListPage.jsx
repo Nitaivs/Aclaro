@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { EmployeeContext } from "../Context/EmployeeContext/EmployeeContext.jsx";
-import { DepartmentContext } from "../Context/DepartmentContext/DepartmentContext.jsx";
+import { TagContext } from "../Context/TagContext/TagContext.jsx";
 import AddEmployeeDialog from "./AddEmployeeDialog.jsx";
 import { Link } from "react-router";
 import {
@@ -26,7 +26,7 @@ import Collapse from "@mui/material/Collapse";
  */
 export default function EmployeeListPage() {
     const { employees, addEmployee, deleteEmployeeById } = useContext(EmployeeContext);
-    const { departments } = useContext(DepartmentContext);
+    const { departments } = useContext(TagContext);
     const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -133,8 +133,12 @@ export default function EmployeeListPage() {
                         filtered.map((emp, idx) => {
                             const deptId = emp.department ?? emp.deparment;
                             const dept = departments?.find(d => d.id === deptId || String(d.id) === String(deptId));
-                            const deptName = dept?.name ?? "Unknown";
-
+                            const deptName = dept?.name ?? "N/A";
+                            const skillsId = emp.skills ?? [];
+                            const skills = skillsId.map(sid => {
+                                const skill = dept?.skills?.find(s => s.id === sid || String(s.id) === String(sid));
+                                return skill?.name ?? "N/A";
+                            }).join(", ");
                             return (
                                 <div key={emp.id ?? idx}>
                                     <Link to={`/employees/${emp.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -163,6 +167,7 @@ export default function EmployeeListPage() {
                                             <ListItemText
                                                 primary={`${emp.firstName} ${emp.lastName}`}
                                                 secondary={`Department: ${deptName}`}
+                                                third={`Skills: ${emp.skills ? skills : "Empty"}`}
                                             />
                                         </ListItem>
                                         {idx < filtered.length - 1 && <Divider component="li" />}
