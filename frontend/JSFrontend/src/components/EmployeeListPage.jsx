@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { EmployeeContext } from "../Context/EmployeeContext/EmployeeContext.jsx";
+import { DepartmentContext } from "../Context/DepartmentContext/DepartmentContext.jsx";
 import AddEmployeeDialog from "./AddEmployeeDialog.jsx";
 import { Link } from "react-router";
 import {
@@ -25,6 +26,7 @@ import Collapse from "@mui/material/Collapse";
  */
 export default function EmployeeListPage() {
     const { employees, addEmployee, deleteEmployeeById } = useContext(EmployeeContext);
+    const { departments } = useContext(DepartmentContext);
     const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -128,40 +130,46 @@ export default function EmployeeListPage() {
                             />
                         </ListItem>
                     ) : (
-                        filtered.map((emp, idx) => (
-                            console.log(emp),
-                            <div key={emp.id ?? idx}>
-                                <Link to={`/employees/${emp.id}`}>
-                                    <ListItem
-                                        alignItems="flex-start"
-                                        secondaryAction={
-                                            removeMode ? (
-                                                <IconButton
-                                                    edge="end"
-                                                    aria-label="delete"
-                                                    color="error"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        handleDeleteEmployee(emp.id);
-                                                    }}
-                                                >
-                                                    X
-                                                </IconButton>
-                                            ) : null
-                                        }
-                                    />
-                                    <ListItem alignItems="flex-start">
-                                        <ListItemAvatar>
-                                            <Avatar></Avatar>
-                                        </ListItemAvatar>
-                                        <p>
-                                            {emp.firstName} {emp.lastName}
-                                        </p>
-                                    </ListItem>
-                                    {idx < filtered.length - 1 && <Divider component="li" />}
-                                </Link>
-                            </div>
-                        ))
+                        filtered.map((emp, idx) => {
+                            const deptId = emp.department ?? emp.deparment;
+                            const dept = departments?.find(d => d.id === deptId || String(d.id) === String(deptId));
+                            const deptName = dept?.name ?? "Unknown";
+
+                            return (
+                                <div key={emp.id ?? idx}>
+                                    <Link to={`/employees/${emp.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <ListItem
+                                            alignItems="flex-start"
+                                            secondaryAction={
+                                                removeMode ? (
+                                                    <IconButton
+                                                        edge="end"
+                                                        aria-label="delete"
+                                                        color="error"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleDeleteEmployee(emp.id);
+                                                        }}
+                                                    >
+                                                        X
+                                                    </IconButton>
+                                                ) : null
+                                            }
+                                        >
+                                            <ListItemAvatar>
+                                                <Avatar />
+                                            </ListItemAvatar>
+
+                                            <ListItemText
+                                                primary={`${emp.firstName} ${emp.lastName}`}
+                                                secondary={`Department: ${deptName}`}
+                                            />
+                                        </ListItem>
+                                        {idx < filtered.length - 1 && <Divider component="li" />}
+                                    </Link>
+                                </div>
+                            );
+                        })
                     )}
                 </List>
             </Paper>
