@@ -15,6 +15,12 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
   const [selectedType, setSelectedType] = useState("department");
   const [errorMessage, setErrorMessage] = useState("");
 
+  /**
+   * @function handleOnSave
+   * @description Handles the save action when adding a new tag.
+   * Validates the input and calls the onSave callback if valid.
+   * Checks that the name is not empty and does not exceed 30 characters, otherwise sets error states.
+   */
   function handleOnSave() {
     if (!nameInput) {
       setNameError(true);
@@ -32,6 +38,11 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
     handleClose();
   }
 
+  /**
+   * @function handleClose
+   * @description Handles the close action for the dialog.
+   * Resets the input state and calls the onClose callback.
+   */
   function handleClose() {
     setNameInput("");
     setNameError(false);
