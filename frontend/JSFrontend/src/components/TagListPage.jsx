@@ -63,23 +63,6 @@ export default function TagListPage() {
     }
   }
 
-  /**
-   * @function handleDeleteDepartment
-   * @description Handles the deletion of a department.
-   * Calls the deleteDepartmentById function from TagContext and manages error handling.
-   * @param {number} id - The ID of the department to delete.
-   * @returns {Promise<void>} A promise that resolves when the department is deleted or an error occurs.
-   */
-  async function handleDeleteDepartment(id) {
-    try {
-      await deleteDepartmentById(id);
-    } catch (error) {
-      console.error("Error deleting employee:", error);
-      setErrorMessage(error.message || String(error));
-      setShowErrorAlert(true);
-    }
-  }
-
   return (
     <div>
       <h1>Tag list</h1>
