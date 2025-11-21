@@ -46,6 +46,11 @@ export default function EditTagDialog({currentName, onSave, isOpen, onClose}) {
     handleOnClose();
   }
 
+  /**
+   * @function handleOnClose
+   * @description Handles the close action for the dialog.
+   * Resets the input state and calls the onClose callback.
+   */
   function handleOnClose() {
     setNameInput(currentName || "");
     setNameError(false);
