@@ -14,7 +14,7 @@ import {
   IconButton
 } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
-
+import TagItem from "./TagItem.jsx";
 
 export default function TagListPage() {
   const {departments, skills, addDepartment, addSkill, deleteDepartmentById} = useContext(TagContext);
@@ -114,32 +114,24 @@ export default function TagListPage() {
           ) : (
             filtered.map((tag, idx) => (
               <div key={`${tag.type}-${tag.id}`}>
-                <Link to={`/tags/${tag.type}/${tag.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
-                  <ListItem
-                    alignItems="flex-start"
-                    secondaryAction={
-                      removeMode ? (
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          color="error"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDeleteDepartment(tag.id);
-                          }}
-                        >
-                          X
-                        </IconButton>
-                      ) : null
-                    }
-                  />
-                  <ListItem alignItems="flex-start">
-                    <p>
-                      {tag.name}
-                    </p>
-                  </ListItem>
-                  {idx < filtered.length - 1 && <Divider component="li"/>}
-                </Link>
+                <ListItem
+                  alignItems="flex-start"
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="edit"
+                    >
+                    </IconButton>
+                  }
+                />
+                <ListItem alignItems="flex-start">
+                  <TagItem type={tag.type}
+                           name={tag.name}
+                           tagId={tag.id}
+                           isEditable={tag.type === "skill"}
+                           isDeletable={true}/>
+                </ListItem>
+                {idx < filtered.length - 1 && <Divider component="li"/>}
               </div>
             ))
           )}
