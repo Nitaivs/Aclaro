@@ -123,6 +123,30 @@ export function TagProvider({children}) {
     }
   }
 
+  /**
+   * @function deleteSkillById
+   * @description Deletes a skill by its ID from the database and updates the state.
+   * @param {number} id - The ID of the skill to delete.
+   * @returns {Promise<void>} A promise that resolves when the skill is deleted and state is updated.
+   */
+  async function deleteSkillById(id) {
+    try {
+      console.log(`Deleting skill with id ${id} from DB`);
+      const response = await axios.delete(`${BASE_URL}skills/${id}`);
+      console.log(response);
+      setSkills(skills.filter(skill => skill.id !== id));
+    } catch (error) {
+      console.error(`Error deleting skill with id ${id} from DB:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * @function addSkill
+   * @description Adds a new skill to the database and updates the state.
+   * @param name - The name of the skill to add.
+   * @returns {Promise<void>} A promise that resolves when the skill is added and state is updated.
+   */
   async function addSkill(name) {
     try {
       console.log(`Adding skill with name ${name} to DB`);
