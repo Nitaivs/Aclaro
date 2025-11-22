@@ -10,14 +10,14 @@ import {TagProvider} from "./Context/TagContext/TagProvider.jsx";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/*TODO: refactor context providers placement (?)*/}
-    <ProcessProvider>
-      <TaskProvider>
+    <TaskProvider>
+      <ProcessProvider>
         <EmployeeProvider>
           <TagProvider>
             <App/>
           </TagProvider>
         </EmployeeProvider>
-      </TaskProvider>
-    </ProcessProvider>
+      </ProcessProvider>
+    </TaskProvider>
   </StrictMode>,
 )
