@@ -2,10 +2,11 @@ import { Dialog, DialogTitle, DialogContent, TextField, Select, MenuItem, InputL
 import { useState, useEffect, useContext } from 'react';
 import { TagContext } from "../Context/TagContext/TagContext.jsx";
 
-export default function EditEmployeeDialog({ currentFirstName, currentLastName, onSave, isOpen, onClose, currentDepartment }) {
+export default function EditEmployeeDialog({ currentFirstName, currentLastName, currentDepartment, currentSkills, onSave, isOpen, onClose }) {
     const [firstNameInput, setFirstNameInput] = useState(currentFirstName || "");
     const [lastNameInput, setLastNameInput] = useState(currentLastName || "");
     const [department, setDepartment] = useState(currentDepartment || "");
+    const [skillsInput, setSkillsInput] = useState(currentSkills || []);
     const [nameError, setNameError] = useState(false);
     const { departments = [] } = useContext(TagContext);
 
@@ -13,7 +14,8 @@ export default function EditEmployeeDialog({ currentFirstName, currentLastName, 
         setFirstNameInput(currentFirstName || "");
         setLastNameInput(currentLastName || "");
         setDepartment(currentDepartment || "");
-    }, [currentFirstName, currentLastName, currentDepartment]);
+        setSkillsInput(currentSkills || []);
+    }, [currentFirstName, currentLastName, currentDepartment, currentSkills]);
 
     function handleOnSave() {
         if (firstNameInput === currentFirstName && lastNameInput === currentLastName) {
@@ -90,7 +92,6 @@ export default function EditEmployeeDialog({ currentFirstName, currentLastName, 
                         ))}
                     </Select>
                 </FormControl>
-
                 <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                     <Button variant="contained" color="primary" onClick={handleOnSave}>Save</Button>
                     <Button variant="outlined" onClick={handleClose}>Cancel</Button>
