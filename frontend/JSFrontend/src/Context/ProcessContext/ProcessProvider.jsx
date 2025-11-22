@@ -1,4 +1,4 @@
-import {use, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {ProcessContext} from "./ProcessContext.jsx";
 import axios from "axios";
 import {TaskContext} from "../TaskContext/TaskContext.jsx";
@@ -12,7 +12,7 @@ import {TaskContext} from "../TaskContext/TaskContext.jsx";
 export function ProcessProvider({children}) {
   const [processes, setProcesses] = useState([]);
   const [initialized, setInitialized] = useState(false);
-  const {fetchAllTasks} = use(TaskContext);
+  const {fetchAllTasks} = useContext(TaskContext);
   const BASE_URL = "http://localhost:8080/api/";
   //TODO: move BASE_URL to config file
 
@@ -91,7 +91,7 @@ export function ProcessProvider({children}) {
    */
   function deleteTaskIdFromProcess(processId, taskId) {
     const foundProcess = processes.find(p => p.id === processId);
-      if (!foundProcess) {t another tom scott video
+    if (!foundProcess) {
       console.error("Process not found:", processId);
       return;
     }
@@ -170,7 +170,7 @@ export function ProcessProvider({children}) {
   }
 
   return (
-    <ProcessContext value={{
+    <ProcessContext.Provider value={{
       processes,
       addProcess,
       deleteProcess,
@@ -181,6 +181,6 @@ export function ProcessProvider({children}) {
       deleteTaskIdFromProcess
     }}>
       {children}
-    </ProcessContext>
+    </ProcessContext.Provider>
   )
 }
