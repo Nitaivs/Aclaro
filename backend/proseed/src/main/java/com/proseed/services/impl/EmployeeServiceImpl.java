@@ -1,6 +1,7 @@
 package com.proseed.services.impl;
 
 import com.proseed.DTOs.EmployeeDTO;
+import com.proseed.DTOs.EmployeePatchDTO;
 import com.proseed.DTOs.Mappers.EmployeeMapper;
 import com.proseed.entities.Employee;
 import com.proseed.entities.EmployeeSkill;
@@ -82,20 +83,17 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     @Transactional
-    public Optional<EmployeeDTO> updatePartial(Long id, EmployeeDTO patch) {
+    public Optional<EmployeeDTO> updatePartial(Long id, EmployeePatchDTO patch) {
         if (id == null || patch == null) {
             throw new IllegalArgumentException("ID and patch data must not be null");
         }
         return repository.findById(id).map(existing -> {
             if (patch.getFirstName() != null) existing.setFirstName(patch.getFirstName());
             if (patch.getLastName() != null) existing.setLastName(patch.getLastName());
-            if (patch.getDepartment().getId() != null) addDepartmentToEmployee(existing, patch.getId());
-            if (patch.getRole().getId() != null) addRoleToEmployee(existing, patch.getId());
-            if (patch.getSkills() != null) {
-                setSkillsToEmployee(existing.getEmployeeId(),
-                    patch.getSkills().stream()
-                        .map(com.proseed.DTOs.SkillDTO::getId)
-                        .collect(java.util.stream.Collectors.toList()));
+            if (patch.getDepartmentId() != null) addDepartmentToEmployee(existing, patch.getDepartmentId());
+            if (patch.getRoleId() != null) addRoleToEmployee(existing, patch.getRoleId());
+            if (patch.getSkillIds() != null) {
+                setSkillsToEmployee(existing.getEmployeeId(), patch.getSkillIds());
             }
             Employee saved = repository.save(existing);
             return EmployeeMapper.toEmployeeDTO(saved);
