@@ -1,6 +1,7 @@
 package com.proseed.DTOs.Mappers;
 
 import com.proseed.DTOs.EmployeeDTO;
+import com.proseed.DTOs.EmployeePatchDTO;
 import com.proseed.entities.Employee;
 import java.util.stream.Collectors;
 
