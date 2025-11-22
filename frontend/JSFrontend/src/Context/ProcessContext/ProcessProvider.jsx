@@ -1,6 +1,7 @@
-import {useEffect, useState} from "react";
+import {use, useEffect, useState} from "react";
 import {ProcessContext} from "./ProcessContext.jsx";
 import axios from "axios";
+import {TaskContext} from "../TaskContext/TaskContext.jsx";
 
 /**
  * @Component ProcessProvider
@@ -11,6 +12,7 @@ import axios from "axios";
 export function ProcessProvider({children}) {
   const [processes, setProcesses] = useState([]);
   const [initialized, setInitialized] = useState(false);
+  const {fetchAllTasks} = use(TaskContext);
   const BASE_URL = "http://localhost:8080/api/";
   //TODO: move BASE_URL to config file
 
@@ -130,13 +132,16 @@ export function ProcessProvider({children}) {
    */
   async function deleteProcess(processId) {
     try {
-      console.log("Deleting process from DB");
+      console.log("Deleting process from DB with ID:", processId);
       await axios.delete(`${BASE_URL}processes/${processId}`);
       console.log("Process deleted from DB:", processId);
+      setProcesses(processes.filter(process => process.id !== processId));
+      //TODO: hack to remove tasks associated with deleted process, rewrite
+      await fetchAllTasks();
     } catch (error) {
       console.error("Error deleting process from DB:", error);
+      throw error;
     }
-    setProcesses(processes.filter(process => process.id !== processId));
   }
 
   /**
