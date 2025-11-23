@@ -1,6 +1,7 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {ProcessContext} from "./ProcessContext.jsx";
 import axios from "axios";
+import {TaskContext} from "../TaskContext/TaskContext.jsx";
 
 /**
  * @Component ProcessProvider
@@ -11,7 +12,8 @@ import axios from "axios";
 export function ProcessProvider({children}) {
   const [processes, setProcesses] = useState([]);
   const [initialized, setInitialized] = useState(false);
-  const BASE_URL = "/api/";
+  const {fetchAllTasks} = useContext(TaskContext);
+  const BASE_URL = "http://localhost:8080/api/";
   //TODO: move BASE_URL to config file
 
   /**
@@ -51,7 +53,7 @@ export function ProcessProvider({children}) {
     try {
       console.log("Fetching all processes from DB");
       const response = await axios.get(`${BASE_URL}processes`);
-      console.log(response);
+      console.log(`Processes:`, response.data);
       setProcesses(response.data);
     } catch (error) {
       console.error("Error fetching processes from DB:", error);
@@ -69,9 +71,9 @@ export function ProcessProvider({children}) {
       console.log("Fetching process by ID from DB:", processId);
       const response = await axios.get(`${BASE_URL}processes/${processId}`);
       console.log("Fetched process:", response.data);
-      const existingProcess = processes.find(p => p.processId === processId);
+      const existingProcess = processes.find(p => p.id === processId);
       if (existingProcess) {
-        setProcesses(processes.map(p => p.processId === processId ? response.data : p));
+        setProcesses(processes.map(p => p.id === processId ? response.data : p));
         return;
       }
       setProcesses([...processes, response.data]);
@@ -88,14 +90,14 @@ export function ProcessProvider({children}) {
    * @param taskId the ID of the task to delete
    */
   function deleteTaskIdFromProcess(processId, taskId) {
-    const foundProcess = processes.find(p => p.processId === processId);
+    const foundProcess = processes.find(p => p.id === processId);
     if (!foundProcess) {
       console.error("Process not found:", processId);
       return;
     }
     const updatedTaskIds = foundProcess.taskIds.filter(id => id !== taskId);
     const updatedProcess = {...foundProcess, taskIds: updatedTaskIds};
-    setProcesses(processes.map(p => p.processId === processId ? updatedProcess : p));
+    setProcesses(processes.map(p => p.id === processId ? updatedProcess : p));
   }
 
   /**
@@ -109,8 +111,8 @@ export function ProcessProvider({children}) {
     try {
       console.log("Adding process to DB");
       const response = await axios.post(`${BASE_URL}processes`, {
-        processName: name,
-        processDescription: description
+        name,
+        description
       });
       const newProcess = response.data;
       console.log("Process added to DB:", newProcess);
@@ -118,9 +120,9 @@ export function ProcessProvider({children}) {
       setProcesses([...processes, newProcess]);
       console.log("Process added locally:", newProcess);
     } catch (error) {
-      console.error("Error adding process to DB:", error);
+            console.error("Error adding process to DB:", error);
+        }
     }
-  }
 
   /**
    * @function deleteProcess
@@ -130,13 +132,16 @@ export function ProcessProvider({children}) {
    */
   async function deleteProcess(processId) {
     try {
-      console.log("Deleting process from DB");
+      console.log("Deleting process from DB with ID:", processId);
       await axios.delete(`${BASE_URL}processes/${processId}`);
       console.log("Process deleted from DB:", processId);
+      setProcesses(processes.filter(process => process.id !== processId));
+      //TODO: hack to remove tasks associated with deleted process, rewrite
+      await fetchAllTasks();
     } catch (error) {
       console.error("Error deleting process from DB:", error);
+      throw error;
     }
-    setProcesses(processes.filter(process => process.processId !== processId));
   }
 
   /**
@@ -148,7 +153,7 @@ export function ProcessProvider({children}) {
    */
   async function updateProcess(processId, updatedFields) {
     try {
-      const foundProcess = processes.find(p => p.processId === processId);
+      const foundProcess = processes.find(p => p.id === processId);
       if (!foundProcess) {
         console.error("Process not found:", processId);
         return;
@@ -158,14 +163,14 @@ export function ProcessProvider({children}) {
       console.log("response:", response.data);
       //TODO: replace with response data once backend updates description
       const updatedProcess = {...foundProcess, ...updatedFields};
-      setProcesses(processes.map(p => p.processId === processId ? updatedProcess : p));
+      setProcesses(processes.map(p => p.id === processId ? updatedProcess : p));
     } catch (error) {
       console.error("Error updating process in DB:", error);
     }
   }
 
   return (
-    <ProcessContext value={{
+    <ProcessContext.Provider value={{
       processes,
       addProcess,
       deleteProcess,
@@ -176,6 +181,6 @@ export function ProcessProvider({children}) {
       deleteTaskIdFromProcess
     }}>
       {children}
-    </ProcessContext>
+    </ProcessContext.Provider>
   )
 }

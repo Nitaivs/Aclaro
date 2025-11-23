@@ -6,7 +6,6 @@ import com.proseed.repos.ProcessRepository;
 import com.proseed.repos.TaskRepository;
 import com.proseed.repos.EmployeeRepository;
 import com.proseed.entities.Employee;
-import com.proseed.DTOs.TaskDTO;
 import com.proseed.services.TaskService;
 import com.proseed.DTOs.Mappers.TaskMapper;
 import com.proseed.DTOs.TaskWithEmployeesDTO;
@@ -60,22 +59,22 @@ public class TaskServiceImpl implements TaskService {
     public Optional<Task> update(Long id, Task task, Long parentId, Long processId) {
         // Resolve and reparent subtasks safely to avoid orphanRemoval accidental deletes.
         return taskRepository.findById(id).map(existing -> {
-            existing.setTaskName(task.getTaskName());
-            existing.setTaskDescription(task.getTaskDescription());
+            existing.setName(task.getName());
+            existing.setDescription(task.getDescription());
             existing.setCompleted(task.isCompleted());
 
             if (task.getSubTasks() != null) {
                 // Build a resolved set of subtasks: existing managed entities for ids, or new ones for creations
                 java.util.Set<Task> resolved = new java.util.LinkedHashSet<>();
                 for (Task incoming : task.getSubTasks()) {
-                    if (incoming.getTaskId() != null) {
-                        Task managed = taskRepository.findById(incoming.getTaskId())
-                            .orElseThrow(() -> new IllegalArgumentException("Subtask not found: " + incoming.getTaskId()));
+                    if (incoming.getId() != null) {
+                        Task managed = taskRepository.findById(incoming.getId())
+                            .orElseThrow(() -> new IllegalArgumentException("Subtask not found: " + incoming.getId()));
                         // Prevent circular relationships: you cannot make an ancestor a child of its descendant
-                        if (isAncestorOf(managed, existing) || managed.getTaskId().equals(existing.getTaskId())) {
+                        if (isAncestorOf(managed, existing) || managed.getId().equals(existing.getId())) {
                             throw new IllegalArgumentException(
-                                "Circular subtask relationship detected: task " + managed.getTaskId() +
-                                " cannot be a child of its descendant " + existing.getTaskId());
+                                "Circular subtask relationship detected: task " + managed.getId() +
+                                " cannot be a child of its descendant " + existing.getId());
                         }
                         // reparent the managed entity
                         managed.setParentTask(existing);
@@ -129,8 +128,8 @@ public class TaskServiceImpl implements TaskService {
     private boolean isAncestorOf(Task candidateAncestor, Task node) {
         Task cursor = node.getParentTask();
         while (cursor != null) {
-            if (cursor.getTaskId() != null && candidateAncestor.getTaskId() != null
-                && cursor.getTaskId().equals(candidateAncestor.getTaskId())) {
+            if (cursor.getId() != null && candidateAncestor.getId() != null
+                && cursor.getId().equals(candidateAncestor.getId())) {
                 return true;
             }
             cursor = cursor.getParentTask();
@@ -149,7 +148,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void validateNoCyclesDfs(Task node, java.util.Set<Long> idPath, java.util.Set<Task> objPath) {
-        Long id = node.getTaskId();
+        Long id = node.getId();
         if (id != null) {
             if (!idPath.add(id)) {
                 throw new IllegalArgumentException("Circular subtask relationship detected in creation payload involving task id: " + id);

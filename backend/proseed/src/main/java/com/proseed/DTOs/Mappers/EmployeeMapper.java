@@ -1,9 +1,8 @@
 package com.proseed.DTOs.Mappers;
 
 import com.proseed.DTOs.EmployeeDTO;
+import com.proseed.DTOs.EmployeePatchDTO;
 import com.proseed.entities.Employee;
-import com.proseed.entities.EmployeeSkill;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class EmployeeMapper {
@@ -12,13 +11,13 @@ public class EmployeeMapper {
             employee.getEmployeeId(),
             employee.getFirstName(),
             employee.getLastName(),
-            employee.getDepartment() != null ? employee.getDepartment().getDepartmentId() : null,
-            employee.getRole() != null ? employee.getRole().getRoleName() : "",
+            employee.getDepartment() != null ? DepartmentMapper.toDepartmentDTO(employee.getDepartment()) : null,
+            employee.getRole() != null ? RoleMapper.toRoleDTO(employee.getRole()) : null,
             employee.getEmployeeSkills() != null ?
                 employee.getEmployeeSkills().stream()
-                        .map(EmployeeSkill::getSkillName)
-                        .collect(Collectors.toList())
-                    : List.of()
+                    .map(SkillMapper::toSkillDTO)
+                    .collect(Collectors.toList())
+                : null
         );
     }
 }

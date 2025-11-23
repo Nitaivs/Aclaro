@@ -1,10 +1,14 @@
-import {Link, useParams} from "react-router";
+import {Link, useParams, useNavigate, useLocation} from "react-router";
 import {use, useState} from 'react';
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import EditTaskDetailsDialog from "./EditTaskDetailsDialog.jsx";
 import ErrorDialog from "./ErrorDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
+import "../style/DetailPanel.css"
+import {IconButton} from "@mui/material";
+import deleteIcon from "../assets/delete.svg"
+import editIcon from "../assets/edit.svg"
 
 /**
  * @component TaskPage
@@ -12,42 +16,55 @@ import AreYouSureDialog from "./AreYouSureDialog.jsx";
  * Retrieves the processId and taskId from the URL parameters and provides navigation back to the associated process page.
  * @returns {JSX.Element} The rendered TaskPage component.
  */
-export default function TaskPage() {
+export default function TaskPage({isModal = false}) {
   const {processId, taskId} = useParams();
   const {tasks, updateTask, deleteTask} = use(TaskContext);
   const {deleteTaskIdFromProcess} = use(ProcessContext);
   const parsedTaskId = taskId ? parseInt(taskId) : undefined;
-  const foundTask = tasks.find(t => t.taskId === parsedTaskId);
+  const foundTask = tasks.find(t => t.id === parsedTaskId);
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   /**
    * @function handleUpdateTask
    * @description Handles the update of task details.
    * Calls the updateTask function from TaskContext with the new name and description.
-   * @param newName the new name for the task. May be undefined, in which case the current name is retained.
-   * @param newDescription the new description for the task. May be undefined, in which case the current description is retained.
+   * @param {string} newName the new name for the task. May be undefined, in which case the current name is retained.
+   * @param {string} newDescription the new description for the task. May be undefined, in which case the current description is retained.
    * @returns {Promise<void>} A promise that resolves when the task update is complete.
    */
   async function handleUpdateTask(newName, newDescription) {
-    if (newName === foundTask.taskName && newDescription === foundTask.taskDescription) {
+    if (newName === foundTask.name && newDescription === foundTask.description) {
       setIsTaskDetailsDialogOpen(false);
       return;
     }
     await updateTask(parsedTaskId, {
-      taskName: newName || foundTask.taskName,
-      taskDescription: newDescription || foundTask.taskDescription
+      name: newName || foundTask.name,
+      description: newDescription || foundTask.description
     });
     setIsTaskDetailsDialogOpen(false);
   }
 
+  /**
+   * @function handleDeleteTask
+   * @description Handles the deletion of the task.
+   * Calls the deleteTask function from TaskContext and manages error handling.
+   * @returns {Promise<void>} A promise that resolves when the task deletion is complete.
+   */
   async function handleDeleteTask() {
     try {
       await deleteTask(taskId);
       //TODO: A bit of a hack to refresh process task list, rewrite
-      deleteTaskIdFromProcess(processId ,taskId);
+      deleteTaskIdFromProcess(processId, taskId);
+      if (!location && location.state && location.state.background) {
+        navigate(-1);
+      } else {
+        navigate(`/tasks`);
+      }
     } catch (error) {
       console.error("Error deleting task:", error);
       setErrorMessage(error.message);
@@ -69,20 +86,30 @@ export default function TaskPage() {
   }
 
   return (
-    <div>
-      <Link to={`/process/${foundTask.processId}`}>
-        <button>
-          Go back to process {processId}
-        </button>
-      </Link>
-      <h1>{foundTask.taskName}</h1>
-      <p>taskId: {taskId}</p>
-      <p>description: {foundTask.taskDescription}</p>
-      <button onClick={() => setIsTaskDetailsDialogOpen(true)}>Edit Task Details</button>
-      <button onClick={() => setShowDeleteDialog(true)}>Delete Task</button>
+    <div className={`detail-container${isModal ? " modal" : ""}`}>
+      <div className="detail-header">
+        <h2>Task</h2>
+      </div>
+      <div className="detail-content">
+        <div className="detail-info">
+          <h2>{foundTask.name}</h2>
+          <p>{foundTask.description}</p>
+        </div>
+        <div className="detail-actions">
+          <IconButton onClick={() => setIsTaskDetailsDialogOpen(true)}>
+            <img src={editIcon} alt="Edit Task" className="icon-img"/>
+          </IconButton>
+          <IconButton onClick={() => setShowDeleteDialog(true)}>
+            <img src={deleteIcon} alt="Delete Task" className="icon-img"/>
+          </IconButton>
+          {/*<button onClick={() => setIsTaskDetailsDialogOpen(true)}>Edit Task Details</button>*/}
+          {/*<button onClick={() => setShowDeleteDialog(true)}>Delete Task</button>*/}
+        </div>
+      </div>
+
       <EditTaskDetailsDialog
-        currentName={foundTask.taskName}
-        currentDescription={foundTask.taskDescription}
+        currentName={foundTask.name}
+        currentDescription={foundTask.description}
         onSave={handleUpdateTask}
         isOpen={isTaskDetailsDialogOpen}
         onClose={() => setIsTaskDetailsDialogOpen(false)}
@@ -98,8 +125,8 @@ export default function TaskPage() {
         onCancel={() => setShowDeleteDialog(false)}
         onConfirm={handleDeleteTask}
         title="Confirm Delete Task"
-        message={`Are you sure you want to delete the task "${foundTask.taskName}"? This action cannot be undone.`}
-        />
+        message={`Are you sure you want to delete the task "${foundTask.name}"? This action cannot be undone.`}
+      />
     </div>
   )
 }

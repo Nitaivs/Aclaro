@@ -1,5 +1,5 @@
 import {Dialog, DialogTitle, TextField} from '@mui/material';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 
 /**
  * @Component AddEmployeeDialog
@@ -12,16 +12,8 @@ import {useState, useEffect} from 'react';
 export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
   const [firstNameInput, setFirstNameInput] = useState("");
   const [lastNameInput, setLastNameInput] = useState("");
-  // const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
   //TODO: error currently does not distinguish between first and last name, fix later
   const [nameError, setNameError] = useState(false);
-
-  // /**
-  //  * UseEffect hook to update the dialog open state when the isOpen prop changes.
-  //  */
-  // useEffect(() => {
-  //   setIsDialogOpen(isOpen);
-  // }, [isOpen]);
 
   /**
    * @function handleOnSave

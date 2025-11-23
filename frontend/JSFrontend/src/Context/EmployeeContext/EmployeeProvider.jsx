@@ -92,23 +92,24 @@ async function fetchAllEmployees() {
    * @param {*} updatedFields - An object containing the fields to update.
    * @returns
    */
-    async function updateEmployee(id, updatedFields) {
+    async function updateEmployee(id, newFields) {
         try {
-            console.log(`Updating employee with id ${id} on DB`, updatedFields);
-            const response = await axios.patch(`${BASE_URL}employees/${id}`, updatedFields);
+            console.log(`Patching employee ${id} with payload:`, newFields);
+            const response = await axios.patch(`${BASE_URL}employees/${id}`, newFields);
             const updatedEmployee = response.data;
             setEmployees(prev =>
                 prev.some(e => e.id === id)
                     ? prev.map(e => (e.id === id ? updatedEmployee : e))
                     : [...prev, updatedEmployee]
             );
-            fetchAllEmployees()
+            await fetchAllEmployees();
             return updatedEmployee;
         } catch (error) {
             console.error(`Error updating employee with id ${id} on DB:`, error);
             throw error;
         }
     }
+
 
   /**
    * @function deleteEmployeeById Deletes an employee by their ID from the database.
@@ -121,7 +122,7 @@ async function fetchAllEmployees() {
       console.log(`Deleting employee with id ${id} from DB`);
       const response = await axios.delete(`${BASE_URL}employees/${id}`);
       console.log(response);
-      fetchAllEmployees()
+      await fetchAllEmployees()
       setEmployees(employees.filter(employee => employee.id !== id));
     } catch (error) {
       console.error(`Error deleting employee with id ${id} from DB:`, error);
@@ -142,7 +143,7 @@ async function addEmployee(firstName, lastName) {
         const response = await axios.post(`${BASE_URL}employees`, { firstName, lastName });
         console.log("Added employee:", response.data);
         setEmployees(prev => [...prev, response.data]);
-        fetchAllEmployees()
+        await fetchAllEmployees()
         return response.data;
     } catch (error) {
         console.error(`Error adding employee ${firstName} ${lastName} to DB:`, error);

@@ -5,15 +5,19 @@ import App from './App.jsx'
 import {ProcessProvider} from "./Context/ProcessContext/ProcessProvider.jsx";
 import {TaskProvider} from "./Context/TaskContext/TaskProvider.jsx"
 import {EmployeeProvider} from "./Context/EmployeeContext/EmployeeProvider.jsx"
+import {TagProvider} from "./Context/TagContext/TagProvider.jsx";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ProcessProvider>
-      <TaskProvider>
+    {/*TODO: refactor context providers placement (?)*/}
+    <TaskProvider>
+      <ProcessProvider>
         <EmployeeProvider>
-          <App/>
+          <TagProvider>
+            <App/>
+          </TagProvider>
         </EmployeeProvider>
-      </TaskProvider>
-    </ProcessProvider>
+      </ProcessProvider>
+    </TaskProvider>
   </StrictMode>,
 )

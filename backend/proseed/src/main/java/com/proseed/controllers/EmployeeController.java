@@ -1,8 +1,12 @@
 package com.proseed.controllers;
 
 import com.proseed.DTOs.EmployeeDTO;
+import com.proseed.DTOs.EmployeePatchDTO;
 import com.proseed.entities.Employee;
 import com.proseed.services.EmployeeService;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,12 +50,14 @@ public class EmployeeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
+    /*
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
         return employeeService.update(id, updatedEmployee)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
+    } */
+
     /**
      * Partially update an employee. Only provided fields are changed.
      * @param id employee id
@@ -59,10 +65,16 @@ public class EmployeeController {
      * @return updated EmployeeDTO or 404
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<EmployeeDTO> patchEmployee(@PathVariable Long id, @RequestBody EmployeeDTO patch) {
-        return employeeService.updatePartial(id, patch)
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<?> patchEmployee(@PathVariable Long id, @RequestBody EmployeePatchDTO patch) {
+        try{
+            return employeeService.updatePartial(id, patch)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

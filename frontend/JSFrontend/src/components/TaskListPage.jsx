@@ -11,12 +11,12 @@ export default function TaskListPage() {
       <ul>
         {tasks.map((task) => {
           return (
-            <li key={task.taskId}>
+            <li key={task.id}>
               <TaskCard
                 processId={task.processId}
-                taskId={task.taskId}
-                taskName={task.taskName}
-                taskDescription={task.taskDescription}
+                taskId={task.id}
+                taskName={task.name}
+                taskDescription={task.description}
               />
             </li>
           )

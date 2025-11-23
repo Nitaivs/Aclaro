@@ -1,6 +1,8 @@
 package com.proseed.entities;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,11 +16,11 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id", nullable = false, unique = true)
-    private Long roleId;
+    private Long id;
 
     @Column(nullable = false, unique = true, length = 100)
 
-    private String roleName;
+    private String name;
 
     /* This section is commented out for now; can be re-enabled if role-privilege mapping is needed in the future.
     @ManyToMany(fetch = FetchType.LAZY) // Nullable for roles without any privileges
@@ -37,5 +39,6 @@ public class Role {
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonIgnore
     private Set<Employee> employees;
 }

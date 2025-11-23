@@ -53,8 +53,8 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional
     public Optional<ProcessDTO> update(Long id, ProcessEntity updatedProcess) {
         return repository.findById(id).map(existing -> {
-            existing.setProcessName(updatedProcess.getProcessName());
-            existing.setProcessDescription(updatedProcess.getProcessDescription());
+            existing.setName(updatedProcess.getName());
+            existing.setDescription(updatedProcess.getDescription());
             return ProcessMapper.toDTO(repository.save(existing));
         });
     }

@@ -1,20 +1,20 @@
-import {Link} from 'react-router';
-import {useParams} from "react-router";
+import {useParams, useNavigate} from "react-router";
 import {use, useEffect} from "react";
-import TaskCard from "./TaskCard.jsx";
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {useState} from "react";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import EditProcessDetailsDialog from "./EditProcessDetailsDialog.jsx";
-import AddTaskDialog from "./AddTaskDialog.jsx";
+import AreYouSureDialog from "./AreYouSureDialog.jsx";
 import '@xyflow/react/dist/style.css'
 import {ReactFlow} from "@xyflow/react";
 import ProcessNode from "./ProcessNode.jsx";
 import TaskNode from "./TaskNode.jsx";
-import {
-  ProcessOperationsContext,
-  ProcessOperationsProvider
-} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
+import {ProcessOperationsProvider} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
+import {IconButton} from "@mui/material";
+import editIcon from '../assets/edit.svg';
+import deleteIcon from '../assets/delete.svg';
+import '../style/DetailPanel.css';
+import '../style/ReactFlow.css';
 
 // Define custom node types for React Flow
 const nodeTypes = {
@@ -32,13 +32,14 @@ const nodeTypes = {
  */
 export default function ProcessPage() {
   const {processId} = useParams();
-  const {processes, updateProcess} = use(ProcessContext);
+  const {processes, updateProcess, deleteProcess} = use(ProcessContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
-  const foundProcess = processes.find(p => p.processId === parsedProcessId);
+  const foundProcess = processes.find(p => p.id === parsedProcessId);
   const {tasks} = use(TaskContext);
+  const navigate = useNavigate();
   const [associatedTasks, setAssociatedTasks] = useState([]);
   const [isProcessDetailsDialogOpen, setIsProcessDetailsDialogOpen] = useState(false);
-  // const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
@@ -67,7 +68,7 @@ export default function ProcessPage() {
     }
     const associated = [];
     for (const taskId of foundProcess.taskIds) {
-      const task = tasks.find(t => t.taskId === taskId);
+      const task = tasks.find(t => t.id === taskId);
       if (task) {
         associated.push(task);
       }
@@ -75,38 +76,78 @@ export default function ProcessPage() {
     return associated;
   }
 
+  /**
+   * @function handleDeleteProcess
+   * @description Handles the deletion of the process.
+   * Calls the deleteProcess function from ProcessContext and navigates back to the processes list.
+   * @returns {Promise<void>} A promise that resolves when the process deletion is complete.
+   */
+  async function handleDeleteProcess() {
+    try {
+      await deleteProcess(foundProcess.id);
+      navigate('/processes');
+    } catch (error) {
+      console.error("Error deleting process:", error);
+    }
+  }
+
   //TODO: refactor. Move into separate utility file and divide into smaller functions
+  /**
+   * @function generateNodesAndEdges
+   * @description Generates nodes and edges for React Flow based on the associated tasks.
+   * Lays out the nodes in a tree structure with specified horizontal and vertical spacing,
+   * and sets the generated nodes and edges in the component state.
+   */
   function generateNodesAndEdges() {
     if (!foundProcess) {
       return;
     }
     // Layout constants
-    const horizontalSpacing = 250;
+    const horizontalSpacing = 280;
     const verticalSpacing = 120;
+
     const nodes = [];
     const edges = [];
 
+    /**
+     * @function buildTree
+     * @description Builds a tree structure representing the process and its associated tasks.
+     * The root node represents the process, and child nodes represent tasks and their subtasks.
+     * The root node has an id of the format 'process-{processId}', type 'processNode', and data containing the process name.
+     * The root node's children are the top-level tasks associated with the process.
+     * Each task node has an id of the format 'task-{taskId}', type 'taskNode', and data containing the task name and taskId.
+     * Each task node's children are its subtasks, recursively built in the same manner.
+     * @returns {{id: string, type: string, data: {label: string}, children: *[]}} The root node of the tree structure.
+     */
     function buildTree() {
       const rootNode = {
-        id: `process-${foundProcess.processId}`,
+        id: `process-${foundProcess.id}`,
         type: 'processNode',
-        data: {label: foundProcess.processName},
+        data: {label: foundProcess.name},
         children: []
       }
 
-      const taskMap = new Map(associatedTasks.map(task => [task.taskId, task]))
+      const taskMap = new Map(associatedTasks.map(task => [task.id, task]))
 
+      /**
+       * @function buildSubtree
+       * @description Recursively builds a subtree for a given task and its subtasks.
+       * The subtree node has an id of the format 'task-{taskId}', type 'taskNode', and data containing the task's name and id.
+       * The node's children are its subtasks, recursively built in the same manner.
+       * @param task The task object for which to build the subtree.
+       * @returns {{id: string, type: string, data: {label: string, taskId: number}, children: *[]}} The subtree node representing the task and its subtasks.
+       */
       function buildSubtree(task) {
         const node = {
-          id: `task-${task.taskId}`,
+          id: `task-${task.id}`,
           type: 'taskNode',
-          data: {label: task.taskName, taskId: task.taskId},
+          data: {label: task.name, taskId: task.id},
           children: []
         };
 
         if (task.subTasks && task.subTasks.length > 0) {
           for (const subTask of task.subTasks) {
-            const fullSubTask = taskMap.get(subTask.taskId);
+            const fullSubTask = taskMap.get(subTask.id);
             if (fullSubTask) {
               node.children.push(buildSubtree(fullSubTask));
             }
@@ -124,11 +165,29 @@ export default function ProcessPage() {
       return rootNode;
     }
 
+    /**
+     * @function calculateSubtreeSize
+     * @description Recursively calculates the size of a subtree rooted at the given node.
+     * The size is defined as the total number of nodes in the subtree, including the root node.
+     * @param node The root node of the subtree.
+     * @returns {*|number} The size of the subtree.
+     */
     function calculateSubtreeSize(node) {
       if (node.children.length === 0) return 1;
       return node.children.reduce((sum, child) => sum + calculateSubtreeSize(child), 0);
     }
 
+    /**
+     * @function layoutTree
+     * @description Recursively lays out the tree structure by assigning x and y positions to each node.
+     * The root node is positioned at (x, (yStart + yEnd) / 2).
+     * Child nodes are positioned horizontally spaced by horizontalSpacing and vertically distributed
+     * within the range [yStart, yEnd] based on their subtree sizes.
+     * @param node The current node to layout.
+     * @param x The x position for the current node.
+     * @param yStart The starting y position for the current node's subtree.
+     * @param yEnd The ending y position for the current node's subtree.
+     */
     function layoutTree(node, x, yStart, yEnd) {
       const yCenter = (yStart + yEnd) / 2;
       nodes.push({
@@ -174,29 +233,11 @@ export default function ProcessPage() {
    */
   function handleUpdateProcess(newName, newDescription) {
     updateProcess(parsedProcessId, {
-      processName: newName || foundProcess.processName,
-      processDescription: newDescription || foundProcess.processDescription
+      name: newName || foundProcess.name,
+      description: newDescription || foundProcess.description,
     });
     setIsProcessDetailsDialogOpen(false);
   }
-
-  /**
-   * @function handleAddTask
-   * @description Handles the addition of a new task to the current process.
-   * Calls the addTask function from TaskContext with the process ID, task name, and task description.
-   * @param {string} taskName - The name of the task to be added.
-   * @param {string} taskDescription - The description of the task to be added.
-   * @returns {Promise<void>} A promise that resolves when the task has been added.
-   */
-  // async function handleAddTask(taskName, taskDescription, parentTaskId = null) {
-  //   try {
-  //     await addTask(parsedProcessId, taskName, taskDescription);
-  //     //TODO: A bit of a hack to refresh process task list, rewrite
-  //     await fetchProcessById(parsedProcessId);
-  //   } catch (error) {
-  //     console.error("Error adding task:", error);
-  //   }
-  // }
 
   // Render error messages for invalid or not found process
   if (!parsedProcessId) {
@@ -217,24 +258,44 @@ export default function ProcessPage() {
   }
 
   return (
-    <div style={{marginLeft: '240px'}}>
-      <div style={{padding: '20px'}}>
-        <h1>{foundProcess.processName}</h1>
-        <p>Process ID: {foundProcess.processId}</p>
-        <p>Description: {foundProcess.processDescription}</p>
-          <button onClick={() => setIsProcessDetailsDialogOpen(true)}>
-            Edit Process Details
-          </button>
-          <EditProcessDetailsDialog
-            currentName={foundProcess.processName}
-            currentDescription={foundProcess.processDescription}
-            onSave={handleUpdateProcess}
-            isOpen={isProcessDetailsDialogOpen}
-            onClose={() => setIsProcessDetailsDialogOpen(false)}
-          />
+    <div className="detail-container">
+      {/* Header */}
+      <div className="detail-header">
+        <h2>
+          Process
+        </h2>
       </div>
-
-      <div style={{width: '100vh', height: '100vh', border: '2px solid black', marginTop: '20px'}}>
+      {/* Process Details */}
+      <div className="detail-content">
+        <div className="detail-info">
+          <h2 className="detail-title">{foundProcess.name}</h2>
+          <p className="detail-description">{foundProcess.description}</p>
+        </div>
+        <div className="detail-actions">
+          <IconButton onClick={() => setIsProcessDetailsDialogOpen(true)} size="large">
+            <img src={editIcon} alt="Edit Process Details" className="icon-img"/>
+          </IconButton>
+          <IconButton onClick={() => setIsDeleteDialogOpen(true)} size="large">
+            <img src={deleteIcon} alt="Delete Process" className="icon-img"/>
+          </IconButton>
+        </div>
+      </div>
+      <EditProcessDetailsDialog
+        currentName={foundProcess.name}
+        currentDescription={foundProcess.description}
+        onSave={handleUpdateProcess}
+        isOpen={isProcessDetailsDialogOpen}
+        onClose={() => setIsProcessDetailsDialogOpen(false)}
+      />
+      <AreYouSureDialog
+        isOpen={isDeleteDialogOpen}
+        onCancel={() => setIsDeleteDialogOpen(false)}
+        title="Delete Process"
+        message={`Are you sure you want to delete the process "${foundProcess.name}" and all associated tasks? This action cannot be undone.`}
+        onConfirm={() => handleDeleteProcess()}
+      />
+      {/* React Flow Diagram */}
+      <div className="react-flow-container">
         <ProcessOperationsProvider processId={parsedProcessId}>
           <ReactFlow
             nodes={nodes}

@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProcessDTO {
-    private Long processId;
-    private String processName;
-    private String processDescription;
+    private Long id;
+    private String name;
+    private String description;
     private List<Long> taskIds;
 }

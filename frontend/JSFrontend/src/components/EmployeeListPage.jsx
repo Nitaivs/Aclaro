@@ -34,7 +34,6 @@ export default function EmployeeListPage() {
     // Filter employees based on the filterString
     const filtered = employees.filter(emp => `
     ${emp?.firstName || ''} ${emp?.lastName || ''}`.toLowerCase().includes(filterString.trim().toLowerCase())
-
     );
 
     /**
@@ -129,40 +128,48 @@ export default function EmployeeListPage() {
                             />
                         </ListItem>
                     ) : (
-                        filtered.map((emp, idx) => (
-                            console.log(emp),
-                            <div key={emp.employeeId ?? idx}>
-                                <Link to={`/employees/${emp.employeeId}`}>
-                                    <ListItem
-                                        alignItems="flex-start"
-                                        secondaryAction={
-                                            removeMode ? (
-                                                <IconButton
-                                                    edge="end"
-                                                    aria-label="delete"
-                                                    color="error"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        handleDeleteEmployee(emp.employeeId);
-                                                    }}
-                                                >
-                                                    X
-                                                </IconButton>
-                                            ) : null
-                                        }
-                                    />
-                                    <ListItem alignItems="flex-start">
-                                        <ListItemAvatar>
-                                            <Avatar></Avatar>
-                                        </ListItemAvatar>
-                                        <p>
-                                            {emp.firstName} {emp.lastName}
-                                        </p>
-                                    </ListItem>
-                                    {idx < filtered.length - 1 && <Divider component="li" />}
-                                </Link>
-                            </div>
-                        ))
+                        filtered.map((emp, idx) => {
+                            return (
+                                <div key={emp.id ?? idx}>
+                                    <Link to={`/employees/${emp.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <ListItem
+                                            alignItems="flex-start"
+                                            secondaryAction={
+                                                removeMode ? (
+                                                    <IconButton
+                                                        edge="end"
+                                                        aria-label="delete"
+                                                        color="error"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleDeleteEmployee(emp.id);
+                                                        }}
+                                                    >
+                                                        X
+                                                    </IconButton>
+                                                ) : null
+                                            }
+                                        >
+                                            <ListItemAvatar>
+                                                <Avatar />
+                                            </ListItemAvatar>
+
+                                            <ListItemText
+                                                primary={`${emp.firstName} ${emp.lastName}`}
+                                                secondary={
+                                                    <>
+                                                        <span>Department: {emp.department?.name || "Unassigned"}</span>
+                                                        <br />
+                                                        <span>Skills: {emp.skills?.length ? emp.skills.map(skill => skill.name).join(", ") : "No skills assigned"}</span>
+                                                    </>
+                                                }
+                                            />
+                                        </ListItem>
+                                        {idx < filtered.length - 1 && <Divider component="li" />}
+                                    </Link>
+                                </div>
+                            );
+                        })
                     )}
                 </List>
             </Paper>

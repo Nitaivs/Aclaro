@@ -35,8 +35,7 @@ export default function AddTaskDialog({isOpen, onClose, parentTaskId}) {
         return;
       }
       console.log(`Adding task to process ${processId} with name: ${nameInput}, description: ${descriptionInput}, parentTaskId: ${parentTaskId}`);
-      const result = await addTask(processId, nameInput, descriptionInput, parentTaskId);
-      console.log("Task added successfully:", result);
+      await addTask(processId, nameInput, descriptionInput, parentTaskId);
       setNameError(false);
       //TODO: hack to refresh process task list, rewrite
       await fetchProcessById(processId);
