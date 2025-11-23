@@ -1,6 +1,8 @@
 import { Dialog, DialogTitle, DialogContent, TextField, Select, MenuItem, InputLabel, FormControl, Button, Chip, Box, Typography, Divider } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
 import { TagContext } from "../Context/TagContext/TagContext.jsx";
+//import AddTagDialog from "./AddTagDialog.jsx";
+//import handleAddTag from "./TagListPage.jsx";
 
 export default function EditEmployeeDialog({ currentFirstName, currentLastName, currentDepartment, currentSkills, onSave, isOpen, onClose }) {
     const [firstNameInput, setFirstNameInput] = useState(currentFirstName || "");
@@ -8,6 +10,8 @@ export default function EditEmployeeDialog({ currentFirstName, currentLastName, 
     const [department, setDepartment] = useState(currentDepartment || "");
     // Ensure skillsInput is always an array
     const [skillsInput, setSkillsInput] = useState(currentSkills || []);
+    //TODO: Implemnt this later if needed
+    //const [isAddTagDialogOpen, setIsAddTagDialogOpen] = useState(false);
 
     const [nameError, setNameError] = useState(false);
 
@@ -160,6 +164,16 @@ export default function EditEmployeeDialog({ currentFirstName, currentLastName, 
                     <Button variant="contained" color="primary" onClick={handleOnSave}>Save</Button>
                 </div>
             </DialogContent>
+            {/*
+            <button onClick={() => setIsAddTagDialogOpen(true)}>
+                Add tag
+            </button>
+
+            <AddTagDialog
+                    isOpen={isAddTagDialogOpen}
+                    onSave={handleAddTag}
+                    onClose={() => setIsAddTagDialogOpen(false)}
+            /> //TODO: implement this later if needed */}
         </Dialog>
     );
 }

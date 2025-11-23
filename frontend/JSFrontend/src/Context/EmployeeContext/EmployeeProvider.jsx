@@ -92,23 +92,24 @@ async function fetchAllEmployees() {
    * @param {*} updatedFields - An object containing the fields to update.
    * @returns
    */
-    async function updateEmployee(id, updatedFields) {
+    async function updateEmployee(id, newFields) {
         try {
-            console.log(`Updating employee with id ${id} on DB`, updatedFields);
-            const response = await axios.patch(`${BASE_URL}employees/${id}`, updatedFields);
+            console.log(`Patching employee ${id} with payload:`, newFields);
+            const response = await axios.patch(`${BASE_URL}employees/${id}`, newFields);
             const updatedEmployee = response.data;
             setEmployees(prev =>
                 prev.some(e => e.id === id)
                     ? prev.map(e => (e.id === id ? updatedEmployee : e))
                     : [...prev, updatedEmployee]
             );
-            await fetchAllEmployees()
+            await fetchAllEmployees();
             return updatedEmployee;
         } catch (error) {
             console.error(`Error updating employee with id ${id} on DB:`, error);
             throw error;
         }
     }
+
 
   /**
    * @function deleteEmployeeById Deletes an employee by their ID from the database.
