@@ -1,7 +1,6 @@
-import {useContext, useState, useMemo, useEffect} from "react";
+import {useContext, useState, useMemo} from "react";
 import {TagContext} from "../Context/TagContext/TagContext.jsx";
 import AddTagDialog from "./AddTagDialog.jsx";
-import {Link} from "react-router";
 import {
   Alert,
   AlertTitle,
@@ -17,7 +16,7 @@ import Collapse from "@mui/material/Collapse";
 import TagItem from "./TagItem.jsx";
 
 export default function TagListPage() {
-  const {departments, skills, addDepartment, addSkill, deleteDepartmentById} = useContext(TagContext);
+  const {departments, skills, addDepartment, addSkill} = useContext(TagContext);
   const [isAddTagDialogOpen, setIsAddDepartmentDialogOpen] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
