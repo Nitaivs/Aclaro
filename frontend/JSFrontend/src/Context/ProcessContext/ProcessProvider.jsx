@@ -13,7 +13,7 @@ export function ProcessProvider({children}) {
   const [processes, setProcesses] = useState([]);
   const [initialized, setInitialized] = useState(false);
   const {fetchAllTasks} = useContext(TaskContext);
-  const BASE_URL = "http://localhost:8080/api/";
+  const BASE_URL = "/api/";
   //TODO: move BASE_URL to config file
 
   /**
