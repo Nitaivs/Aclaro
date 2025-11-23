@@ -36,9 +36,9 @@ export default function EditTagDialog({currentName, onSave, isOpen, onClose}) {
       setErrorMessage("Tag name is required");
       return;
     }
-    if (nameInput.length > 30) {
+    if (nameInput.length > 40) {
       setNameError(true);
-      setErrorMessage("Tag name must be 30 characters or less in length");
+      setErrorMessage("Tag name must be 40 characters or less in length");
       return;
     }
     setNameError(false);
