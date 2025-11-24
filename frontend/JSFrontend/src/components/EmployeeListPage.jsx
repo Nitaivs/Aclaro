@@ -10,12 +10,10 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemAvatar,
-  Avatar,
   Divider,
-  IconButton
 } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
+import EmployeeItem from "./EmployeeItem.jsx";
 
 /**
  * @component EmployeeListPage
@@ -133,38 +131,8 @@ export default function EmployeeListPage() {
               return (
                 <div key={emp.id ?? idx}>
                   <Link to={`/employees/${emp.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
-                    <ListItem
-                      alignItems="flex-start"
-                      secondaryAction={
-                        removeMode ? (
-                          <IconButton
-                            edge="end"
-                            aria-label="delete"
-                            color="error"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleDeleteEmployee(emp.id);
-                            }}
-                          >
-                            X
-                          </IconButton>
-                        ) : null
-                      }
-                    >
-                      <ListItemAvatar>
-                        <Avatar/>
-                      </ListItemAvatar>
-
-                      <ListItemText
-                        primary={`${emp.firstName} ${emp.lastName}`}
-                        secondary={
-                          <>
-                            <span>Department: {emp.department?.name || "Unassigned"}</span>
-                            <br/>
-                            <span>Skills: {emp.skills?.length ? emp.skills.map(skill => skill.name).join(", ") : "No skills assigned"}</span>
-                          </>
-                        }
-                      />
+                    <ListItem alignItems="flex-start">
+                      <EmployeeItem employeeId={emp.id}/>
                     </ListItem>
                     {idx < filtered.length - 1 && <Divider component="li"/>}
                   </Link>
