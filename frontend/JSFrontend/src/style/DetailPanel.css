@@ -1,6 +1,5 @@
 /* Description: Reusable CSS for use with components such as ProcessPage, TaskPage, etc. */
 .detail-container {
-    margin-left: 240px;
     border-radius: 8px;
     border: 2px solid black;
     box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
