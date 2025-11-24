@@ -46,8 +46,12 @@ function AppRoutes() {
 export default function Router() {
   return (
     <BrowserRouter>
-      <Navbar/>
-      <AppRoutes/>
+      <div style={{paddingLeft: 240, minHeight: '100vh'}}>
+        <Navbar/>
+        <main style={{padding: 16}}>
+          <AppRoutes/>
+        </main>
+      </div>
     </BrowserRouter>
   )
 }
