@@ -14,6 +14,8 @@ import editIcon from "../assets/edit.svg"
  * @component TaskPage
  * @description A page component that displays details for a specific task within a process.
  * Retrieves the processId and taskId from the URL parameters and provides navigation back to the associated process page.
+ * @param {Object} props The properties for the TaskPage component.
+ * @param {boolean} props.isModal Indicates if the component is rendered as a modal. Defaults to false.
  * @returns {JSX.Element} The rendered TaskPage component.
  */
 export default function TaskPage({isModal = false}) {
