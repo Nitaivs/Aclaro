@@ -1,4 +1,4 @@
-import {Link, useParams, useNavigate, useLocation} from "react-router";
+import {useParams, useNavigate} from "react-router";
 import {use, useState} from 'react';
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
@@ -27,7 +27,6 @@ export default function TaskPage({isModal = false}) {
   const [errorMessage, setErrorMessage] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   /**
    * @function handleUpdateTask
