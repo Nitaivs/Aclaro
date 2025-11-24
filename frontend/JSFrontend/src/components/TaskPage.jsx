@@ -82,11 +82,6 @@ export default function TaskPage({isModal = false}) {
       }}>
         <h3>Error</h3>
         <p>Task not found</p>
-        <Link to={`/process/${processId}`}>
-          <button>
-            Go back to process {processId}
-          </button>
-        </Link>
       </div>
     )
   }
@@ -108,8 +103,6 @@ export default function TaskPage({isModal = false}) {
           <IconButton onClick={() => setShowDeleteDialog(true)}>
             <img src={deleteIcon} alt="Delete Task" className="icon-img"/>
           </IconButton>
-          {/*<button onClick={() => setIsTaskDetailsDialogOpen(true)}>Edit Task Details</button>*/}
-          {/*<button onClick={() => setShowDeleteDialog(true)}>Delete Task</button>*/}
         </div>
       </div>
 
