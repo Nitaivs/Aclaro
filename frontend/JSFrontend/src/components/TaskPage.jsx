@@ -60,11 +60,8 @@ export default function TaskPage({isModal = false}) {
       await deleteTask(taskId);
       //TODO: A bit of a hack to refresh process task list, rewrite
       deleteTaskIdFromProcess(processId, taskId);
-      if (!location && location.state && location.state.background) {
-        navigate(-1);
-      } else {
-        navigate(`/tasks`);
-      }
+      // close the modal or navigate back
+      navigate(-1);
     } catch (error) {
       console.error("Error deleting task:", error);
       setErrorMessage(error.message);
