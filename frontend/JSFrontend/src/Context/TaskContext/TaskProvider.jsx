@@ -9,7 +9,7 @@ import axios from "axios";
  * @returns {JSX.Element} The TaskProvider component.
  */
 export function TaskProvider({children}) {
-  const BASE_URL = "http://localhost:8080/api/";
+    const BASE_URL = "http://localhost:8080/api/";
   const [tasks, setTasks] = useState([]);
   const [initialized, setInitialized] = useState(false);
 
