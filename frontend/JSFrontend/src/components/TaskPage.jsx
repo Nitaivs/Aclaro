@@ -70,7 +70,15 @@ export default function TaskPage({isModal = false}) {
 
   if (!foundTask) {
     return (
-      <div>
+      <div style={{
+        display: 'flex',
+        minWidth: '300px',
+        height: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <h3>Error</h3>
         <p>Task not found</p>
         <Link to={`/process/${processId}`}>
           <button>
