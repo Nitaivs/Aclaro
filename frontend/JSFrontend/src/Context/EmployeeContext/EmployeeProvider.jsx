@@ -88,14 +88,15 @@ async function fetchAllEmployees() {
    * @function updateEmployee
    * @description Updates an employee's details in the database.
    * Sends a patch request and updates the state with the updated employee details.
-   * @param {*} id is the employee id to update
-   * @param {*} updatedFields - An object containing the fields to update.
+   * @param {number} id is the employee id to update
+   * @param {Object} updatedFields - An object containing the fields to update.
    * @returns
    */
-    async function updateEmployee(id, newFields) {
+    async function updateEmployee(id, updatedFields) {
         try {
-            console.log(`Patching employee ${id} with payload:`, newFields);
-            const response = await axios.patch(`${BASE_URL}employees/${id}`, newFields);
+            console.log(`Patching employee ${id} with payload:`, updatedFields);
+            const response = await axios.patch(`${BASE_URL}employees/${id}`, updatedFields);
+            console.log(response.data);
             const updatedEmployee = response.data;
             setEmployees(prev =>
                 prev.some(e => e.id === id)
