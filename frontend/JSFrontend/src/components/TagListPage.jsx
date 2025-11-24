@@ -21,7 +21,6 @@ export default function TagListPage() {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [filterString, setFilterString] = useState("");
-  const [removeMode, setRemoveMode] = useState(false);
 
   //Combine departments and skills into a single list with type information
   const combinedTags = useMemo(() => {
@@ -65,11 +64,8 @@ export default function TagListPage() {
   return (
     <div>
       <h1>Tag list</h1>
-      <button onClick={() => setIsAddDepartmentDialogOpen(true)}>
+      <button style={{marginBottom: '10px'}} onClick={() => setIsAddDepartmentDialogOpen(true)}>
         Add tag
-      </button>
-      <button onClick={() => setRemoveMode(!removeMode)}>
-        {removeMode ? "Exit" : "Remove Departments"}
       </button>
 
       <AddTagDialog
@@ -113,22 +109,14 @@ export default function TagListPage() {
           ) : (
             filtered.map((tag, idx) => (
               <div key={`${tag.type}-${tag.id}`}>
-                <ListItem
-                  alignItems="flex-start"
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="edit"
-                    >
-                    </IconButton>
-                  }
-                />
                 <ListItem alignItems="flex-start">
-                  <TagItem type={tag.type}
-                           name={tag.name}
-                           tagId={tag.id}
-                           isEditable={tag.type === "skill"}
-                           isDeletable={true}/>
+                  <TagItem
+                    type={tag.type}
+                    name={tag.name}
+                    tagId={tag.id}
+                    isEditable={tag.type === "skill"}
+                    isDeletable={true}
+                  />
                 </ListItem>
                 {idx < filtered.length - 1 && <Divider component="li"/>}
               </div>
