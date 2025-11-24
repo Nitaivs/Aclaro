@@ -1,9 +1,5 @@
 import Card from '@mui/material/Card';
-import {Link} from 'react-router';
-import {use, useState} from "react";
-import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
-import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
-import ErrorDialog from "./ErrorDialog.jsx";
+import {useNavigate, useLocation} from 'react-router';
 
 /**
  * @component TaskCard
@@ -15,39 +11,24 @@ import ErrorDialog from "./ErrorDialog.jsx";
  * @param props.taskName The name of the task.
  * @returns {JSX.Element} The rendered TaskCard component.
  */
-export default function TaskCard({processId, taskId, taskName, taskDescription}) {
-  const {deleteTask} = use(TaskContext);
-  const {deleteTaskIdFromProcess} = use(ProcessContext);
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+export default function TaskCard({ taskId, taskName, taskDescription}) {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  async function handleDeleteTask() {
-    try {
-      await deleteTask(taskId);
-      //TODO: A bit of a hack to refresh process task list, rewrite
-      deleteTaskIdFromProcess(processId, taskId);
-    } catch (error) {
-      console.error("Error deleting task:", error);
-      setErrorMessage(error.message);
-      setShowErrorDialog(true);
-    }
+  function openTaskModal() {
+    navigate(`/tasks/${taskId}`, {state: {background: location}});
   }
 
   return (
     <div>
-      <Card>
-        <Link to={`/tasks/${taskId}`}>
+      <Card
+        onClick={openTaskModal}
+        role="button"
+        style={{cursor: 'pointer'}}
+      >
           <h2>{taskName}</h2>
           <p>{taskDescription}</p>
-        </Link>
-        <button onClick={() => handleDeleteTask()}>delete</button>
       </Card>
-      <ErrorDialog
-        isOpen={showErrorDialog}
-        onClose={() => setShowErrorDialog(false)}
-        title="Error Deleting Task"
-        message={errorMessage}
-      />
     </div>
   );
 }
