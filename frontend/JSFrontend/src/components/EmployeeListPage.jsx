@@ -73,12 +73,6 @@ export default function EmployeeListPage() {
 
   return (
     <div>
-      <Link to={"/"}>
-        <button>
-          Return to dashboard
-        </button>
-      </Link>
-
       <h1>Employee list</h1>
       <button onClick={() => setIsAddEmployeeDialogOpen(true)}>
         Add employee
