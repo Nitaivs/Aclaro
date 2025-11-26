@@ -233,7 +233,7 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Task " + childTaskId + " is not a direct child of task " + parentTaskId);
         }
 
-        // Set up the new task
+        // Set up the new task with parent reference
         newTask.setProcess(parentTask.getProcess());
         newTask.setParentTask(parentTask);
 
@@ -242,23 +242,19 @@ public class TaskServiceImpl implements TaskService {
             newTask.setSubTasks(new java.util.LinkedHashSet<>());
         }
 
-        // Save the new task first to get an ID
-        Task savedNewTask = taskRepository.save(newTask);
+        // Save the new task FIRST to get a persistent entity with ID
+        Task savedNewTask = taskRepository.saveAndFlush(newTask);
 
         // Update child's parent to point to the new task
+        // This is the owning side of the relationship, so this is what matters
         childTask.setParentTask(savedNewTask);
-        taskRepository.save(childTask);
+        taskRepository.saveAndFlush(childTask);
 
-        // Add the child to the new task's subtasks
-        savedNewTask.getSubTasks().add(childTask);
+        // DO NOT modify parentTask.getSubTasks() collection directly!
+        // orphanRemoval=true will delete the child if we remove it from the collection.
+        // Instead, we only update the parentTask (owning side) references.
+        // The inverse side (subTasks collections) will be correct on next fetch.
 
-        // Update parent's subtasks: remove old child, add new task
-        if (parentTask.getSubTasks() != null) {
-            parentTask.getSubTasks().remove(childTask);
-            parentTask.getSubTasks().add(savedNewTask);
-        }
-        taskRepository.save(parentTask);
-
-        return savedNewTask;
+        return taskRepository.findById(savedNewTask.getId()).orElse(savedNewTask);
     }
 }
