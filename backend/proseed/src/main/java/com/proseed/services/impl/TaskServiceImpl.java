@@ -218,4 +218,47 @@ public class TaskServiceImpl implements TaskService {
             taskRepository.save(task);
         }
     }
+
+    @Override
+    @Transactional
+    public Task insertTaskBetween(Long parentTaskId, Long childTaskId, Task newTask) {
+        // Find parent and child tasks
+        Task parentTask = taskRepository.findById(parentTaskId)
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Parent task not found with id: " + parentTaskId));
+        Task childTask = taskRepository.findById(childTaskId)
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Child task not found with id: " + childTaskId));
+
+        // Validate that the child is actually a direct child of the parent
+        if (childTask.getParentTask() == null || !childTask.getParentTask().getId().equals(parentTaskId)) {
+            throw new IllegalArgumentException("Task " + childTaskId + " is not a direct child of task " + parentTaskId);
+        }
+
+        // Set up the new task
+        newTask.setProcess(parentTask.getProcess());
+        newTask.setParentTask(parentTask);
+
+        // Initialize subtasks set if null
+        if (newTask.getSubTasks() == null) {
+            newTask.setSubTasks(new java.util.LinkedHashSet<>());
+        }
+
+        // Save the new task first to get an ID
+        Task savedNewTask = taskRepository.save(newTask);
+
+        // Update child's parent to point to the new task
+        childTask.setParentTask(savedNewTask);
+        taskRepository.save(childTask);
+
+        // Add the child to the new task's subtasks
+        savedNewTask.getSubTasks().add(childTask);
+
+        // Update parent's subtasks: remove old child, add new task
+        if (parentTask.getSubTasks() != null) {
+            parentTask.getSubTasks().remove(childTask);
+            parentTask.getSubTasks().add(savedNewTask);
+        }
+        taskRepository.save(parentTask);
+
+        return savedNewTask;
+    }
 }
