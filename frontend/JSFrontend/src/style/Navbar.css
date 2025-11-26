@@ -1,18 +1,25 @@
 /* CSS for Navbar.jsx */
 .navbar {
     position: fixed;
-    top: 0;
+    top: 80px;
     left: 0;
     width: 240px;
-    height: 100vh;
+    height: calc(100vh - 80px);
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 16px;
+    padding: 0 16px 16px 16px;
     border-right: 1px solid #ccc;
     background-color: #C1121F;
     z-index: 1000;
+}
+
+.navbar-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: white;
 }
 
 
