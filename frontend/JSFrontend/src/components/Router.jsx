@@ -1,15 +1,16 @@
 import {Route, Routes, BrowserRouter, useLocation} from "react-router";
-import Dashboard from "./Dashboard.jsx";
 import ProcessPage from "./ProcessPage.jsx";
 import TaskPage from "./TaskPage.jsx";
 import EmployeeListPage from "./EmployeeListPage.jsx";
 import EmployeePage from "./EmployeePage.jsx";
 import ProcessListPage from "./ProcessListPage.jsx";
-import Navbar from "./Navbar.jsx";
 import TaskListPage from "./TaskListPage.jsx";
 import TagListPage from "./TagListPage.jsx";
 import DepartmentPage from "./DepartmentPage.jsx";
 import TaskModal from "./TaskModal.jsx";
+import Navbar from "./Navbar.jsx";
+import Header from "./Header.jsx";
+import '../style/Content.css'
 
 function AppRoutes() {
   const location = useLocation();
@@ -46,7 +47,8 @@ function AppRoutes() {
 export default function Router() {
   return (
     <BrowserRouter>
-      <div style={{paddingLeft: 240, minHeight: '100vh'}}>
+      <div className={"content"}>
+        <Header/>
         <Navbar/>
         <main style={{padding: 16}}>
           <AppRoutes/>
