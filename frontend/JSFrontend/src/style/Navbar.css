@@ -31,6 +31,7 @@
     text-decoration: none;
     color: inherit;
     border: none;
+    border-radius: 0;
 }
 
 /* slightly darken on hover/focus */
