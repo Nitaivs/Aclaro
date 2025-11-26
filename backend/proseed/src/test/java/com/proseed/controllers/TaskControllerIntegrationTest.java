@@ -33,14 +33,14 @@ class TaskControllerIntegrationTest {
 
     private long createProcess(String name) throws Exception {
         ObjectNode body = objectMapper.createObjectNode()
-            .put("processName", name)
-            .put("processDescription", name + " desc");
+            .put("name", name)
+            .put("description", name + " desc");
         String json = mockMvc.perform(post("/api/processes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
             .andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsString();
-        return objectMapper.readTree(json).get("processId").asLong();
+        return objectMapper.readTree(json).get("id").asLong();
     }
 
     private long createEmployee(String first, String last) throws Exception {
@@ -57,7 +57,7 @@ class TaskControllerIntegrationTest {
 
     private long createTask(long processId, String name) throws Exception {
         ObjectNode task = objectMapper.createObjectNode()
-            .put("taskName", name)
+            .put("name", name)
             .put("completed", false);
         String json = mockMvc.perform(post("/api/tasks")
                 .param("processId", String.valueOf(processId))
@@ -65,7 +65,7 @@ class TaskControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(task)))
             .andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsString();
-        return objectMapper.readTree(json).get("taskId").asLong();
+        return objectMapper.readTree(json).get("id").asLong();
     }
 
     @Test
@@ -85,7 +85,7 @@ class TaskControllerIntegrationTest {
 
         mockMvc.perform(get("/api/tasks/{id}", taskId))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.taskId").value(taskId));
+            .andExpect(jsonPath("$.id").value(taskId));
     }
 
     @Test
@@ -99,7 +99,7 @@ class TaskControllerIntegrationTest {
         long processId = createProcess("Task Employees Process");
         long employeeId = createEmployee("Task", "Owner");
         ObjectNode body = objectMapper.createObjectNode()
-            .put("taskName", "Assigned Task")
+            .put("name", "Assigned Task")
             .put("completed", false);
         ArrayNode employeeIds = objectMapper.createArrayNode().add(employeeId);
         body.set("employeeIds", employeeIds);
@@ -109,11 +109,11 @@ class TaskControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(body)))
             .andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsString();
-        long taskId = objectMapper.readTree(json).get("taskId").asLong();
+        long taskId = objectMapper.readTree(json).get("id").asLong();
 
         mockMvc.perform(get("/api/tasks/{id}/employees", taskId))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.taskId").value(taskId))
+            .andExpect(jsonPath("$.id").value(taskId))
             .andExpect(jsonPath("$.assignedEmployees", hasSize(1)));
     }
 
@@ -127,7 +127,7 @@ class TaskControllerIntegrationTest {
     void createTask_shouldReturn201() throws Exception {
         long processId = createProcess("Task Create Process");
         ObjectNode body = objectMapper.createObjectNode()
-            .put("taskName", "Create Task")
+            .put("name", "Create Task")
             .put("completed", false);
 
         mockMvc.perform(post("/api/tasks")
@@ -135,13 +135,13 @@ class TaskControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.taskId").exists());
+            .andExpect(jsonPath("$.id").exists());
     }
 
     @Test
     void createTask_missingProcess_shouldReturn400() throws Exception {
         ObjectNode body = objectMapper.createObjectNode()
-            .put("taskName", "No Process")
+            .put("name", "No Process")
             .put("completed", false);
 
         mockMvc.perform(post("/api/tasks")
@@ -154,7 +154,7 @@ class TaskControllerIntegrationTest {
     void createTask_invalidParent_shouldReturn400() throws Exception {
         long processId = createProcess("Task Invalid Parent");
         ObjectNode body = objectMapper.createObjectNode()
-            .put("taskName", "Orphan")
+            .put("name", "Orphan")
             .put("completed", false)
             .put("parentTaskId", 999999L);
 
@@ -171,21 +171,21 @@ class TaskControllerIntegrationTest {
         long taskId = createTask(processId, "Original Name");
         ObjectNode body = objectMapper.createObjectNode()
             .put("taskId", taskId)
-            .put("taskName", "Updated Name")
+            .put("name", "Updated Name")
             .put("completed", true);
 
         mockMvc.perform(put("/api/tasks/{id}", taskId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.taskName").value("Updated Name"))
+            .andExpect(jsonPath("$.name").value("Updated Name"))
             .andExpect(jsonPath("$.completed").value(true));
     }
 
     @Test
     void updateTask_missing_shouldReturn404() throws Exception {
         ObjectNode body = objectMapper.createObjectNode()
-            .put("taskName", "Missing");
+            .put("name", "Missing");
 
         mockMvc.perform(put("/api/tasks/{id}", 101010L)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -206,10 +206,10 @@ class TaskControllerIntegrationTest {
     void deleteTask_withSubtask_shouldReturn400() throws Exception {
         long processId = createProcess("Task Delete Tree");
         ObjectNode parent = objectMapper.createObjectNode()
-            .put("taskName", "Parent")
+            .put("name", "Parent")
             .put("completed", false);
         ArrayNode subs = objectMapper.createArrayNode();
-        subs.add(objectMapper.createObjectNode().put("taskName", "Child").put("completed", false));
+        subs.add(objectMapper.createObjectNode().put("name", "Child").put("completed", false));
         parent.set("subTasks", subs);
 
         String json = mockMvc.perform(post("/api/tasks")
@@ -218,7 +218,7 @@ class TaskControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(parent)))
             .andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsString();
-        long parentId = objectMapper.readTree(json).get("taskId").asLong();
+        long parentId = objectMapper.readTree(json).get("id").asLong();
 
         mockMvc.perform(delete("/api/tasks/{id}", parentId))
             .andExpect(status().isBadRequest());
@@ -235,7 +235,7 @@ class TaskControllerIntegrationTest {
         long processId = createProcess("Remove Employee Process");
         long employeeId = createEmployee("Remove", "Me");
         ObjectNode body = objectMapper.createObjectNode()
-            .put("taskName", "Task With Employee")
+            .put("name", "Task With Employee")
             .put("completed", false);
         body.set("employeeIds", objectMapper.createArrayNode().add(employeeId));
         String json = mockMvc.perform(post("/api/tasks")
@@ -244,7 +244,7 @@ class TaskControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(body)))
             .andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsString();
-        long taskId = objectMapper.readTree(json).get("taskId").asLong();
+        long taskId = objectMapper.readTree(json).get("id").asLong();
 
         mockMvc.perform(delete("/api/tasks/{taskId}/employees/{employeeId}", taskId, employeeId))
             .andExpect(status().isNoContent());
@@ -269,9 +269,9 @@ class TaskControllerIntegrationTest {
         long childId = createTask(processId, "Child");
 
         ObjectNode update = objectMapper.createObjectNode()
-            .put("taskId", parentId)
-            .put("taskName", "Parent")
-            .set("subTasks", objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("taskId", childId)));
+            .put("id", parentId)
+            .put("name", "Parent")
+            .set("subTasks", objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("id", childId)));
 
         mockMvc.perform(put("/api/tasks/{id}", parentId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -280,9 +280,9 @@ class TaskControllerIntegrationTest {
 
         // Attempt to set parent as child of its own child -> expect 400
         ObjectNode invalid = objectMapper.createObjectNode()
-            .put("taskId", childId)
-            .put("taskName", "Child")
-            .set("subTasks", objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("taskId", parentId)));
+            .put("id", childId)
+            .put("name", "Child")
+            .set("subTasks", objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("id", parentId)));
 
         mockMvc.perform(put("/api/tasks/{id}", childId)
                 .contentType(MediaType.APPLICATION_JSON)

@@ -58,7 +58,7 @@ class EmployeeControllerIntegrationTest {
 
         mockMvc.perform(get("/api/employees/{id}", id))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.employeeId").value(id));
+            .andExpect(jsonPath("$.id").value(id));
     }
 
     @Test

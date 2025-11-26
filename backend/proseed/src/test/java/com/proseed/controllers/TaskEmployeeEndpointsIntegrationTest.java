@@ -31,7 +31,7 @@ public class TaskEmployeeEndpointsIntegrationTest {
         MvcResult beforeTaskEmp = mockMvc.perform(get("/api/tasks/1/employees"))
             .andExpect(status().isOk()).andReturn();
         JsonNode beforeJson = objectMapper.readTree(beforeTaskEmp.getResponse().getContentAsString());
-        assertThat(beforeJson.get("taskId").asLong()).isEqualTo(1L);
+        assertThat(beforeJson.get("id").asLong()).isEqualTo(1L);
 
         // Remove employee 1 from task 1
         mockMvc.perform(delete("/api/tasks/1/employees/1"))
@@ -56,6 +56,6 @@ public class TaskEmployeeEndpointsIntegrationTest {
             .andReturn();
 
         JsonNode empJson = objectMapper.readTree(patchRes.getResponse().getContentAsString());
-        assertThat(empJson.get("employeeId").asLong()).isEqualTo(1L);
+        assertThat(empJson.get("id").asLong()).isEqualTo(1L);
     }
 }

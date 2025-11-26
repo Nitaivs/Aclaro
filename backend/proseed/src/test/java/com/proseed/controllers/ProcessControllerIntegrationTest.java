@@ -33,8 +33,8 @@ class ProcessControllerIntegrationTest {
 
     private long createProcess(String name) throws Exception {
         ObjectNode body = objectMapper.createObjectNode()
-            .put("processName", name)
-            .put("processDescription", name + " description");
+            .put("name", name)
+            .put("description", name + " description");
 
         String json = mockMvc.perform(post("/api/processes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -42,12 +42,12 @@ class ProcessControllerIntegrationTest {
             .andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsString();
         JsonNode node = objectMapper.readTree(json);
-        return node.get("processId").asLong();
+        return node.get("id").asLong();
     }
 
     private void createTask(long processId, String taskName) throws Exception {
         ObjectNode task = objectMapper.createObjectNode()
-            .put("taskName", taskName)
+            .put("name", taskName)
             .put("completed", false);
         mockMvc.perform(post("/api/tasks")
                 .param("processId", String.valueOf(processId))
@@ -71,8 +71,8 @@ class ProcessControllerIntegrationTest {
 
         mockMvc.perform(get("/api/processes/{id}", id))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.processId").value(id))
-            .andExpect(jsonPath("$.processName").value("Process Detail"));
+            .andExpect(jsonPath("$.id").value(id))
+            .andExpect(jsonPath("$.name").value("Process Detail"));
     }
 
     @Test
@@ -89,7 +89,7 @@ class ProcessControllerIntegrationTest {
 
         mockMvc.perform(get("/api/processes/{id}/tasks", id))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.processId").value(id))
+            .andExpect(jsonPath("$.id").value(id))
             .andExpect(jsonPath("$.tasks", hasSize(greaterThanOrEqualTo(2))));
     }
 
@@ -102,14 +102,14 @@ class ProcessControllerIntegrationTest {
     @Test
     void createProcess_shouldReturn201() throws Exception {
         ObjectNode body = objectMapper.createObjectNode()
-            .put("processName", "Created Process")
-            .put("processDescription", "Docs");
+            .put("name", "Created Process")
+            .put("description", "Docs");
 
         mockMvc.perform(post("/api/processes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.processId").exists());
+            .andExpect(jsonPath("$.id").exists());
     }
 
     @Test
@@ -126,20 +126,20 @@ class ProcessControllerIntegrationTest {
     void updateProcess_shouldReturnUpdated() throws Exception {
         long id = createProcess("Update Target");
         ObjectNode body = objectMapper.createObjectNode()
-            .put("processName", "Updated Name")
-            .put("processDescription", "Updated Desc");
+            .put("name", "Updated Name")
+            .put("description", "Updated Desc");
 
         mockMvc.perform(put("/api/processes/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.processName").value("Updated Name"));
+            .andExpect(jsonPath("$.name").value("Updated Name"));
     }
 
     @Test
     void updateProcess_missing_shouldReturn404() throws Exception {
         ObjectNode body = objectMapper.createObjectNode()
-            .put("processName", "Nothing");
+            .put("name", "Nothing");
 
         mockMvc.perform(put("/api/processes/{id}", 121212L)
                 .contentType(MediaType.APPLICATION_JSON)
