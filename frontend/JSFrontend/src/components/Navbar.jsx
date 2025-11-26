@@ -10,14 +10,12 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-        <div style={{ background: "white", display: 'flex', flexDirection: 'column'}}>
+        <div className="navbar-container">
         <h3>Navigation</h3>
-          <div className={'navbar-button-container'}>
             <button onClick={() => navigate("/processes")} className={'navbar-button'}>
               <img src={ProcessesIcon} alt="Processes"/>
               <h4>Processes</h4>
             </button>
-          </div>
           <button onClick={() => navigate("/tasks")} className={'navbar-button'}>
             <img src={TasksIcon} alt="Tasks"/>
             <h4>Tasks</h4>
