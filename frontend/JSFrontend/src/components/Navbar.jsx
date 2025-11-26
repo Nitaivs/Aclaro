@@ -1,32 +1,35 @@
-import {Link} from 'react-router';
+import {Link, useNavigate} from 'react-router';
+import TasksIcon from '../assets/task.svg'
+import TagsIcon from '../assets/tags.svg'
+import EmployeesIcon from '../assets/employees.svg'
+import ProcessesIcon from '../assets/process.svg'
+import '../style/Navbar.css'
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
   return (
-    <nav style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: 240,
-      height: '100vh',
-      flexShrink: 0,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 12,
-      padding: 16,
-      borderRight: '1px solid #ccc',
-      backgroundColor: 'white',
-      zIndex: 1000,
-    }}>
-      <div>
-        <h1>ProSeed</h1>
-      </div>
-      <div style={{display: 'flex', flexDirection: 'column', gap: 32}}>
-        <Link to="/"><button>Dashboard</button></Link>
-        <Link to="/processes"><button>Processes</button></Link>
-        <Link to="/tasks"><button>Tasks</button></Link>
-        <Link to="/employees"><button>Employees</button></Link>
-        <Link to="/tags"><button>Tags</button></Link>
-      </div>
+    <nav className="navbar">
+        <div style={{ background: "white", display: 'flex', flexDirection: 'column'}}>
+        <h3>Navigation</h3>
+          <div className={'navbar-button-container'}>
+            <button onClick={() => navigate("/processes")} className={'navbar-button'}>
+              <img src={ProcessesIcon} alt="Processes"/>
+              <h4>Processes</h4>
+            </button>
+          </div>
+          <button onClick={() => navigate("/tasks")} className={'navbar-button'}>
+            <img src={TasksIcon} alt="Tasks"/>
+            <h4>Tasks</h4>
+          </button>
+          <button onClick={() => navigate("/employees")} className={'navbar-button'}>
+            <img src={EmployeesIcon} alt="Employees"/><h4>Employees</h4>
+          </button>
+          <button onClick={() => navigate("/tags")} className={'navbar-button'}>
+            <img src={TagsIcon} alt="Tags"/>
+            <h4>Tags</h4>
+          </button>
+        </div>
     </nav>
   )
 }
