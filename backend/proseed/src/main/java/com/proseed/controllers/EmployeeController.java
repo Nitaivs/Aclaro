@@ -50,13 +50,12 @@ public class EmployeeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    /*
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
         return employeeService.update(id, updatedEmployee)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    } */
+    }
 
     /**
      * Partially update an employee. Only provided fields are changed.
