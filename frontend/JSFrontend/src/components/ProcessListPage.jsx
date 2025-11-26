@@ -1,4 +1,4 @@
-import ProcessCard from "./ProcessCard.jsx";
+import ProcessItem from "./ProcessItem.jsx";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import {use, useState} from "react";
 import Dialog from "@mui/material/Dialog";
@@ -38,11 +38,24 @@ export default function ProcessListPage() {
   }
 
   return (
-    <div className={"detail-container"}>
-      <div className={'detail-header'}>
-        <h2>Processes</h2>
+    <>
+      <div className={"detail-container"}>
+        <div className={'detail-header'}>
+          <h2>Processes</h2>
+        </div>
+        <div className={'detail-actions-container'}>
+          <button onClick={() => setIsDialogOpen(true)}>Add process</button>
+        </div>
+        <div className={'detail-content'}>
+          <ul>
+            {processes.map((process) => (
+              <li key={process.id}>
+                <ProcessItem id={process.id}/>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      <button onClick={() => setIsDialogOpen(true)}>Add process</button>
       <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
         <DialogTitle>Add New Process</DialogTitle>
         <div style={{padding: '0 24px 24px 24px'}}>
@@ -72,13 +85,6 @@ export default function ProcessListPage() {
           <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
         </div>
       </Dialog>
-      <ul>
-        {processes.map((process) => (
-          <li key={process.id}>
-            <ProcessCard id={process.id}/>
-          </li>
-        ))}
-      </ul>
-    </div>
+    </>
   )
 }
