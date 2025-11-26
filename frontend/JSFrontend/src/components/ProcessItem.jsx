@@ -47,15 +47,14 @@ export default function ProcessItem(props) {
       <div>
         <div className={"process-item"}>
           <Link to={`/process/${props.id}`}>
-            <div style={{display: "flex", gap: "8px", alignItems: "center"}}>
-              <h4 style={{color: 'red'}}>Process {foundProcess.id}</h4>
+            <div className={"process-item-info"}>
+              <h4 style={{color: 'red'}}>Process</h4>
               <span>|</span>
               <h4>{foundProcess.name}</h4>
             </div>
             {foundProcess.description &&
               <p>Description: {foundProcess.description}</p>
             }
-
           </Link>
           <div className={"detail-actions"}>
             <IconButton
