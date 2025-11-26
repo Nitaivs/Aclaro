@@ -7,6 +7,7 @@ import {IconButton} from "@mui/material";
 import EditIcon from '../assets/edit.svg';
 import DeleteIcon from '../assets/delete.svg';
 import '../style/DetailPanel.css'
+import '../style/ProcessItem.css'
 
 /**
  * @component ProcessItem
@@ -44,7 +45,7 @@ export default function ProcessItem(props) {
   } else {
     return (
       <div>
-        <div style={{display: "flex", justifyContent: "space-between"}}>
+        <div className={"process-item"}>
           <Link to={`/process/${props.id}`}>
             <div style={{display: "flex", gap: "8px", alignItems: "center"}}>
               <h4 style={{color: 'red'}}>Process {foundProcess.id}</h4>
@@ -80,7 +81,6 @@ export default function ProcessItem(props) {
           message={`Are you sure you want to delete the process "${foundProcess.name}" and all associated tasks? This action cannot be undone.`}
           onConfirm={() => handleDeleteProcess()}
         />
-        <button onClick={() => setIsDialogOpen(true)}>delete</button>
       </div>
     );
   }
