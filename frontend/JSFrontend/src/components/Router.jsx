@@ -18,7 +18,7 @@ function AppRoutes() {
   return (
     <>
       <Routes location={background || location}>
-        <Route path="/" element={<Dashboard/>}/>
+        <Route path="/" element={<ProcessListPage/>}/>
         <Route path="/processes" element={<ProcessListPage/>}/>
         <Route path="/process/:processId" element={<ProcessPage/>}/>
         <Route path="/tasks" element={<TaskListPage/>}/>
