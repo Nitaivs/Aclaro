@@ -11,6 +11,14 @@
     margin: 0;
 }
 
+.detail-container ul li {
+    border-bottom: 1px solid grey;
+}
+
+.detail-container ul li:last-child {
+    border-bottom: none;
+}
+
 /* Modal variant for displaying TaskPage in a modal */
 .detail-container.modal {
     margin-left: 0;
