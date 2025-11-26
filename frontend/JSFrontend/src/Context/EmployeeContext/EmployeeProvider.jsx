@@ -115,7 +115,7 @@ async function fetchAllEmployees() {
   /**
    * @function deleteEmployeeById Deletes an employee by their ID from the database.
    * Sends a delete request and updates the state to remove the deleted employee.
-   * @param id - The ID of the employee to delete.
+   * @param {number} id - The ID of the employee to delete.
    * @returns {Promise<void>} A promise that resolves when the employee is deleted and state is updated.
    */
   async function deleteEmployeeById(id) {
