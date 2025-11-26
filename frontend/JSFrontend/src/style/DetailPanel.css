@@ -70,6 +70,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-left: 20px;
 }
 
 .detail-actions .icon-img {
