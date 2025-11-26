@@ -65,6 +65,7 @@
     color: #333;
 }
 
+/* For use with actions that are in the same row as the detail info */
 .detail-actions {
     display: flex;
     align-items: center;
@@ -74,4 +75,13 @@
 .detail-actions .icon-img {
     width: 40px;
     height: 40px;
+}
+
+/* For use when actions are in their own container */
+.detail-actions-container {
+    display: flex;
+    gap: 12px;
+    padding: 20px 20px;
+    align-items: center;
+    border-bottom: 2px solid grey;
 }
