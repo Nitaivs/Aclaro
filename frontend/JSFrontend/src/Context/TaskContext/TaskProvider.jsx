@@ -1,5 +1,6 @@
-import {useState, useEffect} from "react";
+import {use, useState, useEffect} from "react";
 import {TaskContext} from "./TaskContext.jsx";
+import {ProcessContext} from "../ProcessContext/ProcessContext.jsx";
 import axios from "axios";
 
 /**
@@ -9,9 +10,11 @@ import axios from "axios";
  * @returns {JSX.Element} The TaskProvider component.
  */
 export function TaskProvider({children}) {
-    const BASE_URL = "http://localhost:8080/api/";
+  const BASE_URL = "http://localhost:8080/api/";
   const [tasks, setTasks] = useState([]);
   const [initialized, setInitialized] = useState(false);
+  const {fetchProcessById} = use(ProcessContext);
+
 
   //TODO: improve error handling across all functions
 
@@ -72,7 +75,7 @@ export function TaskProvider({children}) {
     if (!processId || !name) {
       console.error("Process ID and task name are required to add a task.");
       //TODO: throw error to inform user
-      return;
+      throw new Error("Process ID and task name are required to add a task.");
     }
     try {
       console.log("Adding task to DB with processId:", processId, "name:", name, "description:", description, "parentTaskId:", parentTaskId);
@@ -88,6 +91,35 @@ export function TaskProvider({children}) {
       await fetchAllTasks()
     } catch (error) {
       console.error("Error adding task to DB:", error);
+    }
+  }
+
+  async function addTaskBetweenTasks(processId, name, description = null, parentTaskId, childTaskId) {
+    try {
+      if (!processId || !name) {
+        //TODO: inform user via toast notification and return instead of throwing new error (?)
+        throw new Error("Process ID and task name are required to add a task.");
+      }
+      if (!parentTaskId || !childTaskId) {
+        throw new Error("Parent task ID and child task ID are required to add a task between tasks.");
+      }
+      console.log("Adding task between tasks in DB with processId:", processId, "name:", name, "description:", description, "parentTaskId:", parentTaskId, "childTaskId:", childTaskId);
+      const response = await axios.post(`${BASE_URL}tasks/insert-between?parentTaskId=${parentTaskId}&childTaskId=${childTaskId}`, {
+        name,
+        description,
+      })
+
+      console.log("added task", response.data);
+
+      // await axios.put(`${BASE_URL}processes/${processId}`)
+
+      console.log("tasks before fetch:", tasks.length);
+      setTasks(prevTasks => [...prevTasks, response.data]);
+      await fetchAllTasks();
+      console.log("tasks after fetch:", tasks.length);
+    } catch (error) {
+      console.error("Error adding task between tasks:", error);
+      //TODO: add toast notification to inform user
     }
   }
 
@@ -133,6 +165,7 @@ export function TaskProvider({children}) {
     <TaskContext.Provider value={{
       tasks,
       addTask,
+      addTaskBetweenTasks,
       deleteTask,
       updateTask,
       fetchAllTasks
