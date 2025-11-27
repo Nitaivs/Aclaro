@@ -11,6 +11,7 @@ import ProcessNode from "./ProcessNode.jsx";
 import TaskNode from "./TaskNode.jsx";
 import {ProcessOperationsProvider} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
 import {IconButton} from "@mui/material";
+import CustomEdge from "./CustomEdge.jsx";
 import editIcon from '../assets/edit.svg';
 import deleteIcon from '../assets/delete.svg';
 import '../style/DetailPanel.css';
@@ -20,6 +21,11 @@ import '../style/ReactFlow.css';
 const nodeTypes = {
   processNode: ProcessNode,
   taskNode: TaskNode
+}
+
+// Define custom edge types for React Flow
+const edgeTypes = {
+  customEdge: CustomEdge
 }
 
 /**
@@ -208,6 +214,8 @@ export default function ProcessPage() {
           id: `edge-${node.id}-${child.id}`,
           source: node.id,
           target: child.id,
+          type: 'customEdge',
+          data: { onAddTask: () => console.log("Add task clicked") },
           animated: false
         });
         layoutTree(child, x + horizontalSpacing, childYStart, childYEnd, currentY = childYEnd);
@@ -301,6 +309,7 @@ export default function ProcessPage() {
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             proOptions={{hideAttribution: true}}
             fitView
             nodesDraggable={false}
