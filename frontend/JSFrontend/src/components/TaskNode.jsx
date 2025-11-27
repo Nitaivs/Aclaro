@@ -1,5 +1,5 @@
 import {Handle, Position, useReactFlow} from "@xyflow/react";
-import {Link, useNavigate, useLocation} from 'react-router';
+import {useNavigate, useLocation} from 'react-router';
 import PlusButton from "./PlusButton.jsx";
 
 /**
@@ -40,11 +40,9 @@ export default function TaskNode({data: {label, taskId}, id}) {
         boxShadow: '2px 2px 5px rgba(0,0,0,0.3)'
       }}>
         <Handle type="target" position={Position.Left}/>
-        {/*<Link to={`/tasks/${taskId}`} style={{textDecoration: 'none'}}>*/}
           <div style={{padding: 12, fontWeight: 'bold', textAlign: 'center', color: 'black'}}>
             {label}
           </div>
-        {/*</Link>*/}
         {hasOutgoingEdges && <Handle type="source" position={Position.Right}/>}
       </div>
         <PlusButton parentTaskId={taskId} onClick={() => console.log("clicked")} position="right"/>
