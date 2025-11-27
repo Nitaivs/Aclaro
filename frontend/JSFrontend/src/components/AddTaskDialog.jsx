@@ -1,44 +1,23 @@
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import {use, useState} from "react";
-import {ProcessOperationsContext} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
-import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
-import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
+import {useState} from "react";
 
-export default function AddTaskDialog({isOpen, onClose, parentTaskId}) {
-  const {addTask} = use(TaskContext);
-  const {processId} = use(ProcessOperationsContext);
-  const {fetchProcessById} = use(ProcessContext);
+export default function AddTaskDialog({onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
   const [nameError, setNameError] = useState(false);
 
   //TODO: improve error handling across file
 
-  /**
-   * @function handleAddTask
-   * @description Handles the save action for adding a new task.
-   * Calls the addTask function from context with the provided inputs.
-   * The addTask function should be passed from the ProcessPage component via context.
-   * @returns {Promise<void>}
-   */
-  async function handleAddTask() {
+  async function handleOnSave() {
     try {
-      if (!processId) {
-        console.error("No processId available in context");
-        handleOnClose();
-        return;
-      }
       if (!nameInput) {
         setNameError(true);
         return;
       }
-      console.log(`Adding task to process ${processId} with name: ${nameInput}, description: ${descriptionInput}, parentTaskId: ${parentTaskId}`);
-      await addTask(processId, nameInput, descriptionInput, parentTaskId);
-      setNameError(false);
-      //TODO: hack to refresh process task list, rewrite
-      await fetchProcessById(processId);
+      //TODO: only close dialog if onSave is successful
+      await onSave(nameInput, descriptionInput);
       handleOnClose()
     } catch (error) {
       console.error("Error adding task:", error);
@@ -48,6 +27,7 @@ export default function AddTaskDialog({isOpen, onClose, parentTaskId}) {
   function handleOnClose() {
     setNameInput("");
     setDescriptionInput("");
+    setNameError(false);
     onClose();
   }
 
@@ -77,7 +57,7 @@ export default function AddTaskDialog({isOpen, onClose, parentTaskId}) {
           value={descriptionInput}
           onChange={(e) => setDescriptionInput(e.target.value)}
         />
-        <button onClick={() => handleAddTask()}>Add</button>
+        <button onClick={() => handleOnSave()}>Add</button>
         <button onClick={() => {
           setNameInput("");
           setDescriptionInput("");
