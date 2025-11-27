@@ -42,6 +42,17 @@
   left: -12px;
 }
 
+.plus-button-icon.position-center {
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .plus-button-icon:hover {
   filter: brightness(0.9);
+}
+
+/* For use with CustomEdge component */
+.edge-label-wrapper {
+    position: absolute;
+    pointer-events: all;
 }
