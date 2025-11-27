@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { DataContext } from "./DataContext.jsx";
+import {useState, useEffect} from "react";
+import {DataContext} from "./DataContext.jsx";
 import axios from "axios";
 
 const BASE_URL = "http://localhost:8080/api/";
@@ -7,10 +7,10 @@ const BASE_URL = "http://localhost:8080/api/";
 /**
  * @Component DataProvider
  * @description Provides state and function related to processes and tasks to its children via DataContext.
- * @param children The child components that will have access to the data context.
+ * @param {JSX.Element} children - The child components that will have access to the data context.
  * @returns {JSX.Element} The DataProvider component.
  */
-export function DataProvider({ children }) {
+export function DataProvider({children}) {
   const [processes, setProcesses] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [initialized, setInitialized] = useState(false);
@@ -21,6 +21,11 @@ export function DataProvider({ children }) {
     }
   }, [initialized]);
 
+  /**
+   * @function initializeData
+   * @description Initializes the data by fetching all processes and tasks from the backend.
+   * @returns {Promise<void>} A promise that resolves when the data is initialized.
+   */
   async function initializeData() {
     try {
       console.log("Initializing data from DB");
@@ -31,6 +36,11 @@ export function DataProvider({ children }) {
     }
   }
 
+  /**
+   * @function fetchAllProcesses
+   * @description Fetches all processes from the backend and updates the state.
+   * @returns {Promise<void>} A promise that resolves when the processes are fetched.
+   */
   async function fetchAllProcesses() {
     try {
       const response = await axios.get(`${BASE_URL}processes`);
@@ -41,6 +51,11 @@ export function DataProvider({ children }) {
     }
   }
 
+  /**
+   * @function fetchAllTasks
+   * @description Fetches all tasks from the backend and updates the state.
+   * @returns {Promise<void>} A promise that resolves when the tasks are fetched.
+   */
   async function fetchAllTasks() {
     try {
       const response = await axios.get(`${BASE_URL}tasks`);
@@ -51,29 +66,49 @@ export function DataProvider({ children }) {
     }
   }
 
+  /**
+   * @function fetchProcessById
+   * @description Fetches a process by its ID from the backend and updates the state.
+   * @param {Number} processId - The ID of the process to fetch. Expected to be an integer. Required.
+   * @returns {Promise<void>} A promise that resolves when the process is fetched.
+   */
   async function fetchProcessById(processId) {
     try {
       const response = await axios.get(`${BASE_URL}processes/${processId}`);
-      const existingProcess = processes.find(p => p.id === processId);
-      if (existingProcess) {
-        setProcesses(processes.map(p => p.id === processId ? response.data : p));
-      } else {
-        setProcesses([...processes, response.data]);
-      }
+      setProcesses(prevProcesses => {
+        const existingProcess = prevProcesses.find(p => p.id === processId);
+        if (existingProcess) {
+          return prevProcesses.map(p => p.id === processId ? response.data : p);
+        } else {
+          return [...prevProcesses, response.data];
+        }
+      });
     } catch (error) {
       console.error("Error fetching process by ID:", error);
     }
   }
 
+  /**
+   * @function addTaskBetweenTasks
+   * @description Adds a new task between two existing tasks in a process.
+   * Makes a POST request to the backend, then fetches the updated process and all tasks.
+   * @param {Number} processId - The ID of the process to which the task will be added. Expected to be an integer. Required.
+   * @param {string} name - The name of the new task. Required.
+   * @param {string} description - The description of the new task. Optional.
+   * @param {Number} parentTaskId - The ID of the parent task after which the new task will be inserted. Required.
+   * @param {Number} childTaskId - The ID of the child task before which the new task will be inserted. Required.
+   * @returns {Promise<void>} A promise that resolves when the task is added and data is fetched.
+   */
   async function addTaskBetweenTasks(processId, name, description, parentTaskId, childTaskId) {
     try {
       const response = await axios.post(
         `${BASE_URL}tasks/insert-between?parentTaskId=${parentTaskId}&childTaskId=${childTaskId}`,
-        { name, description }
+        {name, description}
       );
 
-      setTasks(prevTasks => [...prevTasks, response.data]);
+      console.log("Added task: ", response.data);
       await fetchProcessById(processId);
+      await fetchAllTasks();
     } catch (error) {
       console.error("Error adding task between tasks:", error);
       throw error;
