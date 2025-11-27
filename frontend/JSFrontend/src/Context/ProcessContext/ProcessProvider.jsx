@@ -70,7 +70,6 @@ export function ProcessProvider({children}) {
       setProcesses(processes.map(p => p.id === processId ? response.data : p));
     } catch (error) {
       console.error("Error updating process:", error);
-      throw error;
     }
   }
 

@@ -28,6 +28,7 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+    /* TODO: Consider adding text-overflow: ellipsis; if needed */
 }
 
 /* Task Node Styles */
