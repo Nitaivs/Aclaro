@@ -48,7 +48,7 @@
     font-weight: bold;
     text-align: center;
     color: black;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
