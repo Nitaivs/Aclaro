@@ -66,10 +66,8 @@ export function ProcessProvider({children}) {
    */
   async function updateProcess(processId, updatedFields) {
     try {
-      await axios.put(`${BASE_URL}processes/${processId}`, updatedFields);
-      setProcesses(processes.map(p =>
-        p.id === processId ? {...p, ...updatedFields} : p
-      ));
+      const response = await axios.put(`${BASE_URL}processes/${processId}`, updatedFields);
+      setProcesses(processes.map(p => p.id === processId ? response.data : p));
     } catch (error) {
       console.error("Error updating process:", error);
       throw error;
