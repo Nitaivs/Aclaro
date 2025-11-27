@@ -29,16 +29,7 @@ export default function TaskNode({data: {label, taskId}, id}) {
   const hasOutgoingEdges = edges.some(edge => edge.source === id);
   return (
     <div style={{ position:'relative'}}>
-      <div
-        onClick={openTaskModal}
-        style={{
-        borderRadius: 6,
-        background: 'lightgreen',
-        padding: 4,
-        display: 'inline-block',
-        border: '2px solid darkgreen',
-        boxShadow: '2px 2px 5px rgba(0,0,0,0.3)'
-      }}>
+      <div onClick={openTaskModal} className="task-node">
         <Handle type="target" position={Position.Left}/>
           <div style={{padding: 12, fontWeight: 'bold', textAlign: 'center', color: 'black'}}>
             {label}
