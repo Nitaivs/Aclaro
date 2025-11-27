@@ -16,6 +16,7 @@ import editIcon from '../assets/edit.svg';
 import deleteIcon from '../assets/delete.svg';
 import '../style/DetailPanel.css';
 import '../style/ReactFlow.css';
+import {DataContext} from "../Context/DataContext/DataContext.jsx";
 
 // Define custom node types for React Flow
 const nodeTypes = {
@@ -38,7 +39,8 @@ const edgeTypes = {
  */
 export default function ProcessPage() {
   const {processId} = useParams();
-  const {processes, updateProcess, deleteProcess} = use(ProcessContext);
+  const {updateProcess, deleteProcess} = use(ProcessContext);
+  const {processes} = use(DataContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
   const foundProcess = processes.find(p => p.id === parsedProcessId);
   const {tasks} = use(TaskContext);
