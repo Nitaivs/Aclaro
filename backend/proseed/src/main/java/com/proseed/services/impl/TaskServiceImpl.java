@@ -218,4 +218,43 @@ public class TaskServiceImpl implements TaskService {
             taskRepository.save(task);
         }
     }
+
+    @Override
+    @Transactional
+    public Task insertTaskBetween(Long parentTaskId, Long childTaskId, Task newTask) {
+        // Find parent and child tasks
+        Task parentTask = taskRepository.findById(parentTaskId)
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Parent task not found with id: " + parentTaskId));
+        Task childTask = taskRepository.findById(childTaskId)
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Child task not found with id: " + childTaskId));
+
+        // Validate that the child is actually a direct child of the parent
+        if (childTask.getParentTask() == null || !childTask.getParentTask().getId().equals(parentTaskId)) {
+            throw new IllegalArgumentException("Task " + childTaskId + " is not a direct child of task " + parentTaskId);
+        }
+
+        // Set up the new task with parent reference
+        newTask.setProcess(parentTask.getProcess());
+        newTask.setParentTask(parentTask);
+
+        // Initialize subtasks set if null
+        if (newTask.getSubTasks() == null) {
+            newTask.setSubTasks(new java.util.LinkedHashSet<>());
+        }
+
+        // Save the new task FIRST to get a persistent entity with ID
+        Task savedNewTask = taskRepository.saveAndFlush(newTask);
+
+        // Update child's parent to point to the new task
+        // This is the owning side of the relationship, so this is what matters
+        childTask.setParentTask(savedNewTask);
+        taskRepository.saveAndFlush(childTask);
+
+        // DO NOT modify parentTask.getSubTasks() collection directly!
+        // orphanRemoval=true will delete the child if we remove it from the collection.
+        // Instead, we only update the parentTask (owning side) references.
+        // The inverse side (subTasks collections) will be correct on next fetch.
+
+        return taskRepository.findById(savedNewTask.getId()).orElse(savedNewTask);
+    }
 }

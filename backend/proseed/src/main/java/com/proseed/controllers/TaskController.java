@@ -165,6 +165,36 @@ public class TaskController {
     }
 
     /**
+     * Insert a new task between an existing parent and child task.
+     * The new task becomes a child of the parent and the new parent of the child.
+     * 
+     * @param parentTaskId ID of the task that will become the parent of the new task
+     * @param childTaskId ID of the task that will become the child of the new task
+     * @param taskDto Task data for the new task to insert
+     * @return Created TaskDTO with 201 status, 400 if child is not a child of parent, 404 if tasks not found
+     */
+    @PostMapping("/insert-between")
+    public ResponseEntity<TaskDTO> insertTaskBetween(
+            @RequestParam Long parentTaskId,
+            @RequestParam Long childTaskId,
+            @RequestBody TaskDTO taskDto) {
+        try {
+            Task newTask = TaskMapper.fromTaskDTO(taskDto);
+            // Assign employees if provided
+            if (taskDto.getEmployeeIds() != null && !taskDto.getEmployeeIds().isEmpty()) {
+                List<Employee> employees = employeeRepository.findAllById(taskDto.getEmployeeIds());
+                newTask.setEmployees(new java.util.HashSet<>(employees));
+            }
+            Task savedTask = taskService.insertTaskBetween(parentTaskId, childTaskId, newTask);
+            return ResponseEntity.status(HttpStatus.CREATED).body(TaskMapper.toTaskDTO(savedTask));
+        } catch (jakarta.persistence.EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    /**
      * Recursively assigns employees to a Task and its subtasks based on the DTO's employeeIds.
      * This ensures that nested subtasks receive their correct employee assignments.
      *

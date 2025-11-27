@@ -24,25 +24,25 @@ public class TaskDeletionIntegrationTest {
     private ObjectMapper objectMapper;
 
     private long createProcess(String name) throws Exception {
-        ObjectNode proc = objectMapper.createObjectNode().put("processName", name);
+        ObjectNode proc = objectMapper.createObjectNode().put("name", name);
         return objectMapper.readTree(
             mockMvc.perform(post("/api/processes")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(proc)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString()
-        ).get("processId").asLong();
+        ).get("id").asLong();
     }
 
     private long createTask(long processId, String name) throws Exception {
-        ObjectNode task = objectMapper.createObjectNode().put("taskName", name).put("completed", false);
+        ObjectNode task = objectMapper.createObjectNode().put("name", name).put("completed", false);
         return objectMapper.readTree(
             mockMvc.perform(post("/api/tasks?processId=" + processId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(task)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString()
-        ).get("taskId").asLong();
+        ).get("id").asLong();
     }
 
     @Test
@@ -64,10 +64,10 @@ public class TaskDeletionIntegrationTest {
         long processId = createProcess("Delete Proc Tree");
         // Create parent with embedded child in one request
         ObjectNode parentReq = objectMapper.createObjectNode()
-            .put("taskName", "Parent")
+            .put("name", "Parent")
             .put("completed", false);
         ObjectNode childReq = objectMapper.createObjectNode()
-            .put("taskName", "Child")
+            .put("name", "Child")
             .put("completed", false);
         parentReq.set("subTasks", objectMapper.createArrayNode().add(childReq));
 
@@ -78,8 +78,8 @@ public class TaskDeletionIntegrationTest {
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString()
         );
-        long parentId = parentResp.get("taskId").asLong();
-        long childId = parentResp.get("subTasks").get(0).get("taskId").asLong();
+        long parentId = parentResp.get("id").asLong();
+        long childId = parentResp.get("subTasks").get(0).get("id").asLong();
 
         // Attempt delete parent - expect 400 (body may be empty)
         mockMvc.perform(delete("/api/tasks/" + parentId))
@@ -88,7 +88,7 @@ public class TaskDeletionIntegrationTest {
         // Parent still exists
         mockMvc.perform(get("/api/tasks/" + parentId))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.taskId").value(parentId));
+            .andExpect(jsonPath("$.id").value(parentId));
 
         // Child still exists
         mockMvc.perform(get("/api/tasks/" + childId))
