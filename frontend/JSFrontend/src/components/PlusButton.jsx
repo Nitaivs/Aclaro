@@ -1,10 +1,31 @@
-import {useState} from "react";
+import {use, useState} from "react";
 import plusIcon from '../assets/plusIcon.svg';
 import AddTaskDialog from "./AddTaskDialog.jsx";
 import '../style/PlusButton.css'
+import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
+import {ProcessOperationsContext} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
+import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 
 export default function PlusButton({parentTaskId, position = 'right'}) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const {addTask} = use(TaskContext);
+  const {processId} = use(ProcessOperationsContext);
+  const {fetchProcessById} = use(ProcessContext);
+
+  async function handleAddTask(name, description) {
+    try {
+      if (!processId) {
+        console.error("No processId available in context");
+        return;
+      }
+      console.log(`Adding task to process ${processId} with name: ${name}, description: ${description}, parentTaskId: ${parentTaskId}`);
+      await addTask(processId, name, description, parentTaskId);
+      //TODO: hack to refresh process task list, rewrite
+      await fetchProcessById(processId);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
+  }
 
   return (
     <div className={`plus-button-container position-${position}`}>
@@ -20,6 +41,7 @@ export default function PlusButton({parentTaskId, position = 'right'}) {
         />
       </button>
       <AddTaskDialog
+        onSave={handleAddTask}
         isOpen={isDialogOpen}
         parentTaskId={parentTaskId}
         onClose={() => setIsDialogOpen(false)}
