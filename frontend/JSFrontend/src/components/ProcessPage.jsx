@@ -53,7 +53,12 @@ export default function ProcessPage() {
    * @effect Update associated tasks when foundProcess or tasks change
    */
   useEffect(() => {
-    setAssociatedTasks(findAssociatedTasks)
+    if (!foundProcess || tasks.length === 0) {
+      setAssociatedTasks([]);
+      return;
+    }
+    const newAssociatedTasks = findAssociatedTasks()
+    setAssociatedTasks(newAssociatedTasks);
   }, [foundProcess, tasks]);
 
   /**
@@ -184,6 +189,20 @@ export default function ProcessPage() {
     }
 
     /**
+     * @function extractTaskId
+     * @description Extracts the task ID from a node ID of the format 'task-{taskId}' (e.g. 'task-123' -> 123).
+     * Returns null if the node ID does not start with 'task-'.
+     * @param nodeId The node ID string.
+     * @returns {number|null} The extracted task ID as a number, or null if not applicable.
+     */
+    function extractTaskId(nodeId) {
+      if (nodeId.startsWith('task-')) {
+        return parseInt(nodeId.split('-')[1]);
+      }
+      return null;
+    }
+
+    /**
      * @function layoutTree
      * @description Recursively lays out the tree structure by assigning x and y positions to each node.
      * The root node is positioned at (x, (yStart + yEnd) / 2).
@@ -215,7 +234,10 @@ export default function ProcessPage() {
           source: node.id,
           target: child.id,
           type: 'customEdge',
-          data: { onAddTask: () => console.log("Add task clicked") },
+          data: {
+            parentTaskId: extractTaskId(node.id),
+            childTaskId: extractTaskId(child.id),
+          },
           animated: false
         });
         layoutTree(child, x + horizontalSpacing, childYStart, childYEnd, currentY = childYEnd);
