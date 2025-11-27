@@ -31,7 +31,7 @@ export default function TaskNode({data: {label, taskId}, id}) {
     <div style={{ position:'relative'}}>
       <div onClick={openTaskModal} className="task-node">
         <Handle type="target" position={Position.Left}/>
-          <div style={{padding: 12, fontWeight: 'bold', textAlign: 'center', color: 'black'}}>
+          <div className="task-node-label">
             {label}
           </div>
         {hasOutgoingEdges && <Handle type="source" position={Position.Right}/>}
