@@ -52,9 +52,11 @@ export default function ProcessItem(props) {
               <span>|</span>
               <h4>{foundProcess.name}</h4>
             </div>
-            {foundProcess.description &&
-              <p>Description: {foundProcess.description}</p>
-            }
+            <div className={"process-item-info"}>
+              {foundProcess.description &&
+                <p>Description: {foundProcess.description}</p>
+              }
+            </div>
           </Link>
           <div className={"detail-actions"}>
             <IconButton
