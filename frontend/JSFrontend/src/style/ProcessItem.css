@@ -1,12 +1,6 @@
 .process-item {
     display: flex;
     align-items: center;
-    padding: 10px;
-}
-
-.process-item:hover {
-    background-color: #f9f9f9;
-    transition: box-shadow 0.2s;
 }
 
 .process-item a {
