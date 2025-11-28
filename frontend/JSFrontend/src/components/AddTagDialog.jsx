@@ -51,7 +51,7 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
 
   //Can currently only add names. No links to employees or skills, etc.
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onClose={handleClose}>
       <DialogTitle>Add a new tag</DialogTitle>
       <div style={{padding: '0 24px 24px 24px'}}>
         <label>

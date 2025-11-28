@@ -15,8 +15,6 @@ import {
 } from '@mui/material';
 import {useState, useEffect, useContext} from 'react';
 import {TagContext} from "../Context/TagContext/TagContext.jsx";
-//import AddTagDialog from "./AddTagDialog.jsx";
-//import handleAddTag from "./TagListPage.jsx";
 
 export default function EditEmployeeDialog({
                                              currentFirstName,
@@ -32,8 +30,6 @@ export default function EditEmployeeDialog({
   const [department, setDepartment] = useState(currentDepartment || "");
   // Ensure skillsInput is always an array
   const [skillsInput, setSkillsInput] = useState(currentSkills || []);
-  //TODO: Implemnt this later if needed
-  //const [isAddTagDialogOpen, setIsAddTagDialogOpen] = useState(false);
 
   const [nameError, setNameError] = useState(false);
 
@@ -49,12 +45,20 @@ export default function EditEmployeeDialog({
 
   // -- Logic for Skills --
 
-  // Remove a skill from the employee (Triggered by X button)
+  /**
+   * @function handleRemoveSkill
+   * @description Removes a skill from the employee's skills array based on the provided skill ID.
+   * @param {number} skillIdToRemove The ID of the skill to be removed. Expected to be an integer.
+   */
   function handleRemoveSkill(skillIdToRemove) {
     setSkillsInput(prev => prev.filter(skill => skill.id !== skillIdToRemove));
   }
 
-  // Add a skill to the employee (Triggered by clicking available skill)
+  /**
+   * @function handleAddSkill
+   * @description Adds a skill to the employee's skills array if it's not already present.
+   * @param {Object} skillToAdd The skill object to be added.
+   */
   function handleAddSkill(skillToAdd) {
     // Prevent duplicates
     if (!skillsInput.some(s => s.id === skillToAdd.id)) {
@@ -67,6 +71,11 @@ export default function EditEmployeeDialog({
     globalSkill => !skillsInput.some(empSkill => empSkill.id === globalSkill.id)
   );
 
+  /**
+   * @function handleOnSave
+   * @description Handles the save action when editing an employee.
+   * Validates the input and calls the onSave callback if valid. Afterwards, calls handleClose to reset and close the dialog.
+   */
   function handleOnSave() {
     // Check if inputs are empty
     if (!firstNameInput || !lastNameInput) {
@@ -79,6 +88,11 @@ export default function EditEmployeeDialog({
     handleClose();
   }
 
+  /**
+   * @function handleClose
+   * @description Handles the close action for the dialog.
+   * Resets the input fields and error state, then calls the onClose callback.
+   */
   function handleClose() {
     setFirstNameInput(currentFirstName || "");
     setLastNameInput(currentLastName || "");

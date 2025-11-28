@@ -32,7 +32,7 @@ export default function AddTaskDialog({onSave, isOpen, onClose}) {
   }
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onClose={handleOnClose}>
       <DialogTitle>Add New Task</DialogTitle>
       <div style={{padding: '0 24px 24px 24px'}}>
         <TextField

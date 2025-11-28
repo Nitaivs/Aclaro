@@ -1,6 +1,17 @@
 import {Dialog, DialogTitle, DialogContent, TextField} from '@mui/material';
 import {useEffect, useState} from 'react';
 
+/**
+ * @component EditTaskDetailsDialog
+ * @description A dialog component for editing the details of a task.
+ * @param {string} currentName - The current name of the task.
+ * @param {string} currentDescription - The current description of the task.
+ * @param {function} onSave - Function to call when saving the updated details.
+ * @param {boolean} isOpen - Boolean indicating if the dialog is open.
+ * @param {function} onClose - Function to call when closing the dialog.
+ * @returns {JSX.Element} The rendered EditTaskDetailsDialog component.
+ * @constructor
+ */
 export default function EditTaskDetailsDialog({currentName, currentDescription, onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState(currentName || "");
   const [descriptionInput, setDescriptionInput] = useState(currentDescription || "");
@@ -34,6 +45,11 @@ export default function EditTaskDetailsDialog({currentName, currentDescription, 
     handleOnClose();
   }
 
+  /**
+   * @function handleOnClose
+   * @description Handles the close action for the dialog.
+   * Resets the input state and calls the onClose callback.
+   */
   function handleOnClose() {
     setNameInput(currentName || "");
     setDescriptionInput(currentDescription || "");

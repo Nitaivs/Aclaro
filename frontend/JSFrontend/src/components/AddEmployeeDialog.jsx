@@ -42,7 +42,7 @@ export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
   }
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onClose={handleClose}>
       <DialogTitle>Add New Employee</DialogTitle>
       <div style={{padding: '0 24px 24px 24px'}}>
         <TextField
