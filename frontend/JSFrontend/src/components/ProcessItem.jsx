@@ -1,6 +1,7 @@
 import {Link} from 'react-router';
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import {use, useEffect, useState} from "react";
+import EditProcessDetailsDialog from "./EditProcessDetailsDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
 import '../style/ProcessItem.css'
 import {IconButton} from "@mui/material";
@@ -19,17 +20,45 @@ import '../style/ProcessItem.css'
  * @returns {JSX.Element} The rendered ProcessItem component.
  */
 export default function ProcessItem(props) {
-  const {processes, deleteProcess} = use(ProcessContext);
+  const {processes, updateProcess, deleteProcess} = use(ProcessContext);
   const foundProcess = processes.find(p => p.id === props.id);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   useEffect(() => {
     console.log("Processes updated:", processes);
   }, [processes]);
 
+  /**
+   * @function handleUpdateProcess
+   * @description Handles the update of process details.
+   * Calls the updateProcess function from ProcessContext with the new name and description.
+   * @param newName The new name for the process. May be undefined, in which case the current name is retained.
+   * @param newDescription The new description for the process.
+   * May be undefined, in which case the current description is retained.
+   */
+  function handleUpdateProcess(newName, newDescription) {
+    try {
+      console.log("updating process:", foundProcess.id, newName, newDescription);
+      updateProcess(foundProcess.id, {
+        name: newName || foundProcess.name,
+        description: newDescription || foundProcess.description,
+      });
+      setIsEditDialogOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /**
+   * @function handleDeleteProcess
+   * @description Handles the deletion of the process.
+   * Calls the deleteProcess function from ProcessContext.
+   */
   function handleDeleteProcess() {
     try {
-      deleteProcess(props.id);
-      setIsDialogOpen(false);
+      deleteProcess(foundProcess.id);
+      setIsDeleteDialogOpen(false);
     } catch (error) {
       //TODO: add error alert to UI
       console.error("Error deleting process:", error);
@@ -58,9 +87,9 @@ export default function ProcessItem(props) {
               }
             </div>
           </Link>
-          <div className={"detail-actions"}>
+          <div className={"process-item-actions"}>
             <IconButton
-              to={`/process/${props.id}`}
+              onClick={() => setIsEditDialogOpen(true)}
               aria-label="edit"
               size="small"
             >
@@ -69,15 +98,22 @@ export default function ProcessItem(props) {
             <IconButton
               aria-label="delete"
               size="small"
-              onClick={() => setIsDialogOpen(true)}
+              onClick={() => setIsDeleteDialogOpen(true)}
             >
               <img src={DeleteIcon} alt="Delete" width={30} height={30}/>
             </IconButton>
           </div>
         </div>
+        <EditProcessDetailsDialog
+          currentName={foundProcess.name}
+          currentDescription={foundProcess.description}
+          isOpen={isEditDialogOpen}
+          onClose={() => setIsEditDialogOpen(false)}
+          onSave={handleUpdateProcess}
+        />
         <AreYouSureDialog
-          isOpen={isDialogOpen}
-          onCancel={() => setIsDialogOpen(false)}
+          isOpen={isDeleteDialogOpen}
+          onCancel={() => setIsDeleteDialogOpen(false)}
           title="Delete Process"
           message={`Are you sure you want to delete the process "${foundProcess.name}" and all associated tasks? This action cannot be undone.`}
           onConfirm={() => handleDeleteProcess()}
