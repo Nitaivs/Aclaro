@@ -13,8 +13,11 @@ export default function TaskModal() {
     <Dialog
       open={true}
       onClose={handleClose}
-      style={{
-        borderRadius: '8px'
+      PaperProps={{
+        sx: {
+          borderRadius: '18px',
+          overflow: 'hidden'
+        }
       }}
     >
       <TaskPage isModal={true}/>
