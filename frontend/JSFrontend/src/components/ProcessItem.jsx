@@ -3,12 +3,11 @@ import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 import {use, useEffect, useState} from "react";
 import EditProcessDetailsDialog from "./EditProcessDetailsDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
-import '../style/ProcessItem.css'
 import {IconButton} from "@mui/material";
 import EditIcon from '../assets/edit.svg';
 import DeleteIcon from '../assets/delete.svg';
 import '../style/DetailPanel.css'
-import '../style/ProcessItem.css'
+import '../style/ItemCard.css'
 
 /**
  * @component ProcessItem
@@ -74,20 +73,18 @@ export default function ProcessItem(props) {
   } else {
     return (
       <div>
-        <div className={"process-item"}>
-          <Link to={`/process/${props.id}`}>
-            <div className={"process-item-info"}>
+        <div className="item-card">
+          <Link to={`/process/${props.id}`} className="item-card-content">
+            <div className="item-card-info">
               <h4 style={{color: 'red'}}>Process</h4>
               <span>|</span>
               <h4>{foundProcess.name}</h4>
             </div>
-            <div className={"process-item-info"}>
-              {foundProcess.description &&
-                <p>Description: {foundProcess.description}</p>
-              }
+            <div className={"item-card-info"}>
+              {foundProcess.description && <p>Description: {foundProcess.description}</p>}
             </div>
           </Link>
-          <div className={"process-item-actions"}>
+          <div className={"item-card-actions"}>
             <IconButton
               onClick={() => setIsEditDialogOpen(true)}
               aria-label="edit"
