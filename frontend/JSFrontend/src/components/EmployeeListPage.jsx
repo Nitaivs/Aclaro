@@ -70,7 +70,6 @@ export default function EmployeeListPage() {
     }
   }
 
-
   return (
     <div>
       <h1>Employee list</h1>
