@@ -1,3 +1,4 @@
+import {useLocation, useNavigate} from "react-router";
 import {IconButton} from "@mui/material";
 import EditIcon from "../assets/edit.svg";
 import DeleteIcon from "../assets/delete.svg";
@@ -25,12 +26,12 @@ export default function TaskItem({taskId}) {
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  // const navigate = useNavigate();
-  // const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // function openTaskModal() {
-  //   navigate(`/tasks/${taskId}`, {state: {background: location}});
-  // }
+  function openTaskModal() {
+    navigate(`/tasks/${taskId}`, {state: {background: location}});
+  }
 
   /**
    * @function handleUpdateTask
@@ -73,7 +74,7 @@ export default function TaskItem({taskId}) {
     <>
       <div>
         <div className="item-card">
-          <div className="item-card-content">
+          <div className="item-card-content" onClick={openTaskModal} style={{cursor: 'pointer'}}>
             <div className="item-card-info">
               <h4 style={{color: 'red'}}>Task</h4>
               <span>|</span>
