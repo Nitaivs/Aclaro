@@ -14,7 +14,6 @@
 }
 
 .detail-container ul li {
-    padding: 12px 20px;
     border-bottom: 1px solid grey;
     transition: background-color 0.12s ease;
 }
