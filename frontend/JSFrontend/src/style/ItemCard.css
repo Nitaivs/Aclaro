@@ -16,6 +16,16 @@
     min-width: 0;
 }
 
+.item-card-content:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.item-card-content:visited {
+    text-decoration: none;
+    color: inherit;
+}
+
 .item-card-info {
     display: flex;
     align-items: center;
