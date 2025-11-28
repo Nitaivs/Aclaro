@@ -290,26 +290,43 @@ export default function ProcessPage() {
   }
 
   return (
-    <div className="detail-container">
-      {/* Header */}
-      <div className="detail-header">
-        <h2>
-          Process
-        </h2>
-      </div>
-      {/* Process Details */}
-      <div className="detail-content">
-        <div className="detail-info">
-          <h2 className="detail-title">{foundProcess.name}</h2>
-          <p className="detail-description">{foundProcess.description}</p>
+    <>
+      <div className="detail-container">
+        {/* Header */}
+        <div className="detail-header">
+          <h2>
+            Process
+          </h2>
         </div>
-        <div className="detail-actions">
-          <IconButton onClick={() => setIsProcessDetailsDialogOpen(true)} size="large">
-            <img src={editIcon} alt="Edit Process Details" className="icon-img"/>
-          </IconButton>
-          <IconButton onClick={() => setIsDeleteDialogOpen(true)} size="large">
-            <img src={deleteIcon} alt="Delete Process" className="icon-img"/>
-          </IconButton>
+        {/* Process Details */}
+        <div className="detail-content">
+          <div className="detail-info">
+            <h2 className="detail-title">{foundProcess.name}</h2>
+            <p className="detail-description">{foundProcess.description}</p>
+          </div>
+          <div className="detail-actions">
+            <IconButton onClick={() => setIsProcessDetailsDialogOpen(true)} size="large">
+              <img src={editIcon} alt="Edit Process Details" className="icon-img"/>
+            </IconButton>
+            <IconButton onClick={() => setIsDeleteDialogOpen(true)} size="large">
+              <img src={deleteIcon} alt="Delete Process" className="icon-img"/>
+            </IconButton>
+          </div>
+        </div>
+        {/* React Flow Diagram */}
+        <div className="react-flow-container">
+          <ProcessOperationsProvider processId={parsedProcessId}>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              proOptions={{hideAttribution: true}}
+              fitView
+              nodesDraggable={false}
+              nodesConnectable={false}
+            />
+          </ProcessOperationsProvider>
         </div>
       </div>
       <EditProcessDetailsDialog
@@ -326,21 +343,6 @@ export default function ProcessPage() {
         message={`Are you sure you want to delete the process "${foundProcess.name}" and all associated tasks? This action cannot be undone.`}
         onConfirm={() => handleDeleteProcess()}
       />
-      {/* React Flow Diagram */}
-      <div className="react-flow-container">
-        <ProcessOperationsProvider processId={parsedProcessId}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            proOptions={{hideAttribution: true}}
-            fitView
-            nodesDraggable={false}
-            nodesConnectable={false}
-          />
-        </ProcessOperationsProvider>
-      </div>
-    </div>
+    </>
   )
 }
