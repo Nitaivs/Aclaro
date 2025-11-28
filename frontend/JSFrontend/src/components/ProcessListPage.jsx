@@ -28,6 +28,29 @@ export default function ProcessListPage() {
     }
   }
 
+  if (processes.length === 0) {
+    return (
+      <>
+        <div className={"detail-container"}>
+          <div className={'detail-header'}>
+            <h2>Processes</h2>
+          </div>
+          <div className={'detail-actions-container'}>
+            <button onClick={() => setIsDialogOpen(true)}>Add process</button>
+          </div>
+          <div>
+            <p>No processes available. Click "Add process" to create one.</p>
+          </div>
+        </div>
+        <AddProcessDialog
+          isOpen={isDialogOpen}
+          onSave={(name, description) => handleAddProcess(name, description)}
+          onClose={() => setIsDialogOpen(false)}
+        />
+      </>
+    )
+  }
+
   return (
     <>
       <div className={"detail-container"}>
@@ -37,7 +60,7 @@ export default function ProcessListPage() {
         <div className={'detail-actions-container'}>
           <button onClick={() => setIsDialogOpen(true)}>Add process</button>
         </div>
-        <div className={'detail-content'}>
+        <div>
           <ul>
             {processes.map((process) => (
               <li key={process.id}>
