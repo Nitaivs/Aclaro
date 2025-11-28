@@ -17,10 +17,7 @@ export default function TaskListPage() {
             return (
               <li key={task.id}>
                 <TaskItem
-                  processId={task.processId}
                   taskId={task.id}
-                  taskName={task.name}
-                  taskDescription={task.description}
                 />
               </li>
             )
