@@ -81,7 +81,7 @@ export default function TaskItem({taskId}) {
               <h4>{foundTask.name}</h4>
             </div>
             <div className="item-card-info">
-              <p>{foundTask.description}</p>
+              {foundTask.description && <p>Description: {foundTask.description}</p>}
             </div>
           </div>
           <div className="item-card-actions">
