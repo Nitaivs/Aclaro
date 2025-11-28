@@ -1,7 +1,6 @@
 import {useContext, useState} from "react";
 import {EmployeeContext} from "../Context/EmployeeContext/EmployeeContext.jsx";
 import AddEmployeeDialog from "./AddEmployeeDialog.jsx";
-import {Link} from "react-router";
 import {
   Alert,
   AlertTitle,
@@ -14,6 +13,7 @@ import {
 } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 import EmployeeItem from "./EmployeeItem.jsx";
+import '../style/DetailPanel.css'
 
 /**
  * @component EmployeeListPage
@@ -22,12 +22,11 @@ import EmployeeItem from "./EmployeeItem.jsx";
  * @returns {JSX.Element} The rendered EmployeeListPage component.
  */
 export default function EmployeeListPage() {
-  const {employees, addEmployee, deleteEmployeeById} = useContext(EmployeeContext);
+  const {employees, addEmployee} = useContext(EmployeeContext);
   const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [filterString, setFilterString] = useState("");
-  const [removeMode, setRemoveMode] = useState(false);
 
   // Filter employees based on the filterString
   const filtered = employees.filter(emp => `
@@ -52,65 +51,33 @@ export default function EmployeeListPage() {
     }
   }
 
-  /**
-   * @function handleDeleteEmployee
-   * @description Handles the deletion of an employee.
-   * Calls the deleteEmployeeById function from EmployeeContext and manages error handling.
-   * @param id - The ID of the employee to delete.
-   * @returns {Promise<void>} A promise that resolves when the employee is deleted or an error occurs.
-   */
-  async function handleDeleteEmployee(id) {
-    console.log(id);
-    try {
-      await deleteEmployeeById(id);
-    } catch (error) {
-      console.error("Error deleting employee:", error);
-      setErrorMessage(error.message || String(error));
-      setShowErrorAlert(true);
-    }
-  }
-
   return (
-    <div>
-      <h1>Employee list</h1>
-      <button onClick={() => setIsAddEmployeeDialogOpen(true)}>
-        Add employee
-      </button>
-      <button onClick={() => setRemoveMode(!removeMode)}>
-        {removeMode ? "Exit" : "Remove Employees"}
-      </button>
-
-      <AddEmployeeDialog
-        isOpen={isAddEmployeeDialogOpen}
-        onSave={handleAddEmployee}
-        onClose={() => setIsAddEmployeeDialogOpen(false)}
-      />
-
-      <Collapse in={showErrorAlert}>
-        <Alert sx={{width: '100%'}} title="Error" severity="error" onClose={() => setShowErrorAlert(false)}>
-          <AlertTitle>Error</AlertTitle>
-          {errorMessage}
-        </Alert>
-      </Collapse>
-
-      {/* Search Field */}
-      <TextField
-        value={filterString}
-        onChange={(e) => setFilterString(e.target.value)}
-        placeholder="Search by name"
-        fullWidth
-        size="small"
-        color="white"
-        sx={{
-          mb: 1,
-          '& .MuiInputBase-root': {
-            backgroundColor: 'white',
-            borderRadius: 1,
-          },
-        }}
-      />
-
-      <Paper variant="outlined" sx={{p: 1}}>
+    <>
+      <div className="detail-container">
+        <div className="detail-header">
+          <h2>Employees</h2>
+        </div>
+        <div className="detail-actions-container">
+          <button onClick={() => setIsAddEmployeeDialogOpen(true)}>
+            Add employee
+          </button>
+          {/* Search Field */}
+          <TextField
+            value={filterString}
+            onChange={(e) => setFilterString(e.target.value)}
+            placeholder="Search by name"
+            fullWidth
+            size="small"
+            color="white"
+            sx={{
+              mb: 1,
+              '& .MuiInputBase-root': {
+                backgroundColor: 'white',
+                borderRadius: 1,
+              },
+            }}
+          />
+        </div>
         <List>
           {filtered.length === 0 ? (
             <ListItem>
@@ -123,16 +90,29 @@ export default function EmployeeListPage() {
             filtered.map((emp, idx) => {
               return (
                 <div key={emp.id ?? idx}>
-                    <ListItem alignItems="flex-start">
-                      <EmployeeItem employeeId={emp.id}/>
-                    </ListItem>
-                    {idx < filtered.length - 1 && <Divider component="li"/>}
+                  <ListItem alignItems="flex-start">
+                    <EmployeeItem employeeId={emp.id}/>
+                  </ListItem>
+                  {idx < filtered.length - 1 && <Divider component="li"/>}
                 </div>
               );
             })
           )}
         </List>
-      </Paper>
-    </div>
+      </div>
+
+      <Collapse in={showErrorAlert}>
+        <Alert sx={{width: '100%'}} title="Error" severity="error" onClose={() => setShowErrorAlert(false)}>
+          <AlertTitle>Error</AlertTitle>
+          {errorMessage}
+        </Alert>
+      </Collapse>
+
+      <AddEmployeeDialog
+        isOpen={isAddEmployeeDialogOpen}
+        onSave={handleAddEmployee}
+        onClose={() => setIsAddEmployeeDialogOpen(false)}
+      />
+    </>
   )
 }
