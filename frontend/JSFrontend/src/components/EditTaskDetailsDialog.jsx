@@ -42,7 +42,7 @@ export default function EditTaskDetailsDialog({currentName, currentDescription, 
   }
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onClose={handleOnClose}>
       <DialogTitle>Edit Task Details</DialogTitle>
       <DialogContent>
         <TextField
