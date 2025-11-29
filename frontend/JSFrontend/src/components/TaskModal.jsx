@@ -1,6 +1,7 @@
 import TaskPage from "./TaskPage.jsx";
 import {useNavigate} from "react-router";
 import {Dialog} from "@mui/material";
+import '../style/Dialog.css'
 
 export default function TaskModal() {
   const navigate = useNavigate();
@@ -13,10 +14,9 @@ export default function TaskModal() {
     <Dialog
       open={true}
       onClose={handleClose}
-      PaperProps={{
-        sx: {
-          borderRadius: '18px',
-          overflow: 'hidden'
+      slotProps={{
+        paper: {
+            className: "dialog-paper",
         }
       }}
     >
