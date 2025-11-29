@@ -123,6 +123,9 @@ export function TagProvider({children}) {
       setDepartments(departments.filter(department => department.id !== id));
     } catch (error) {
       console.error(`Error deleting department with id ${id} from DB:`, error);
+      if (error.response && error.response.status === 409) {
+        throw new Error("Cannot delete department: it is associated with existing employees.");
+      }
       throw error;
     }
   }

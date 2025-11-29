@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {EmployeeContext} from "./EmployeeContext.jsx";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 /**
  * @Component EmployeeProvider
@@ -148,7 +149,11 @@ async function addEmployee(firstName, lastName) {
         return response.data;
     } catch (error) {
         console.error(`Error adding employee ${firstName} ${lastName} to DB:`, error);
-        throw error;
+        if (error.response && error.response.status === 400) {
+            throw new Error("Cannot add employee. Invalid data provided.");
+        } else {
+            throw new Error("Cannot add employee. Backend failure");
+        }
     }
 }
 

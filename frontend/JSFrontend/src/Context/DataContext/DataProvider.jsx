@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react";
 import {DataContext} from "./DataContext.jsx";
 import axios from "axios";
+import {toast} from "react-toastify";
 
 const BASE_URL = "http://localhost:8080/api/";
 
@@ -85,6 +86,11 @@ export function DataProvider({children}) {
       });
     } catch (error) {
       console.error("Error fetching process by ID:", error);
+      if (error.response && error.response.status === 404) {
+        toast.error(`Process with ID ${processId} not found.`);
+      } else {
+        toast.error(`Backend failure while fetching process with ID ${processId}.`);
+      }
     }
   }
 
