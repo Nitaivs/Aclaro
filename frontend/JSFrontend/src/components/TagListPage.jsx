@@ -126,7 +126,7 @@ export default function TagListPage() {
                           name={dept.name}
                           tagId={dept.id}
                           isEditable={false}
-                          isDeletable={true}
+                          isDeletable={false}
                         />
                       </ListItem>
                       {idx < filteredDepartments.length - 1 && <Divider component="li"/>}
