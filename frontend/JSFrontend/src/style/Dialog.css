@@ -86,7 +86,7 @@
 }
 
 /* Additional styling for MUI Dialog component */
-.dialog-paper {
+.MuiDialog-paper.dialog-paper {
     border-radius: 18px;
     overflow: hidden;
 }
