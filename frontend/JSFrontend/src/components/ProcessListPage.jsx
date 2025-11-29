@@ -36,7 +36,7 @@ export default function ProcessListPage() {
             <h2>Processes</h2>
           </div>
           <div className={'detail-actions-container'}>
-            <button onClick={() => setIsDialogOpen(true)}>Add process</button>
+            <button className="add-button" onClick={() => setIsDialogOpen(true)}>Add process</button>
           </div>
           <div>
             <p>No processes available. Click "Add process" to create one.</p>
@@ -58,7 +58,7 @@ export default function ProcessListPage() {
           <h2>Processes</h2>
         </div>
         <div className={'detail-actions-container'}>
-          <button onClick={() => setIsDialogOpen(true)}>Add process</button>
+          <button className='add-button' onClick={() => setIsDialogOpen(true)}>Add Process</button>
         </div>
         <div>
           <ul>
