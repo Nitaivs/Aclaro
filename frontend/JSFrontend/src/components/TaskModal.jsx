@@ -14,10 +14,7 @@ export default function TaskModal() {
     <Dialog
       slotProps={{
         paper: {
-          sx: {
-            overflow: 'hidden',
-            borderRadius: '18px'
-          }
+          className: "dialog-paper"
         }
       }}
       open={true}
