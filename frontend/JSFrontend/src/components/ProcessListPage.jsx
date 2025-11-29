@@ -71,12 +71,14 @@ export default function ProcessListPage() {
           <TextField
             value={filterString}
             onChange={(e) => setFilterString(e.target.value)}
-            placeholder="Search by name"
-            fullWidth
+            placeholder="Search"
             size="small"
             color="white"
             sx={{
-              mb: 1,
+              width: '50%',
+              mx: 'auto',
+              my: 2,
+              display: 'block',
               '& .MuiInputBase-root': {
                 backgroundColor: 'white',
                 borderRadius: 1,
