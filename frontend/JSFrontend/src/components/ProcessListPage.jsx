@@ -20,6 +20,13 @@ export default function ProcessListPage() {
   const {processes, addProcess} = useContext(ProcessContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [filterString, setFilterString] = useState("");
+  
+  const filtered = useMemo(() => {
+    const query = (filterString || "").trim().toLowerCase();
+    const list = (processes || []);
+    if (!query) return list;
+    return list.filter(p => p.name?.toLowerCase().includes(query));
+  }, [processes, filterString]);
 
   /**
    * @function handleAddProcess
@@ -88,17 +95,23 @@ export default function ProcessListPage() {
 
           <Paper variant="outlined" sx={{p: 1}}>
             <List>
-              {(
-                (filterString || "").trim().length === 0 ? processes : 
-                (processes || []).filter(p => p.name?.toLowerCase().includes((filterString || "").trim().toLowerCase()))
-              ).map((process, idx, arr) => (
-                <div key={process.id}>
-                  <ListItem alignItems="flex-start">
-                    <ProcessItem id={process.id}/>
-                  </ListItem>
-                  {idx < arr.length - 1 && <Divider component="li" />}
-                </div>
-              ))}
+              {filtered.length === 0 ? (
+                <ListItem>
+                  <ListItemText
+                    primary="No processes found"
+                    secondary={filterString ? `No processes match "${filterString}".` : "There are currently no processes to display."}
+                  />
+                </ListItem>
+              ) : (
+                filtered.map((process, idx, arr) => (
+                  <div key={process.id}>
+                    <ListItem alignItems="flex-start">
+                      <ProcessItem id={process.id}/>
+                    </ListItem>
+                    {idx < arr.length - 1 && <Divider component="li" />}
+                  </div>
+                ))
+              )}
             </List>
           </Paper>
         </div>
