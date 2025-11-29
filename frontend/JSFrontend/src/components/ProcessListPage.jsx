@@ -71,7 +71,7 @@ export default function ProcessListPage() {
           <TextField
             value={filterString}
             onChange={(e) => setFilterString(e.target.value)}
-            placeholder="Search"
+            placeholder="Search by name"
             size="small"
             color="white"
             sx={{
