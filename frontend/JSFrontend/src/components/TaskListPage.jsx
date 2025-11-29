@@ -30,47 +30,41 @@ export default function TaskListPage() {
         <div className={"detail-header"}>
           <h2>Tasks</h2>
         </div>
-        <TextField
-          value={filterString}
-          onChange={(e) => setFilterString(e.target.value)}
-          placeholder="Search by name"
-          size="small"
-          color="white"
-          sx={{
-            width: '50%',
-            mx: 'auto',
-            my: 2,
-            display: 'block',
-            '& .MuiInputBase-root': {
-              backgroundColor: 'white',
-              borderRadius: 1,
-            },
-          }}
-        />
+        <div className="detail-actions-container">
+          <TextField
+            value={filterString}
+            onChange={(e) => setFilterString(e.target.value)}
+            placeholder="Search by name"
+            size="small"
+            color="white"
+            sx={{
+              width: '100%',
+              '& .MuiInputBase-root': {
+                backgroundColor: 'white',
+                borderRadius: 3,
+              },
+            }}
+          />
+        </div>
 
-        <Paper variant="outlined" sx={{p: 1}}>
-          <List>
-            {filtered.length === 0 ? (
-              <ListItem>
-                <ListItemText
-                  primary="No tasks found"
-                  secondary={filterString ? `No tasks match "${filterString}".` : "There are currently no tasks to display."}
-                />
-              </ListItem>
-            ) : (
-              filtered.map((task, idx) => (
-                <div key={task.id}>
-                  <ListItem alignItems="flex-start">
-                    <TaskItem
-                      taskId={task.id}
-                    />
-                  </ListItem>
-                  {idx < filtered.length - 1 && <Divider component="li" />}
-                </div>
-              ))
-            )}
-          </List>
-        </Paper>
+        {filtered.length === 0 ? (
+          <ListItem>
+            <ListItemText
+              primary="No tasks found"
+              secondary={filterString ? `No tasks match "${filterString}".` : "There are currently no tasks to display."}
+            />
+          </ListItem>
+        ) : (
+          <div>
+            <ul>
+              {filtered.map((task) => (
+                <li key={task.name}>
+                  <TaskItem taskId={task.id}/>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </>
   )
