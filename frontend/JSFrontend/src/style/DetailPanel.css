@@ -2,7 +2,7 @@
 .detail-container {
     min-width: 600px;
     border-radius: 16px;
-    border: 1px solid black;
+    border: 1px solid grey;
     box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
 }
 
@@ -89,6 +89,19 @@
     align-items: center;
     gap: 8px;
     margin-left: 20px;
+}
+
+.add-button {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: 1px grey solid;
+    cursor: pointer;
+    background: linear-gradient(180deg, #f2fff6 0%, #b2ffcc 100%);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.add-button:hover {
+    background: linear-gradient(180deg, #e0ffe8 0%, #a0ffbb 100%);
 }
 
 .detail-actions .icon-img {
