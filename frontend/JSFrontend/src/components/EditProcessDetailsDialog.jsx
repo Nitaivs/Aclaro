@@ -1,5 +1,6 @@
-import {Dialog, DialogTitle, DialogContent, TextField} from '@mui/material';
+import {Dialog, TextField} from '@mui/material';
 import {useState, useEffect} from 'react';
+import '../style/Dialog.css'
 
 /**
  * @component EditProcessDetailsDialog
@@ -45,6 +46,11 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
     handleOnClose();
   }
 
+  /**
+   * @function handleOnClose
+   * @description Handles the close action for the dialog.
+   * Resets the input state and calls the onClose callback.
+   */
   function handleOnClose() {
     setNameInput(currentName || "");
     setDescriptionInput(currentDescription || "");
@@ -53,44 +59,46 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleOnClose}>
-      <DialogTitle>Edit Process Details</DialogTitle>
-      <DialogContent>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Process Name"
-          type="text"
-          fullWidth
-          variant="outlined"
-          error={nameError}
-          helperText={nameError ? "Process name is required" : ""}
-          defaultValue={defaultName || ''}
-          onChange={(e) => setNameInput(e.target.value)}
-        />
-
-        <TextField
-          margin="dense"
-          label="Process Description"
-          type="text"
-          fullWidth
-          variant="outlined"
-          defaultValue={defaultDescription || ''}
-          onChange={(e) => setDescriptionInput(e.target.value)}
-        />
-
-        <button onClick={() => {
-          handleOnSave();
-        }}>
-          Save
-        </button>
-
-        <button onClick={() => {
-          handleOnClose();
-        }}>
-          Cancel
-        </button>
-      </DialogContent>
+    <Dialog
+      slotProps={{
+        paper: {
+          className: "dialog-paper"
+        }
+      }}
+      open={isOpen}
+      onClose={handleOnClose}>
+      <div className="dialog-container">
+        <div className="dialog-header">
+          <h3>Edit Process Details</h3>
+        </div>
+        <div className="dialog-actions">
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Process Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            error={nameError}
+            helperText={nameError ? "Process name is required" : ""}
+            defaultValue={defaultName || ''}
+            onChange={(e) => setNameInput(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Process Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            defaultValue={defaultDescription || ''}
+            onChange={(e) => setDescriptionInput(e.target.value)}
+          />
+          <div className="dialog-actions-buttons">
+            <button className="cancel-button" onClick={() => handleOnClose()}>Cancel</button>
+            <button className="confirm-button" onClick={() => handleOnSave()}>Save</button>
+          </div>
+        </div>
+      </div>
     </Dialog>
   )
 }
