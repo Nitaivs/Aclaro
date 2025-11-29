@@ -84,10 +84,10 @@ export default function TagListPage() {
       </Collapse>
 
       {/* Side-by-side lists */}
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
         {/* Departments List */}
         <Box sx={{ flex: 1, minWidth: 300 }}>
-          <div className="detail-container">
+          <div className="detail-container detail-container-small">
             <div className="detail-header">
               <h2>Departments</h2>
             </div>
@@ -140,7 +140,7 @@ export default function TagListPage() {
 
         {/* Skills List */}
         <Box sx={{ flex: 1, minWidth: 300 }}>
-          <div className="detail-container">
+          <div className="detail-container detail-container-small">
             <div className="detail-header">
               <h2>Skills</h2>
             </div>
