@@ -1,18 +1,25 @@
 import ProcessItem from "./ProcessItem.jsx";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
-import {use, useState} from "react";
+import {useContext, useState, useMemo} from "react";
 import '../style/DetailPanel.css'
 import AddProcessDialog from "./AddProcessDialog.jsx";
+import {TextField, Paper, List, ListItem, ListItemText, Divider} from "@mui/material";
 
 /**
- * @component ProcessListPage
- * @description A component that displays a list of processes.
- * Users can add new processes and each process is represented by a ProcessCard component.
- * @return {JSX.Element} The rendered ProcessListPage component.
+ * ProcessListPage
+ *
+ * @component
+ * @description
+ * Displays a list of processes fetched from `ProcessContext` and provides a
+ * filter input for searching by process name. This behavior mirrors the
+ * filtering implementation used in `TagListPage` and `TaskListPage`.
+ *
+ * @returns {JSX.Element} The rendered ProcessListPage component.
  */
 export default function ProcessListPage() {
-  const {processes, addProcess} = use(ProcessContext);
+  const {processes, addProcess} = useContext(ProcessContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [filterString, setFilterString] = useState("");
 
   /**
    * @function handleAddProcess
@@ -28,7 +35,7 @@ export default function ProcessListPage() {
     }
   }
 
-  if (processes.length === 0) {
+  if ((processes || []).length === 0) {
     return (
       <>
         <div className={"detail-container"}>
@@ -61,13 +68,37 @@ export default function ProcessListPage() {
           <button onClick={() => setIsDialogOpen(true)}>Add process</button>
         </div>
         <div>
-          <ul>
-            {processes.map((process) => (
-              <li key={process.id}>
-                <ProcessItem id={process.id}/>
-              </li>
-            ))}
-          </ul>
+          <TextField
+            value={filterString}
+            onChange={(e) => setFilterString(e.target.value)}
+            placeholder="Search by name"
+            fullWidth
+            size="small"
+            color="white"
+            sx={{
+              mb: 1,
+              '& .MuiInputBase-root': {
+                backgroundColor: 'white',
+                borderRadius: 1,
+              },
+            }}
+          />
+
+          <Paper variant="outlined" sx={{p: 1}}>
+            <List>
+              {(
+                (filterString || "").trim().length === 0 ? processes : 
+                (processes || []).filter(p => p.name?.toLowerCase().includes((filterString || "").trim().toLowerCase()))
+              ).map((process, idx, arr) => (
+                <div key={process.id}>
+                  <ListItem alignItems="flex-start">
+                    <ProcessItem id={process.id}/>
+                  </ListItem>
+                  {idx < arr.length - 1 && <Divider component="li" />}
+                </div>
+              ))}
+            </List>
+          </Paper>
         </div>
       </div>
       <AddProcessDialog
