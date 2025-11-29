@@ -12,13 +12,16 @@ export default function TaskModal() {
 
   return (
     <Dialog
-      open={true}
-      onClose={handleClose}
       slotProps={{
         paper: {
-            className: "dialog-paper",
+          sx: {
+            overflow: 'hidden',
+            borderRadius: '18px'
+          }
         }
       }}
+      open={true}
+      onClose={handleClose}
     >
       <TaskPage isModal={true}/>
     </Dialog>
