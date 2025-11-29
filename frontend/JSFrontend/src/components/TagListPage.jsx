@@ -5,11 +5,8 @@ import {
   Alert,
   AlertTitle,
   TextField,
-  Paper,
-  List,
   ListItem,
   ListItemText,
-  Divider,
   Box
 } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
@@ -66,8 +63,8 @@ export default function TagListPage() {
   return (
     <div>
       <h1>Tag list</h1>
-      <button style={{marginBottom: '10px'}} onClick={() => setIsAddDepartmentDialogOpen(true)}>
-        Add tag
+      <button className="add-button" onClick={() => setIsAddDepartmentDialogOpen(true)}>
+        Add Tag
       </button>
 
       <AddTagDialog
@@ -84,110 +81,103 @@ export default function TagListPage() {
       </Collapse>
 
       {/* Side-by-side lists */}
-      <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+      <Box sx={{display: 'flex', gap: 4, flexWrap: 'wrap'}}>
         {/* Departments List */}
-        <Box sx={{ flex: 1, minWidth: 300 }}>
+        <Box sx={{flex: 1, minWidth: 300}}>
           <div className="detail-container detail-container-small">
             <div className="detail-header">
               <h2>Departments</h2>
             </div>
-            <TextField
-              value={departmentFilter}
-              onChange={(e) => setDepartmentFilter(e.target.value)}
-              placeholder="Search by name"
-              size="small"
-              color="white"
-              sx={{
-                width: '50%',
-                mx: 'auto',
-                my: 2,
-                display: 'block',
-                '& .MuiInputBase-root': {
-                  backgroundColor: 'white',
-                  borderRadius: 1,
-                },
-              }}
-            />
-            <Paper variant="outlined" sx={{p: 1, m: 1, mt: 0}}>
-              <List>
-                {filteredDepartments.length === 0 ? (
-                  <ListItem>
-                    <ListItemText
-                      primary="No departments found"
-                      secondary={departmentFilter ? `No departments match "${departmentFilter}".` : "There are currently no departments to display."}
-                    />
-                  </ListItem>
-                ) : (
-                  filteredDepartments.map((dept, idx) => (
-                    <div key={`department-${dept.id}`}>
-                      <ListItem alignItems="flex-start">
-                        <TagItem
-                          type="department"
-                          name={dept.name}
-                          tagId={dept.id}
-                          isEditable={false}
-                          isDeletable={false}
-                        />
-                      </ListItem>
-                      {idx < filteredDepartments.length - 1 && <Divider component="li"/>}
-                    </div>
-                  ))
-                )}
-              </List>
-            </Paper>
+            <div className="detail-actions-container">
+              <TextField
+                value={departmentFilter}
+                onChange={(e) => setDepartmentFilter(e.target.value)}
+                placeholder="Search by name"
+                size="small"
+                color="white"
+                sx={{
+                  width: '100%',
+                  mx: 'auto',
+                  display: 'block',
+                  '& .MuiInputBase-root': {
+                    backgroundColor: 'white',
+                    borderRadius: 3,
+                  },
+                }}
+              />
+            </div>
+            {filteredDepartments.length === 0 ? (
+              <ListItem>
+                <ListItemText
+                  primary="No departments found"
+                  secondary={departmentFilter ? `No departments match "${departmentFilter}".` : "There are currently no departments to display."}
+                />
+              </ListItem>
+            ) : (
+              <ul>
+                {filteredDepartments.map((dept) => (
+                  <li key={`dept-${dept.id}`}>
+                    <TagItem
+                      type="department"
+                      name={dept.name}
+                      tagId={dept.id}
+                      isEditable={false}
+                      isDeletable={true}
+                      />
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </Box>
-
         {/* Skills List */}
-        <Box sx={{ flex: 1, minWidth: 300 }}>
+        <Box sx={{flex: 1, minWidth: 300}}>
           <div className="detail-container detail-container-small">
             <div className="detail-header">
               <h2>Skills</h2>
             </div>
-            <TextField
-              value={skillFilter}
-              onChange={(e) => setSkillFilter(e.target.value)}
-              placeholder="Search by name"
-              size="small"
-              color="white"
-              sx={{
-                width: '50%',
-                mx: 'auto',
-                my: 2,
-                display: 'block',
-                '& .MuiInputBase-root': {
-                  backgroundColor: 'white',
-                  borderRadius: 1,
-                },
-              }}
-            />
-            <Paper variant="outlined" sx={{p: 1, m: 1, mt: 0}}>
-              <List>
-                {filteredSkills.length === 0 ? (
-                  <ListItem>
-                    <ListItemText
-                      primary="No skills found"
-                      secondary={skillFilter ? `No skills match "${skillFilter}".` : "There are currently no skills to display."}
-                    />
-                  </ListItem>
-                ) : (
-                  filteredSkills.map((skill, idx) => (
-                    <div key={`skill-${skill.id}`}>
-                      <ListItem alignItems="flex-start">
-                        <TagItem
-                          type="skill"
-                          name={skill.name}
-                          tagId={skill.id}
-                          isEditable={true}
-                          isDeletable={true}
-                        />
-                      </ListItem>
-                      {idx < filteredSkills.length - 1 && <Divider component="li"/>}
-                    </div>
-                  ))
-                )}
-              </List>
-            </Paper>
+            <div className="detail-actions-container">
+              <TextField
+                value={skillFilter}
+                onChange={(e) => setSkillFilter(e.target.value)}
+                placeholder="Search by name"
+                size="small"
+                color="white"
+                sx={{
+                  width: '100%',
+                  mx: 'auto',
+                  display: 'block',
+                  '& .MuiInputBase-root': {
+                    backgroundColor: 'white',
+                    borderRadius: 3,
+                  },
+                }}
+              />
+            </div>
+            {filteredSkills.length === 0 ? (
+              <ListItem>
+                <ListItemText
+                  primary="No skills found"
+                  secondary={skillFilter ? `No skills match "${skillFilter}".` : "There are currently no skills to display."}
+                />
+              </ListItem>
+            ) : (
+              <div>
+                <ul>
+                  {filteredSkills.map((skill) => (
+                    <li key={`skill-${skill.id}`}>
+                      <TagItem
+                        type="skill"
+                        name={skill.name}
+                        tagId={skill.id}
+                        isEditable={true}
+                        isDeletable={true}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </Box>
       </Box>
