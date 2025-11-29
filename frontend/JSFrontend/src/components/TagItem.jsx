@@ -6,6 +6,7 @@ import {IconButton} from "@mui/material";
 import EditTagDialog from "./EditTagDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
 import ErrorDialog from "./ErrorDialog.jsx";
+import '../style/TagItem.css'
 
 /**
  * @component TagItem
@@ -70,31 +71,34 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
   }
 
   return (
-    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%'}}>
-      <span style={{flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+    <>
+      <div className="tag-item-container">
+      <span className="tag-item-name">
       {foundTag.name}
       </span>
-      {isEditable &&
-        <IconButton
-          edge="end"
-          aria-label={`edit-${foundTag.id}`}
-          size="small"
-          onClick={() => setIsEditDialogOpen(true)}
-          style={{marginLeft: 'auto'}}
-        >
-          <img src={editIcon} alt={"tag edit button"} height={30} width={30}/>
-        </IconButton>}
-      {isDeletable &&
-        <IconButton
-          edge="end"
-          aria-label={`delete-${foundTag.id}`}
-          size="small"
-          style={{marginLeft: 'auto'}}
-          onClick={() => setIsDeleteDialogOpen(true)}
-        >
-          <img src={deleteIcon} alt={"tag delete button"} height={30} width={30}/>
-        </IconButton>
-      }
+        <div className="tag-item-actions">
+          {isEditable && (
+            <IconButton
+              edge="end"
+              aria-label={`edit-${foundTag.id}`}
+              size="small"
+              onClick={() => setIsEditDialogOpen(true)}
+            >
+              <img src={editIcon} alt={"tag edit button"} height={30} width={30}/>
+            </IconButton>
+          )}
+          {isDeletable && (
+            <IconButton
+              edge="end"
+              aria-label={`delete-${foundTag.id}`}
+              size="small"
+              onClick={() => setIsDeleteDialogOpen(true)}
+            >
+              <img src={deleteIcon} alt={"tag delete button"} height={30} width={30}/>
+            </IconButton>
+          )}
+        </div>
+      </div>
       <EditTagDialog
         currentName={foundTag.name}
         isOpen={isEditDialogOpen}
@@ -115,6 +119,6 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
         title="Error"
         message={errorMessage}
       />
-    </div>
+    </>
   );
 }
