@@ -73,7 +73,7 @@ export default function EmployeeListPage() {
               mb: 1,
               '& .MuiInputBase-root': {
                 backgroundColor: 'white',
-                borderRadius: 1,
+                borderRadius: 3,
               },
             }}
           />
