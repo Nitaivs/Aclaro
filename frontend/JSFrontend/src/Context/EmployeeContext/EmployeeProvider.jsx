@@ -82,6 +82,11 @@ async function fetchAllEmployees() {
       setEmployees([...employees, response.data]);
     } catch (error) {
       console.error(`Error fetching employee with id ${id} from DB:`, error);
+      if (error.response && error.response.status === 404) {
+        toast.error(`Employee with ID ${id} not found.`);
+    } else {
+        toast.error(`Backend failure while fetching employee with ID ${id}.`);
+      }
     }
   }
 
@@ -108,7 +113,11 @@ async function fetchAllEmployees() {
             return updatedEmployee;
         } catch (error) {
             console.error(`Error updating employee with id ${id} on DB:`, error);
-            throw error;
+            if (error.response && error.response.status === 400) {
+                toast.error("Cannot update employee. Invalid data provided.");
+            } else {
+                toast.error("Cannot update employee. Backend failure");
+            }
         }
     }
 
@@ -128,6 +137,11 @@ async function fetchAllEmployees() {
       setEmployees(employees.filter(employee => employee.id !== id));
     } catch (error) {
       console.error(`Error deleting employee with id ${id} from DB:`, error);
+        if (error.response && error.response.status === 404) {
+            toast.error(`Employee with ID ${id} not found. Please refresh the page.`);
+        } else {
+            toast.error("Cannot delete employee. Backend failure");
+        }
     }
   }
 
