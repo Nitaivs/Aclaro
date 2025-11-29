@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import '../style/Dialog.css'
 
 /**
  * @component AddProcessDialog
@@ -41,33 +41,46 @@ export default function AddProcessDialog({isOpen, onSave, onClose}) {
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleOnClose}>
-      <DialogTitle>Add New Process</DialogTitle>
-      <div style={{padding: '0 24px 24px 24px'}}>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Process Name"
-          type="text"
-          fullWidth
-          variant="outlined"
-          required={true}
-          error={processNameError}
-          helperText={processNameError ? "Process name is required" : ""}
-          value={newProcessName}
-          onChange={(e) => setNewProcessName(e.target.value)}
-        />
-        <TextField
-          margin="dense"
-          label="Process Description"
-          type="text"
-          fullWidth
-          variant="outlined"
-          value={newProcessDescription}
-          onChange={(e) => setNewProcessDescription(e.target.value)}
-        />
-        <button onClick={() => handleOnSave()}>Add</button>
-        <button onClick={() => handleOnClose()}>Cancel</button>
+    <Dialog
+      slotProps={{
+        paper: {
+          className: "dialog-paper"
+        }
+      }}
+      open={isOpen}
+      onClose={handleOnClose}>
+      <div className="dialog-container">
+        <div className="dialog-header">
+          <h3>Add New Process</h3>
+        </div>
+        <div className="dialog-actions">
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Process Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            required={true}
+            error={processNameError}
+            helperText={processNameError ? "Process name is required" : ""}
+            value={newProcessName}
+            onChange={(e) => setNewProcessName(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Process Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={newProcessDescription}
+            onChange={(e) => setNewProcessDescription(e.target.value)}
+          />
+          <div className="dialog-actions-buttons">
+            <button className="cancel-button" onClick={() => handleOnClose()}>Cancel</button>
+            <button className="confirm-button" onClick={() => handleOnSave()}>Add</button>
+          </div>
+        </div>
       </div>
     </Dialog>
   )
