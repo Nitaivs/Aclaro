@@ -6,9 +6,7 @@ import AddProcessDialog from "./AddProcessDialog.jsx";
 import {TextField, Paper, List, ListItem, ListItemText, Divider} from "@mui/material";
 
 /**
- * ProcessListPage
- *
- * @component
+ * @component ProcessListPage
  * @description
  * Displays a list of processes fetched from `ProcessContext` and provides a
  * filter input for searching by process name. This behavior mirrors the
@@ -20,7 +18,7 @@ export default function ProcessListPage() {
   const {processes, addProcess} = useContext(ProcessContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [filterString, setFilterString] = useState("");
-  
+
   const filtered = useMemo(() => {
     const query = (filterString || "").trim().toLowerCase();
     const list = (processes || []);
@@ -73,8 +71,6 @@ export default function ProcessListPage() {
         </div>
         <div className={'detail-actions-container'}>
           <button className='add-button' onClick={() => setIsDialogOpen(true)}>Add Process</button>
-        </div>
-        <div>
           <TextField
             value={filterString}
             onChange={(e) => setFilterString(e.target.value)}
@@ -84,36 +80,33 @@ export default function ProcessListPage() {
             sx={{
               width: '50%',
               mx: 'auto',
-              my: 2,
               display: 'block',
               '& .MuiInputBase-root': {
                 backgroundColor: 'white',
-                borderRadius: 1,
+                borderRadius: 3,
               },
             }}
           />
-
-          <Paper variant="outlined" sx={{p: 1}}>
-            <List>
-              {filtered.length === 0 ? (
-                <ListItem>
-                  <ListItemText
-                    primary="No processes found"
-                    secondary={filterString ? `No processes match "${filterString}".` : "There are currently no processes to display."}
-                  />
-                </ListItem>
-              ) : (
-                filtered.map((process, idx, arr) => (
-                  <div key={process.id}>
-                    <ListItem alignItems="flex-start">
-                      <ProcessItem id={process.id}/>
-                    </ListItem>
-                    {idx < arr.length - 1 && <Divider component="li" />}
-                  </div>
-                ))
-              )}
-            </List>
-          </Paper>
+        </div>
+        <div>
+          {filtered.length === 0 ? (
+            <ListItem>
+              <ListItemText
+                primary="No processes found"
+                secondary={filterString ? `No processes match "${filterString}".` : "There are currently no processes to display."}
+              />
+            </ListItem>
+          ) : (
+            <div>
+              <ul>
+                {filtered.map((process) => (
+                  <li key={process.name}>
+                    <ProcessItem id={process.id}/>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
       <AddProcessDialog
