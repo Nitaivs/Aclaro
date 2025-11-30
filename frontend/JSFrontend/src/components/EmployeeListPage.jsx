@@ -69,7 +69,9 @@ export default function EmployeeListPage() {
             size="small"
             color="white"
             sx={{
-              mb: 1,
+              width: '70%',
+              mx: 'auto',
+              display: 'block',
               '& .MuiInputBase-root': {
                 backgroundColor: 'white',
                 borderRadius: 3,
