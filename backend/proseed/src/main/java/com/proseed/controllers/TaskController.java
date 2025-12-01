@@ -7,6 +7,7 @@ import com.proseed.entities.Department;
 import com.proseed.services.TaskService;
 import com.proseed.DTOs.TaskWithEmployeesDTO;
 import com.proseed.DTOs.TaskDTO;
+import com.proseed.DTOs.TaskRequirementsDTO;
 import com.proseed.DTOs.Mappers.TaskMapper;
 import com.proseed.repos.EmployeeRepository;
 import com.proseed.repos.EmployeeSkillRepository;
@@ -205,41 +206,26 @@ public class TaskController {
     }
 
     /**
-     * Update the skills assigned to a specific task.
-     * Replaces all current skills with the provided list.
+     * Update the skills and departments assigned to a specific task.
+     * Replaces all current skills and departments with the provided lists.
      * Applies only to this task, not its subtasks.
      *
      * @param id Task ID
-     * @param skillIds List of skill IDs to assign to this task
+     * @param requirements DTO containing skillIds and departmentIds to assign
      * @return Updated TaskDTO if found, 404 otherwise
      */
-    @PutMapping("/{id}/skills")
-    public ResponseEntity<TaskDTO> updateTaskSkills(@PathVariable Long id, @RequestBody List<Long> skillIds) {
+    @PutMapping("/{id}/requirements")
+    public ResponseEntity<TaskDTO> updateTaskRequirements(@PathVariable Long id, @RequestBody TaskRequirementsDTO requirements) {
         return taskService.findById(id)
             .map(task -> {
-                List<EmployeeSkill> skills = skillRepository.findAllById(skillIds);
-                task.setSkills(new HashSet<>(skills));
-                Task saved = taskService.save(task);
-                return ResponseEntity.ok(TaskMapper.toTaskDTO(saved));
-            })
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    /**
-     * Update the departments assigned to a specific task.
-     * Replaces all current departments with the provided list.
-     * Applies only to this task, not its subtasks.
-     *
-     * @param id Task ID
-     * @param departmentIds List of department IDs to assign to this task
-     * @return Updated TaskDTO if found, 404 otherwise
-     */
-    @PutMapping("/{id}/departments")
-    public ResponseEntity<TaskDTO> updateTaskDepartments(@PathVariable Long id, @RequestBody List<Long> departmentIds) {
-        return taskService.findById(id)
-            .map(task -> {
-                List<Department> departments = departmentRepository.findAllById(departmentIds);
-                task.setDepartments(new HashSet<>(departments));
+                if (requirements.getSkillIds() != null) {
+                    List<EmployeeSkill> skills = skillRepository.findAllById(requirements.getSkillIds());
+                    task.setSkills(new HashSet<>(skills));
+                }
+                if (requirements.getDepartmentIds() != null) {
+                    List<Department> departments = departmentRepository.findAllById(requirements.getDepartmentIds());
+                    task.setDepartments(new HashSet<>(departments));
+                }
                 Task saved = taskService.save(task);
                 return ResponseEntity.ok(TaskMapper.toTaskDTO(saved));
             })
