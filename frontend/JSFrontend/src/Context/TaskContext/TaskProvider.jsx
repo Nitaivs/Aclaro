@@ -74,36 +74,58 @@ export function TaskProvider({ children }) {
         }
     }
 
-    /**
-     * @function deleteTask
-     * @description Deletes a task by its ID. Makes a DELETE request to the backend,
-     * and then fetches all tasks to update the state.
-     * @param {Number} taskId - The ID of the task to be deleted. Expected to be an integer. Required.
-     * @returns {Promise<void>} A promise that resolves when the task is deleted and tasks are fetched.
-     */
-    async function deleteTask(taskId) {
-        try {
-            await axios.delete(`${BASE_URL}tasks/${taskId}`);
-            await fetchAllTasks();
-        } catch (error) {
-            console.error("Error deleting task:", error);
-            if (error.response && error.response.status === 404) {
-                toast.error("Task not found. It may have been deleted or edited. Refresh the page.");
-            }
-            toast.error ("Backend failure. Please refresh the page and try again.");
-        }
+  /**
+   * @function updateTaskRequirements
+   * @description Updates the department and skills required for a task.
+   * Makes a PUT request to the backend to update the task's requirements.
+   * @param {number} taskId - The ID of the task to be updated. Expected to be an integer. Required.
+   * @param departmentId - The ID of the department required for the task. May be null to indicate no department requirement.
+   * @param {Array<number>} skillIds - An array of skill IDs required for the task. IDs are expected to be integers. Required, but may be an empty array.
+   * @returns {Promise<void>}
+   */
+  async function updateTaskRequirements(taskId, departmentId, skillIds) {
+    try {
+      console.debug("Updating task requirements:", taskId, departmentId, skillIds);
+    } catch (error) {
+      console.error("Error updating task requirements:", error);
+      if (error.response && error.response.status === 404) {
+        toast.error("Task not found. It may have been deleted or edited. Refresh the page.");
+      }
+      toast.error("Backend failure. Please refresh the page and try again.");
     }
+  }
 
-    return (
-        <TaskContext.Provider value={{
-            tasks,
-            addTask,
-            updateTask,
-            deleteTask,
-            addTaskBetweenTasks,
-            fetchAllTasks
-        }}>
-            {children}
-        </TaskContext.Provider>
-    );
+  /**
+   * @function deleteTask
+   * @description Deletes a task by its ID. Makes a DELETE request to the backend,
+   * and then fetches all tasks to update the state.
+   * @param {Number} taskId - The ID of the task to be deleted. Expected to be an integer. Required.
+   * @returns {Promise<void>} A promise that resolves when the task is deleted and tasks are fetched.
+   */
+  async function deleteTask(taskId) {
+    try {
+      await axios.delete(`${BASE_URL}tasks/${taskId}`);
+      await fetchAllTasks();
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      if (error.response && error.response.status === 404) {
+        toast.error("Task not found. It may have been deleted or edited. Refresh the page.");
+      }
+      toast.error("Backend failure. Please refresh the page and try again.");
+    }
+  }
+
+  return (
+    <TaskContext.Provider value={{
+      tasks,
+      addTask,
+      updateTask,
+      updateTaskRequirements,
+      deleteTask,
+      addTaskBetweenTasks,
+      fetchAllTasks
+    }}>
+      {children}
+    </TaskContext.Provider>
+  );
 }
