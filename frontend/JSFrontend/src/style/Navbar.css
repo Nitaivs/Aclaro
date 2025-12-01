@@ -1,18 +1,18 @@
 /* CSS for Navbar.jsx */
 .navbar {
     position: fixed;
-    top: 80px;
+    top: 0;
     left: 0;
     width: 240px;
-    height: calc(100vh - 80px);
+    height: 100vh;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding: 0 16px 16px 16px;
     border-right: 1px solid #ccc;
-    background-color: #C1121F;
     z-index: 1000;
+    background: linear-gradient(180deg, #8b0000 0%, #d00000 100%);
 }
 
 .navbar-container {
@@ -22,6 +22,18 @@
     background-color: white;
 }
 
+.navbar-logo {
+    height: 80px;
+    width: auto;
+    margin: 16px 0;
+    align-self: center;
+}
+
+.navbar-logo img {
+    height: 100%;
+    width: auto;
+    display: block;
+}
 
 /* Link used as button */
 .navbar-button {
