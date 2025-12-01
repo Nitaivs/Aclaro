@@ -2,11 +2,15 @@ package com.proseed.controllers;
 
 import com.proseed.entities.Task;
 import com.proseed.entities.Employee;
+import com.proseed.entities.EmployeeSkill;
+import com.proseed.entities.Department;
 import com.proseed.services.TaskService;
 import com.proseed.DTOs.TaskWithEmployeesDTO;
 import com.proseed.DTOs.TaskDTO;
 import com.proseed.DTOs.Mappers.TaskMapper;
 import com.proseed.repos.EmployeeRepository;
+import com.proseed.repos.EmployeeSkillRepository;
+import com.proseed.repos.DepartmentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
+import java.util.HashSet;
 
 /**
  * REST controller for managing Task entities and their relationships.
@@ -43,10 +48,15 @@ import java.util.List;
 public class TaskController {
     private final TaskService taskService;
     private final EmployeeRepository employeeRepository;
+    private final EmployeeSkillRepository skillRepository;
+    private final DepartmentRepository departmentRepository;
 
-    public TaskController(TaskService taskService, EmployeeRepository employeeRepository) {
+    public TaskController(TaskService taskService, EmployeeRepository employeeRepository,
+                          EmployeeSkillRepository skillRepository, DepartmentRepository departmentRepository) {
         this.taskService = taskService;
         this.employeeRepository = employeeRepository;
+        this.skillRepository = skillRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     @GetMapping
@@ -192,6 +202,48 @@ public class TaskController {
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    /**
+     * Update the skills assigned to a specific task.
+     * Replaces all current skills with the provided list.
+     * Applies only to this task, not its subtasks.
+     *
+     * @param id Task ID
+     * @param skillIds List of skill IDs to assign to this task
+     * @return Updated TaskDTO if found, 404 otherwise
+     */
+    @PutMapping("/{id}/skills")
+    public ResponseEntity<TaskDTO> updateTaskSkills(@PathVariable Long id, @RequestBody List<Long> skillIds) {
+        return taskService.findById(id)
+            .map(task -> {
+                List<EmployeeSkill> skills = skillRepository.findAllById(skillIds);
+                task.setSkills(new HashSet<>(skills));
+                Task saved = taskService.save(task);
+                return ResponseEntity.ok(TaskMapper.toTaskDTO(saved));
+            })
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    /**
+     * Update the departments assigned to a specific task.
+     * Replaces all current departments with the provided list.
+     * Applies only to this task, not its subtasks.
+     *
+     * @param id Task ID
+     * @param departmentIds List of department IDs to assign to this task
+     * @return Updated TaskDTO if found, 404 otherwise
+     */
+    @PutMapping("/{id}/departments")
+    public ResponseEntity<TaskDTO> updateTaskDepartments(@PathVariable Long id, @RequestBody List<Long> departmentIds) {
+        return taskService.findById(id)
+            .map(task -> {
+                List<Department> departments = departmentRepository.findAllById(departmentIds);
+                task.setDepartments(new HashSet<>(departments));
+                Task saved = taskService.save(task);
+                return ResponseEntity.ok(TaskMapper.toTaskDTO(saved));
+            })
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     /**

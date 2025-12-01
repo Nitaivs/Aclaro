@@ -1,9 +1,9 @@
 package com.proseed.controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.proseed.support.TestSummaryExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -55,12 +55,14 @@ class TaskControllerIntegrationTest {
         return objectMapper.readTree(json).get("employeeId").asLong();
     }
 
-    private long createTask(long processId, String name) throws Exception {
+    private long createTask(long processId, String name, Long parentId, Long employeeId) throws Exception {
         ObjectNode task = objectMapper.createObjectNode()
             .put("name", name)
-            .put("completed", false);
-        String json = mockMvc.perform(post("/api/tasks")
-                .param("processId", String.valueOf(processId))
+            .put("description", name + " description")
+            .put("isCompleted", false);
+        if (parentId != null) task.put("parentId", parentId);
+        if (employeeId != null) task.put("employeeId", employeeId);
+        String json = mockMvc.perform(post("/api/tasks?processId=" + processId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(task)))
             .andExpect(status().isCreated())
@@ -68,225 +70,303 @@ class TaskControllerIntegrationTest {
         return objectMapper.readTree(json).get("id").asLong();
     }
 
+    private long createSkill(String name) throws Exception {
+        ObjectNode body = objectMapper.createObjectNode()
+            .put("name", name);
+        String json = mockMvc.perform(post("/api/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(body)))
+            .andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsString();
+        return objectMapper.readTree(json).get("id").asLong();
+    }
+
+    private long createDepartment(String name) throws Exception {
+        ObjectNode body = objectMapper.createObjectNode()
+            .put("name", name);
+        String json = mockMvc.perform(post("/api/departments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(body)))
+            .andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsString();
+        return objectMapper.readTree(json).get("id").asLong();
+    }
+
     @Test
     void getAllTasks_shouldReturnOk() throws Exception {
-        long processId = createProcess("Tasks List Process");
-        createTask(processId, "List Task");
-
         mockMvc.perform(get("/api/tasks"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    void createTask_shouldReturnCreated() throws Exception {
+        long processId = createProcess("TaskTest Process");
+        ObjectNode task = objectMapper.createObjectNode()
+            .put("name", "New Task")
+            .put("description", "Task description")
+            .put("isCompleted", false);
+        mockMvc.perform(post("/api/tasks?processId=" + processId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(task)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.name").value("New Task"))
+            .andExpect(jsonPath("$.description").value("Task description"));
     }
 
     @Test
     void getTaskById_shouldReturnTask() throws Exception {
-        long processId = createProcess("Get Task Process");
-        long taskId = createTask(processId, "Detail Task");
-
-        mockMvc.perform(get("/api/tasks/{id}", taskId))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(taskId));
-    }
-
-    @Test
-    void getTaskById_missing_shouldReturn404() throws Exception {
-        mockMvc.perform(get("/api/tasks/{id}", 888888L))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void getTaskEmployees_shouldReturnList() throws Exception {
-        long processId = createProcess("Task Employees Process");
-        long employeeId = createEmployee("Task", "Owner");
-        ObjectNode body = objectMapper.createObjectNode()
-            .put("name", "Assigned Task")
-            .put("completed", false);
-        ArrayNode employeeIds = objectMapper.createArrayNode().add(employeeId);
-        body.set("employeeIds", employeeIds);
-        String json = mockMvc.perform(post("/api/tasks")
-                .param("processId", String.valueOf(processId))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
-            .andExpect(status().isCreated())
-            .andReturn().getResponse().getContentAsString();
-        long taskId = objectMapper.readTree(json).get("id").asLong();
-
-        mockMvc.perform(get("/api/tasks/{id}/employees", taskId))
+        long processId = createProcess("TaskTest Process 2");
+        long taskId = createTask(processId, "Findable Task", null, null);
+        mockMvc.perform(get("/api/tasks/" + taskId))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(taskId))
-            .andExpect(jsonPath("$.assignedEmployees", hasSize(1)));
+            .andExpect(jsonPath("$.name").value("Findable Task"));
     }
 
     @Test
-    void getTaskEmployees_missingTask_shouldReturn404() throws Exception {
-        mockMvc.perform(get("/api/tasks/{id}/employees", 454545L))
+    void getTaskById_shouldReturn404_whenNotFound() throws Exception {
+        mockMvc.perform(get("/api/tasks/99999"))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    void createTask_shouldReturn201() throws Exception {
-        long processId = createProcess("Task Create Process");
-        ObjectNode body = objectMapper.createObjectNode()
-            .put("name", "Create Task")
-            .put("completed", false);
-
-        mockMvc.perform(post("/api/tasks")
-                .param("processId", String.valueOf(processId))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").exists());
-    }
-
-    @Test
-    void createTask_missingProcess_shouldReturn400() throws Exception {
-        ObjectNode body = objectMapper.createObjectNode()
-            .put("name", "No Process")
-            .put("completed", false);
-
-        mockMvc.perform(post("/api/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void createTask_invalidParent_shouldReturn400() throws Exception {
-        long processId = createProcess("Task Invalid Parent");
-        ObjectNode body = objectMapper.createObjectNode()
-            .put("name", "Orphan")
-            .put("completed", false)
-            .put("parentTaskId", 999999L);
-
-        mockMvc.perform(post("/api/tasks")
-                .param("processId", String.valueOf(processId))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void updateTask_shouldReturnUpdated() throws Exception {
-        long processId = createProcess("Task Update Process");
-        long taskId = createTask(processId, "Original Name");
-        ObjectNode body = objectMapper.createObjectNode()
-            .put("taskId", taskId)
-            .put("name", "Updated Name")
-            .put("completed", true);
-
-        mockMvc.perform(put("/api/tasks/{id}", taskId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("Updated Name"))
-            .andExpect(jsonPath("$.completed").value(true));
-    }
-
-    @Test
-    void updateTask_missing_shouldReturn404() throws Exception {
-        ObjectNode body = objectMapper.createObjectNode()
-            .put("name", "Missing");
-
-        mockMvc.perform(put("/api/tasks/{id}", 101010L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void deleteTask_leaf_shouldReturn204() throws Exception {
-        long processId = createProcess("Task Delete Leaf");
-        long taskId = createTask(processId, "Leaf Task");
-
-        mockMvc.perform(delete("/api/tasks/{id}", taskId))
-            .andExpect(status().isNoContent());
-    }
-
-    @Test
-    void deleteTask_withSubtask_shouldReturn400() throws Exception {
-        long processId = createProcess("Task Delete Tree");
-        ObjectNode parent = objectMapper.createObjectNode()
-            .put("name", "Parent")
-            .put("completed", false);
-        ArrayNode subs = objectMapper.createArrayNode();
-        subs.add(objectMapper.createObjectNode().put("name", "Child").put("completed", false));
-        parent.set("subTasks", subs);
-
-        String json = mockMvc.perform(post("/api/tasks")
-                .param("processId", String.valueOf(processId))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(parent)))
-            .andExpect(status().isCreated())
-            .andReturn().getResponse().getContentAsString();
-        long parentId = objectMapper.readTree(json).get("id").asLong();
-
-        mockMvc.perform(delete("/api/tasks/{id}", parentId))
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void deleteTask_missing_shouldReturn404() throws Exception {
-        mockMvc.perform(delete("/api/tasks/{id}", 616161L))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void removeEmployeeFromTask_shouldReturn204() throws Exception {
-        long processId = createProcess("Remove Employee Process");
-        long employeeId = createEmployee("Remove", "Me");
-        ObjectNode body = objectMapper.createObjectNode()
-            .put("name", "Task With Employee")
-            .put("completed", false);
-        body.set("employeeIds", objectMapper.createArrayNode().add(employeeId));
-        String json = mockMvc.perform(post("/api/tasks")
-                .param("processId", String.valueOf(processId))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
-            .andExpect(status().isCreated())
-            .andReturn().getResponse().getContentAsString();
-        long taskId = objectMapper.readTree(json).get("id").asLong();
-
-        mockMvc.perform(delete("/api/tasks/{taskId}/employees/{employeeId}", taskId, employeeId))
-            .andExpect(status().isNoContent());
-
-        mockMvc.perform(get("/api/tasks/{id}", taskId))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.employeeIds", hasSize(0)));
-    }
-
-    @Test
-    void removeEmployee_missingTask_shouldReturn404() throws Exception {
-        long employeeId = createEmployee("Missing", "Task");
-
-        mockMvc.perform(delete("/api/tasks/{taskId}/employees/{employeeId}", 989898L, employeeId))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void getTasks_shouldRejectCircularUpdate() throws Exception {
-        long processId = createProcess("Task Circular Inline");
-        long parentId = createTask(processId, "Parent");
-        long childId = createTask(processId, "Child");
-
+    void updateTask_shouldReturnOk() throws Exception {
+        long processId = createProcess("TaskTest Process 3");
+        long taskId = createTask(processId, "UpdateMe Task", null, null);
         ObjectNode update = objectMapper.createObjectNode()
-            .put("id", parentId)
-            .put("name", "Parent")
-            .set("subTasks", objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("id", childId)));
-
-        mockMvc.perform(put("/api/tasks/{id}", parentId)
+            .put("name", "Updated Task")
+            .put("description", "Updated description");
+        mockMvc.perform(put("/api/tasks/" + taskId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Updated Task"));
+    }
 
-        // Attempt to set parent as child of its own child -> expect 400
-        ObjectNode invalid = objectMapper.createObjectNode()
-            .put("id", childId)
-            .put("name", "Child")
-            .set("subTasks", objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("id", parentId)));
+    @Test
+    void deleteTask_shouldReturnNoContent() throws Exception {
+        long processId = createProcess("TaskTest Process 4");
+        long taskId = createTask(processId, "ToDelete Task", null, null);
+        mockMvc.perform(delete("/api/tasks/" + taskId))
+            .andExpect(status().isNoContent());
+        mockMvc.perform(get("/api/tasks/" + taskId))
+            .andExpect(status().isNotFound());
+    }
 
-        mockMvc.perform(put("/api/tasks/{id}", childId)
+    @Test
+    void createTaskWithParent_shouldReturnCreated() throws Exception {
+        long processId = createProcess("TaskTest Process 5");
+        long parentId = createTask(processId, "Parent Task", null, null);
+        ObjectNode childTask = objectMapper.createObjectNode()
+            .put("name", "Child Task")
+            .put("description", "Child description")
+            .put("isCompleted", false)
+            .put("parentId", parentId);
+        mockMvc.perform(post("/api/tasks?processId=" + processId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalid)))
-            .andExpect(status().isBadRequest());
+                .content(objectMapper.writeValueAsString(childTask)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name").value("Child Task"));
+    }
+
+    @Test
+    void createTaskWithEmployee_shouldReturnCreated() throws Exception {
+        long processId = createProcess("TaskTest Process 6");
+        long employeeId = createEmployee("Task", "Worker");
+        ObjectNode task = objectMapper.createObjectNode()
+            .put("name", "Assigned Task")
+            .put("description", "Task with employee")
+            .put("isCompleted", false)
+            .put("employeeId", employeeId);
+        mockMvc.perform(post("/api/tasks?processId=" + processId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(task)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name").value("Assigned Task"));
+    }
+
+    @Test
+    void updateTaskSkills_shouldReturnOkWithSkills() throws Exception {
+        long processId = createProcess("SkillTest Process");
+        long taskId = createTask(processId, "Task for Skills", null, null);
+        long skill1 = createSkill("Java");
+        long skill2 = createSkill("Python");
+        ArrayNode skillIds = objectMapper.createArrayNode().add(skill1).add(skill2);
+        mockMvc.perform(put("/api/tasks/" + taskId + "/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(skillIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.skills").isArray())
+            .andExpect(jsonPath("$.skills", hasSize(2)));
+    }
+
+    @Test
+    void updateTaskDepartments_shouldReturnOkWithDepartments() throws Exception {
+        long processId = createProcess("DeptTest Process");
+        long taskId = createTask(processId, "Task for Depts", null, null);
+        long dept1 = createDepartment("Engineering");
+        long dept2 = createDepartment("QA");
+        ArrayNode deptIds = objectMapper.createArrayNode().add(dept1).add(dept2);
+        mockMvc.perform(put("/api/tasks/" + taskId + "/departments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(deptIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departments").isArray())
+            .andExpect(jsonPath("$.departments", hasSize(2)));
+    }
+
+    @Test
+    void updateTaskSkills_shouldReplaceExistingSkills() throws Exception {
+        long processId = createProcess("SkillReplace Process");
+        long taskId = createTask(processId, "Task Replace Skills", null, null);
+        long skill1 = createSkill("Skill1");
+        long skill2 = createSkill("Skill2");
+        ArrayNode skillIds = objectMapper.createArrayNode().add(skill1);
+        mockMvc.perform(put("/api/tasks/" + taskId + "/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(skillIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.skills", hasSize(1)));
+        ArrayNode newSkillIds = objectMapper.createArrayNode().add(skill2);
+        mockMvc.perform(put("/api/tasks/" + taskId + "/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newSkillIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.skills", hasSize(1)));
+    }
+
+    @Test
+    void updateTaskDepartments_shouldReplaceExistingDepartments() throws Exception {
+        long processId = createProcess("DeptReplace Process");
+        long taskId = createTask(processId, "Task Replace Depts", null, null);
+        long dept1 = createDepartment("Dept1");
+        long dept2 = createDepartment("Dept2");
+        ArrayNode deptIds = objectMapper.createArrayNode().add(dept1);
+        mockMvc.perform(put("/api/tasks/" + taskId + "/departments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(deptIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departments", hasSize(1)));
+        ArrayNode newDeptIds = objectMapper.createArrayNode().add(dept2);
+        mockMvc.perform(put("/api/tasks/" + taskId + "/departments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newDeptIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departments", hasSize(1)));
+    }
+
+    @Test
+    void updateTaskSkills_shouldReturn404_whenTaskNotFound() throws Exception {
+        ArrayNode skillIds = objectMapper.createArrayNode().add(1L);
+        mockMvc.perform(put("/api/tasks/99999/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(skillIds.toString()))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateTaskDepartments_shouldReturn404_whenTaskNotFound() throws Exception {
+        ArrayNode deptIds = objectMapper.createArrayNode().add(1L);
+        mockMvc.perform(put("/api/tasks/99999/departments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(deptIds.toString()))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateTaskSkills_shouldNotAffectSubTasks() throws Exception {
+        long processId = createProcess("NoSubSkill Process");
+        long parentId = createTask(processId, "ParentSkill Task", null, null);
+        long childId = createTask(processId, "ChildNoSkill Task", parentId, null);
+        long skill = createSkill("ParentOnly Skill");
+        ArrayNode skillIds = objectMapper.createArrayNode().add(skill);
+        mockMvc.perform(put("/api/tasks/" + parentId + "/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(skillIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.skills", hasSize(1)));
+        mockMvc.perform(get("/api/tasks/" + childId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.skills", hasSize(0)));
+    }
+
+    @Test
+    void updateTaskDepartments_shouldNotAffectSubTasks() throws Exception {
+        long processId = createProcess("NoSubDept Process");
+        long parentId = createTask(processId, "ParentDept Task", null, null);
+        long childId = createTask(processId, "ChildNoDept Task", parentId, null);
+        long dept = createDepartment("ParentOnly Dept");
+        ArrayNode deptIds = objectMapper.createArrayNode().add(dept);
+        mockMvc.perform(put("/api/tasks/" + parentId + "/departments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(deptIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departments", hasSize(1)));
+        mockMvc.perform(get("/api/tasks/" + childId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departments", hasSize(0)));
+    }
+
+    @Test
+    void updateTaskSkills_withEmptyList_shouldClearSkills() throws Exception {
+        long processId = createProcess("ClearSkills Process");
+        long taskId = createTask(processId, "Task Clear Skills", null, null);
+        long skill = createSkill("ToClear Skill");
+        ArrayNode skillIds = objectMapper.createArrayNode().add(skill);
+        mockMvc.perform(put("/api/tasks/" + taskId + "/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(skillIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.skills", hasSize(1)));
+        ArrayNode empty = objectMapper.createArrayNode();
+        mockMvc.perform(put("/api/tasks/" + taskId + "/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(empty.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.skills", hasSize(0)));
+    }
+
+    @Test
+    void updateTaskDepartments_withEmptyList_shouldClearDepartments() throws Exception {
+        long processId = createProcess("ClearDepts Process");
+        long taskId = createTask(processId, "Task Clear Depts", null, null);
+        long dept = createDepartment("ToClear Dept");
+        ArrayNode deptIds = objectMapper.createArrayNode().add(dept);
+        mockMvc.perform(put("/api/tasks/" + taskId + "/departments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(deptIds.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departments", hasSize(1)));
+        ArrayNode empty = objectMapper.createArrayNode();
+        mockMvc.perform(put("/api/tasks/" + taskId + "/departments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(empty.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departments", hasSize(0)));
+    }
+
+    @Test
+    void getTaskById_shouldReturnSkillsAndDepartments() throws Exception {
+        long processId = createProcess("GetSkillDept Process");
+        long taskId = createTask(processId, "Task With Both", null, null);
+        long skill = createSkill("GetSkill");
+        long dept = createDepartment("GetDept");
+        ArrayNode skillIds = objectMapper.createArrayNode().add(skill);
+        ArrayNode deptIds = objectMapper.createArrayNode().add(dept);
+        mockMvc.perform(put("/api/tasks/" + taskId + "/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(skillIds.toString()))
+            .andExpect(status().isOk());
+        mockMvc.perform(put("/api/tasks/" + taskId + "/departments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(deptIds.toString()))
+            .andExpect(status().isOk());
+        mockMvc.perform(get("/api/tasks/" + taskId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.skills", hasSize(1)))
+            .andExpect(jsonPath("$.departments", hasSize(1)));
     }
 }

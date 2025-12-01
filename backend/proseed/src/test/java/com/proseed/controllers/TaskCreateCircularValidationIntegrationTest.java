@@ -47,8 +47,8 @@ public class TaskCreateCircularValidationIntegrationTest {
         // Now attempt to create a new Task A with subTasks including X, but make X reference itself in its subTasks
         ObjectNode aReq = objectMapper.createObjectNode()
             .put("name", "A").put("completed", false);
-        var xDto = objectMapper.createObjectNode().put("taskId", xId);
-        xDto.set("subTasks", objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("taskId", xId))); // self-reference
+        var xDto = objectMapper.createObjectNode().put("id", xId);
+        xDto.set("subTasks", objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("id", xId))); // self-reference
         aReq.set("employeeIds", objectMapper.createArrayNode());
         aReq.set("subTasks", objectMapper.createArrayNode().add(xDto));
 
