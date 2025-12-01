@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import {useContext, useEffect, useState} from 'react';
 import {TagContext} from "../Context/TagContext/TagContext.jsx";
+import '../style/Dialog.css'
 
 /**
  * @component EditTaskDetailsDialog
@@ -24,7 +25,15 @@ import {TagContext} from "../Context/TagContext/TagContext.jsx";
  * @param {function} onClose - Function to call when closing the dialog.
  * @returns {JSX.Element} The rendered EditTaskDetailsDialog component.
  */
-export default function EditTaskDetailsDialog({currentName, currentDescription, currentDepartment, currentSkills, onSave, isOpen, onClose}) {
+export default function EditTaskDetailsDialog({
+                                                currentName,
+                                                currentDescription,
+                                                currentDepartment,
+                                                currentSkills,
+                                                onSave,
+                                                isOpen,
+                                                onClose
+                                              }) {
   const [nameInput, setNameInput] = useState(currentName || "");
   const [descriptionInput, setDescriptionInput] = useState(currentDescription || "");
   const [nameError, setNameError] = useState(false);
@@ -105,103 +114,119 @@ export default function EditTaskDetailsDialog({currentName, currentDescription, 
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleOnClose}>
-      <DialogTitle>Edit Task Details</DialogTitle>
-      <DialogContent>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Task Name"
-          required={true}
-          type="text"
-          fullWidth
-          variant="outlined"
-          error={nameError}
-          helperText={nameError ? "Task name is required" : ""}
-          defaultValue={defaultName || ''}
-          onChange={(e) => setNameInput(e.target.value)}
-        />
+    <Dialog
+      slotProps={{
+        paper: {
+          className: 'dialog-paper'
+        }
+      }}
+      open={isOpen}
+      onClose={handleOnClose}>
+      <div className="dialog-container">
+        <div className="dialog-header">
+          <h3>Edit Task Details</h3>
+        </div>
+        <div className="dialog-actions">
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Task Name"
+            required={true}
+            type="text"
+            fullWidth
+            variant="outlined"
+            error={nameError}
+            helperText={nameError ? "Task name is required" : ""}
+            defaultValue={defaultName || ''}
+            onChange={(e) => setNameInput(e.target.value)}
+          />
 
-        <TextField
-          margin="dense"
-          label="Task Description"
-          type="text"
-          fullWidth
-          variant="outlined"
-          defaultValue={defaultDescription || ''}
-          onChange={(e) => setDescriptionInput(e.target.value)}
-        />
+          <TextField
+            margin="dense"
+            label="Task Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            defaultValue={defaultDescription || ''}
+            onChange={(e) => setDescriptionInput(e.target.value)}
+          />
 
-        {/* --- Department Dropdown --- */}
-        {/*TODO: Make multi-department selection if needed in future, use same pattern as skills*/}
-        <FormControl fullWidth margin="dense">
-          <InputLabel id="department-select-label">Department</InputLabel>
-          <Select
-            labelId="department-select-label"
-            value={department?.id || ""}
-            label="Department"
-            onChange={(e) => {
-              const selectedDept = departments.find(dept => dept.id === e.target.value);
-              setDepartment(selectedDept || "");
-            }}
-          >
-            <MenuItem value=""><em>None</em></MenuItem>
-            {departments.map((dept) => (
-              <MenuItem key={dept.id} value={dept.id}>
-                {dept.name}
-              </MenuItem>
+          {/* --- Department Dropdown --- */}
+          {/*TODO: Make multi-department selection if needed in future, use same pattern as skills*/}
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="department-select-label">Department</InputLabel>
+            <Select
+              labelId="department-select-label"
+              value={department?.id || ""}
+              label="Department"
+              onChange={(e) => {
+                const selectedDept = departments.find(dept => dept.id === e.target.value);
+                setDepartment(selectedDept || "");
+              }}
+            >
+              <MenuItem value=""><em>None</em></MenuItem>
+              {departments.map((dept) => (
+                <MenuItem key={dept.id} value={dept.id}>
+                  {dept.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <Divider sx={{my: 2}}/>
+
+          {/* --- Skills Section --- */}
+
+          <div className="dialog-actions-skills">
+
+          {/* Assigned Skills (Chips with X to delete) */}
+          <Typography variant="subtitle1" gutterBottom>
+            Assigned Skills:
+          </Typography>
+          <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1, minHeight: '40px', mb: 2}}>
+            {skillsInput.length === 0 && (
+              <Typography variant="body2" color="text.secondary" style={{fontStyle: 'italic'}}>
+                No skills assigned.
+              </Typography>
+            )}
+            {skillsInput.map((skill) => (
+              <Chip
+                key={skill.id}
+                label={skill.name}
+                onDelete={() => handleRemoveSkill(skill.id)} // This adds the X button
+                color="primary"
+                variant="outlined"
+              />
             ))}
-          </Select>
-        </FormControl>
+          </Box>
 
-        <Divider sx={{my: 2}}/>
-
-        {/* --- Skills Section --- */}
-
-        {/* Assigned Skills (Chips with X to delete) */}
-        <Typography variant="subtitle1" gutterBottom>
-          Assigned Skills:
-        </Typography>
-        <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1, minHeight: '40px', mb: 2}}>
-          {skillsInput.length === 0 && (
-            <Typography variant="body2" color="text.secondary" style={{fontStyle: 'italic'}}>
-              No skills assigned.
-            </Typography>
-          )}
-          {skillsInput.map((skill) => (
-            <Chip
-              key={skill.id}
-              label={skill.name}
-              onDelete={() => handleRemoveSkill(skill.id)} // This adds the X button
-              color="primary"
-              variant="outlined"
-            />
-          ))}
-        </Box>
-
-        {/* Available Skills (Clickable buttons to add) */}
-        <Typography variant="subtitle1" gutterBottom>
-          Add Skills:
-        </Typography>
-        <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1}}>
-          {availableSkills.length === 0 && (
-            <Typography variant="body2" color="text.secondary">
-              All available skills assigned.
-            </Typography>
-          )}
-          {availableSkills.map((skill) => (
-            <Chip
-              key={skill.id}
-              label={`+ ${skill.name}`}
-              onClick={() => handleAddSkill(skill)} // Click to add
-              variant="filled"
-              clickable
-            />
-          ))}
-        </Box>
-        <button onClick={() => handleOnSave()}>Save</button>
-        <button onClick={() => handleOnClose()}>Cancel</button>
-      </DialogContent>
+          {/* Available Skills (Clickable buttons to add) */}
+          <Typography variant="subtitle1" gutterBottom>
+            Add Skills:
+          </Typography>
+          <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1}}>
+            {availableSkills.length === 0 && (
+              <Typography variant="body2" color="text.secondary">
+                All available skills assigned.
+              </Typography>
+            )}
+            {availableSkills.map((skill) => (
+              <Chip
+                key={skill.id}
+                label={`+ ${skill.name}`}
+                onClick={() => handleAddSkill(skill)} // Click to add
+                variant="filled"
+                clickable
+              />
+            ))}
+          </Box>
+          </div>
+          <div className="dialog-actions-buttons">
+            <button className="cancel-button" onClick={() => handleOnClose()}>Cancel</button>
+            <button className="confirm-button" onClick={() => handleOnSave()}>Save</button>
+          </div>
+        </div>
+      </div>
     </Dialog>
   )
 }
