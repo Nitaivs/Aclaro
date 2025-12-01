@@ -119,6 +119,9 @@ public class DataInitializer implements CommandLineRunner {
         task1.setProcess(process1);
         task1.setEmployees(new HashSet<>(List.of(alice, carol)));
 
+        task1.setSkills(new HashSet<>(List.of(javaSkill, springSkill)));
+        task1.setDepartments(new HashSet<>(List.of(deptBackend)));
+
         Task task2 = new Task();
         task2.setName("Database Migration");
         task2.setDescription("Migrate legacy data to new schema.");
