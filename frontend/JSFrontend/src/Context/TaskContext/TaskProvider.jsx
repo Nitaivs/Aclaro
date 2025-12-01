@@ -55,26 +55,32 @@ export function TaskProvider({children}) {
     }
   }
 
-    /**
-     * @function updateTask
-     * @description Updates an existing task with new fields. Makes a PUT request to the backend,
-     * then updates the task in the state.
-     * @param {Number} taskId - The ID of the task to be updated. Expected to be an integer. Required.
-     * @param {Object} updatedFields - An object containing the fields to be updated. Required.
-     * @returns {Promise<void>} A promise that resolves when the task is updated.
-     */
-    async function updateTask(taskId, updatedFields) {
-        try {
-            const response = await axios.put(`${BASE_URL}tasks/${taskId}`, updatedFields);
-            setTasks(tasks.map(t => t.id === taskId ? response.data : t));
-        } catch (error) {
-            console.error("Error updating task:", error);
-            if (error.response && error.response.status === 404) {
-                toast.error("Task not found. It may have been deleted or edited. Refresh the page.");
-            }
-            toast.error ("Backend failure. Please refresh the page and try again.");
-        }
+  /**
+   * @function updateTask
+   * @description Updates the name and description of an existing task. Makes a PUT request to the backend,
+   * then updates the task in the state.
+   * @param {Number} taskId - The ID of the task to be updated. Expected to be an integer. Required.
+   * @param {string} newName - The new name for the task. Required.
+   * @param {string} newDescription - The new description for the task. Required.
+   * @returns {Promise<void>} A promise that resolves when the task is updated.
+   */
+  async function updateTask(taskId, newName, newDescription) {
+    try {
+      console.debug("Updating task:", taskId, newName, newDescription);
+      const response = await axios.put(`${BASE_URL}tasks/${taskId}`, {
+        name: newName,
+        description: newDescription
+      });
+      console.debug("Updating task:", response.data);
+      setTasks(tasks.map(t => t.id === taskId ? response.data : t));
+    } catch (error) {
+      console.error("Error updating task:", error);
+      if (error.response && error.response.status === 404) {
+        toast.error("Task not found. It may have been deleted or edited. Refresh the page.");
+      }
+      toast.error("Backend failure. Please refresh the page and try again.");
     }
+  }
 
   /**
    * @function updateTaskRequirements
@@ -85,9 +91,15 @@ export function TaskProvider({children}) {
    * @param {Array<number>} skillIds - An array of skill IDs required for the task. IDs are expected to be integers. Required, but may be an empty array.
    * @returns {Promise<void>}
    */
-  async function updateTaskRequirements(taskId, departmentId, skillIds) {
+  async function updateTaskRequirements(taskId, departmentIds, skillIds) {
     try {
-      console.debug("Updating task requirements:", taskId, departmentId, skillIds);
+      console.debug("Updating task requirements:", taskId, departmentIds, skillIds);
+      const response = await axios.put(`${BASE_URL}tasks/${taskId}/requirements`, {
+        departmentIds,
+        skillIds
+      })
+      console.debug("Updated task requirements:", response.data);
+      setTasks(tasks.map(t => t.id === taskId ? response.data : t));
     } catch (error) {
       console.error("Error updating task requirements:", error);
       if (error.response && error.response.status === 404) {
