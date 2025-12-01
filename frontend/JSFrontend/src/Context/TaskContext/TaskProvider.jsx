@@ -67,7 +67,10 @@ export function TaskProvider({ children }) {
             setTasks(tasks.map(t => t.id === taskId ? response.data : t));
         } catch (error) {
             console.error("Error updating task:", error);
-
+            if (error.response && error.response.status === 404) {
+                toast.error("Task not found. It may have been deleted or edited. Refresh the page.");
+            }
+            toast.error ("Backend failure. Please refresh the page and try again.");
         }
     }
 
@@ -84,7 +87,10 @@ export function TaskProvider({ children }) {
             await fetchAllTasks();
         } catch (error) {
             console.error("Error deleting task:", error);
-            throw error;
+            if (error.response && error.response.status === 404) {
+                toast.error("Task not found. It may have been deleted or edited. Refresh the page.");
+            }
+            toast.error ("Backend failure. Please refresh the page and try again.");
         }
     }
 
