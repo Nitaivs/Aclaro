@@ -6,7 +6,7 @@ import EditTaskDetailsDialog from "./EditTaskDetailsDialog.jsx";
 import ErrorDialog from "./ErrorDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
 import "../style/DetailPanel.css"
-import {IconButton} from "@mui/material";
+import {IconButton, Typography} from "@mui/material";
 import deleteIcon from "../assets/delete.svg"
 import editIcon from "../assets/edit.svg"
 
@@ -20,7 +20,7 @@ import editIcon from "../assets/edit.svg"
  */
 export default function TaskPage({isModal = false}) {
   const {processId, taskId} = useParams();
-  const {tasks, updateTask, deleteTask} = use(TaskContext);
+  const {tasks, updateTask, updateTaskRequirements, deleteTask} = use(TaskContext);
   const {deleteTaskIdFromProcess} = use(ProcessContext);
   const parsedTaskId = taskId ? parseInt(taskId) : undefined;
   const foundTask = tasks.find(t => t.id === parsedTaskId);
