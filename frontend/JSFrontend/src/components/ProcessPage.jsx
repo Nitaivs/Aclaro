@@ -290,7 +290,9 @@ export default function ProcessPage() {
 
   return (
     <>
-      <div className="detail-container">
+      <div className="detail-container" style={{
+        width: 'calc(100vw - 360px)'
+      }}>
         {/* Header */}
         <div className="detail-header">
           <h2>
