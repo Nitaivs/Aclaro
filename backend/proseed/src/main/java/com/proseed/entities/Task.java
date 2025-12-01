@@ -54,4 +54,26 @@ public class Task {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Task> subTasks;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore // Prevent recursion
+    @JoinTable(
+        name = "task_skills_mapping",
+        joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "skill_id")
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<EmployeeSkill> skills;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore // Prevent recursion
+    @JoinTable(
+        name = "task_departments_mapping",
+        joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "department_id", referencedColumnName = "department_id")
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Department> departments;
 }

@@ -30,4 +30,13 @@ public interface TaskService {
      * @throws jakarta.persistence.EntityNotFoundException if parent or child task is not found
      */
     Task insertTaskBetween(Long parentTaskId, Long childTaskId, Task newTask);
+
+    /**
+     * Save a task entity directly.
+     * Used for updating task fields like skills and departments.
+     *
+     * @param task The task to save
+     * @return The saved task
+     */
+    Task save(Task task);
 }

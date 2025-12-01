@@ -2,10 +2,15 @@ package com.proseed.DTOs.Mappers;
 
 import com.proseed.DTOs.EmployeeDTO;
 import com.proseed.DTOs.TaskWithEmployeesDTO;
+import com.proseed.DTOs.SkillDTO;
+import com.proseed.DTOs.DepartmentDTO;
 import com.proseed.entities.Task;
 import com.proseed.DTOs.TaskDTO;
 import com.proseed.entities.Employee;
+import com.proseed.entities.EmployeeSkill;
+import com.proseed.entities.Department;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +44,18 @@ public class TaskMapper {
             ? task.getSubTasks().stream().map(TaskMapper::toTaskDTO).collect(Collectors.toList())
             : List.of();
 
+        List<SkillDTO> skills = task.getSkills() != null
+            ? task.getSkills().stream()
+                .map(skill -> new SkillDTO(skill.getId(), skill.getName()))
+                .collect(Collectors.toList())
+            : List.of();
+
+        List<DepartmentDTO> departments = task.getDepartments() != null
+            ? task.getDepartments().stream()
+                .map(dept -> new DepartmentDTO(dept.getId(), dept.getName()))
+                .collect(Collectors.toList())
+            : List.of();
+
         TaskDTO dto = new TaskDTO(
             task.getId(),
             task.getName(),
@@ -47,7 +64,9 @@ public class TaskMapper {
             employeeIds,
             subTasks,
             task.getParentTask() != null ? task.getParentTask().getId() : null,
-            task.getProcess() != null ? task.getProcess().getId() : null
+            task.getProcess() != null ? task.getProcess().getId() : null,
+            skills,
+            departments
         );
 
         return dto;

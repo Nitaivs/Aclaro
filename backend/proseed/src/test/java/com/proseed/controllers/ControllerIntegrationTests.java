@@ -218,13 +218,13 @@ class ControllerIntegrationTests {
 
         mockMvc.perform(post("/api/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"taskName\":\"Missing Process\"}"))
+                .content("{\"name\":\"Missing Process\"}"))
             .andExpect(status().isBadRequest());
 
         mockMvc.perform(post("/api/tasks")
                 .param("processId", String.valueOf(process.getId() + 9999))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"taskName\":\"Unknown Process\"}"))
+                .content("{\"name\":\"Unknown Process\"}"))
             .andExpect(status().isBadRequest());
 
         mockMvc.perform(get("/api/tasks/{id}", 987654321L))

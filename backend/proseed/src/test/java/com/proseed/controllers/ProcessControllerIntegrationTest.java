@@ -45,9 +45,9 @@ class ProcessControllerIntegrationTest {
         return node.get("id").asLong();
     }
 
-    private void createTask(long processId, String taskName) throws Exception {
+    private void createTask(long processId, String name) throws Exception {
         ObjectNode task = objectMapper.createObjectNode()
-            .put("name", taskName)
+            .put("name", name)
             .put("completed", false);
         mockMvc.perform(post("/api/tasks")
                 .param("processId", String.valueOf(processId))
