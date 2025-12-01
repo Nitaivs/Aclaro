@@ -117,7 +117,11 @@ export function DataProvider({children}) {
       await fetchAllTasks();
     } catch (error) {
       console.error("Error adding task between tasks:", error);
-      throw error;
+      if (error.response && error.response.status === 400) {
+        toast.error("Cannot add task: Invalid data provided.");
+      } else {
+        toast.error("Backend failure while adding task between tasks.");
+      }
     }
   }
 

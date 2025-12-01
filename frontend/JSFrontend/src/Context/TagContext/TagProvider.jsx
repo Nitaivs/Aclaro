@@ -95,7 +95,7 @@ export function TagProvider({children}) {
       if (error.response && error.response.status === 409) {
         throw new Error("Department with this name already exists.");
       }
-        throw new error("Failed to add department.");
+        throw new error("Failed to add department. Backend failure");
     }
   }
 
@@ -135,7 +135,7 @@ export function TagProvider({children}) {
       if (error.response && error.response.status === 409) {
         throw new Error("Cannot delete department: it is associated with existing employees.");
       }
-      throw error;
+      throw new Error("Failed to delete department. Backend failure");
     }
   }
 
@@ -176,7 +176,10 @@ export function TagProvider({children}) {
       setSkills([...skills, response.data]);
     } catch (error) {
       console.error(`Error adding skill with name ${name} to DB:`, error);
-      throw error;
+        if (error.response && error.response.status === 409) {
+        throw new Error("Skill with this name already exists.");
+        }
+        throw new Error("Failed to add skill.");
     }
   }
 
@@ -198,7 +201,13 @@ export function TagProvider({children}) {
       }
     } catch (error) {
       console.error(`Error updating skill with id ${id} on DB:`, error);
-      throw error;
+      if (error.response && error.response.status === 404) {
+        toast.error("Tag not found.");
+      } else if (error.response && error.response.status === 409) {
+        toast.error("Tag with this name already exists.");
+      } else {
+        toast.error("Failed to update tag.");
+      }
     }
   }
 
@@ -207,6 +216,7 @@ export function TagProvider({children}) {
    * @description Updates a department's name in the database and updates the state.
    * @param id - The ID of the department to update.
    * @param newName - The new name of the department.
+   * @param toast - Toast notification instance for displaying messages.
    * @returns {Promise<void>} A promise that resolves when the department is updated and state is updated.
    */
   async function updateDepartment(id, newName) {
@@ -237,6 +247,7 @@ export function TagProvider({children}) {
    * @description Updates a skill's name in the database and updates the state.
    * @param id - The ID of the skill to update.
    * @param newName - The new name of the skill.
+   * @param toast - Toast notification instance for displaying messages.
    * @returns {Promise<void>} A promise that resolves when the skill is updated and state is updated.
    */
   async function updateSkill(id, newName) {

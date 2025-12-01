@@ -23,6 +23,7 @@ export function TaskProvider({ children }) {
      * @param {Number} processId - The ID of the process to which the task will be added. Expected to be an integer. Required.
      * @param {string} name - The name of the new task. Required.
      * @param {string} description - The description of the new task. Optional.
+     * @param toast - Toast notification instance for displaying messages.
      * @param parentTaskId - The ID of the parent task, if this task is a subtask. Optional.
      * @returns {Promise<void>} A promise that resolves when the task is added and tasks are fetched.
      */
@@ -57,6 +58,7 @@ export function TaskProvider({ children }) {
      * @function updateTask
      * @description Updates an existing task with new fields. Makes a PUT request to the backend,
      * then updates the task in the state.
+     * @param toast - Toast notification instance for displaying messages.
      * @param {Number} taskId - The ID of the task to be updated. Expected to be an integer. Required.
      * @param {Object} updatedFields - An object containing the fields to be updated. Required.
      * @returns {Promise<void>} A promise that resolves when the task is updated.
@@ -78,6 +80,7 @@ export function TaskProvider({ children }) {
      * @function deleteTask
      * @description Deletes a task by its ID. Makes a DELETE request to the backend,
      * and then fetches all tasks to update the state.
+     * @param toast - Toast notification instance for displaying messages.
      * @param {Number} taskId - The ID of the task to be deleted. Expected to be an integer. Required.
      * @returns {Promise<void>} A promise that resolves when the task is deleted and tasks are fetched.
      */
