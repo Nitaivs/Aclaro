@@ -291,6 +291,7 @@ export default function ProcessPage() {
   return (
     <>
       <div className="detail-container" style={{
+        //TODO: fix hardcoded width
         width: 'calc(100vw - 360px)'
       }}>
         {/* Header */}
