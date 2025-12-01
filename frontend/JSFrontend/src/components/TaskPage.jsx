@@ -31,22 +31,35 @@ export default function TaskPage({isModal = false}) {
   const navigate = useNavigate();
 
   /**
+   *
    * @function handleUpdateTask
    * @description Handles the update of task details.
    * Calls the updateTask function from TaskContext with the new name and description.
    * @param {string} newName the new name for the task. May be undefined, in which case the current name is retained.
    * @param {string} newDescription the new description for the task. May be undefined, in which case the current description is retained.
+   * @param {Object} department the new department for the task. May be undefined, in which case the current department is retained.
+   * @param {Array<Object>} skills the new skills for the task. May be undefined, in which case the current skills are retained.
    * @returns {Promise<void>} A promise that resolves when the task update is complete.
    */
-  async function handleUpdateTask(newName, newDescription) {
-    if (newName === foundTask.name && newDescription === foundTask.description) {
-      setIsTaskDetailsDialogOpen(false);
+  async function handleUpdateTask(newName, newDescription, department, skills) {
+    console.log("updating task:", parsedTaskId, newName, newDescription, department, skills);
+    if (!parsedTaskId) {
+      console.error("Invalid taskId:", taskId);
       return;
     }
-    await updateTask(parsedTaskId, {
-      name: newName || foundTask.name,
-      description: newDescription || foundTask.description
-    });
+    if (newName !== foundTask.name || newDescription !== foundTask.description) {
+      await updateTask(parsedTaskId, newName || foundTask.name, newDescription || foundTask.description);
+    }
+
+    if (department !== undefined || skills !== undefined) {
+      //TODO: currently only single department supported, update when multi-department is added
+      const departmentId = department && department !== ""  ? [department.id] : [];
+      const skillIds = Array.isArray(skills) ? skills.map(s => s.id) : [];
+      console.log("Updating task requirements:", parsedTaskId, departmentId, skillIds);
+      await updateTaskRequirements(parsedTaskId, departmentId, skillIds);
+    }
+
+    console.debug("Task updated successfully");
     setIsTaskDetailsDialogOpen(false);
   }
 
@@ -95,6 +108,12 @@ export default function TaskPage({isModal = false}) {
         <div className="detail-info">
           <h2>{foundTask.name}</h2>
           <p>{foundTask.description}</p>
+          <Typography variant="body1" color="textPrimary" component="div">
+            Department: {foundTask.departments[0]?.name || "Unassigned"}
+            <br/>
+            Skills: {foundTask.skills?.length
+            ? foundTask.skills.map(skill => skill.name).join(", ") : "No skills assigned"}
+          </Typography>
         </div>
         <div className="detail-actions">
           <IconButton onClick={() => setIsTaskDetailsDialogOpen(true)}>
@@ -109,6 +128,8 @@ export default function TaskPage({isModal = false}) {
       <EditTaskDetailsDialog
         currentName={foundTask.name}
         currentDescription={foundTask.description}
+        currentDepartment={foundTask.departments[0]}
+        currentSkills={foundTask.skills}
         onSave={handleUpdateTask}
         isOpen={isTaskDetailsDialogOpen}
         onClose={() => setIsTaskDetailsDialogOpen(false)}
