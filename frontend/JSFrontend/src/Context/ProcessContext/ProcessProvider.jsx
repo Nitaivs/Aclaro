@@ -36,9 +36,9 @@ export function ProcessProvider({children}) {
     } catch (error) {
       console.error("Error adding process:", error);
       if (error.response && error.response.status === 400) {
-        throw new Error("Cannot add process. Invalid data provided.");
+        toast.error("Cannot add process. Invalid data provided.");
       } else {
-        throw new Error("Cannot add process. Backend failure:" + error.response.status);
+        toast.error("Cannot add process. Backend failure:" + error.response.status);
       }
     }
   }
