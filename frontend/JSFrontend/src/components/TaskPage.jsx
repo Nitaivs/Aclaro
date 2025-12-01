@@ -1,4 +1,4 @@
-import {Link, useParams, useNavigate, useLocation} from "react-router";
+import {useParams, useNavigate} from "react-router";
 import {use, useState} from 'react';
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
@@ -14,6 +14,8 @@ import editIcon from "../assets/edit.svg"
  * @component TaskPage
  * @description A page component that displays details for a specific task within a process.
  * Retrieves the processId and taskId from the URL parameters and provides navigation back to the associated process page.
+ * @param {Object} props The properties for the TaskPage component.
+ * @param {boolean} props.isModal Indicates if the component is rendered as a modal. Defaults to false.
  * @returns {JSX.Element} The rendered TaskPage component.
  */
 export default function TaskPage({isModal = false}) {
@@ -27,7 +29,6 @@ export default function TaskPage({isModal = false}) {
   const [errorMessage, setErrorMessage] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   /**
    * @function handleUpdateTask
@@ -60,11 +61,8 @@ export default function TaskPage({isModal = false}) {
       await deleteTask(taskId);
       //TODO: A bit of a hack to refresh process task list, rewrite
       deleteTaskIdFromProcess(processId, taskId);
-      if (!location && location.state && location.state.background) {
-        navigate(-1);
-      } else {
-        navigate(`/tasks`);
-      }
+      // close the modal or navigate back
+      navigate(-1);
     } catch (error) {
       console.error("Error deleting task:", error);
       setErrorMessage(error.message);
@@ -74,13 +72,16 @@ export default function TaskPage({isModal = false}) {
 
   if (!foundTask) {
     return (
-      <div>
+      <div style={{
+        display: 'flex',
+        minWidth: '300px',
+        height: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <h3>Error</h3>
         <p>Task not found</p>
-        <Link to={`/process/${processId}`}>
-          <button>
-            Go back to process {processId}
-          </button>
-        </Link>
       </div>
     )
   }
@@ -102,8 +103,6 @@ export default function TaskPage({isModal = false}) {
           <IconButton onClick={() => setShowDeleteDialog(true)}>
             <img src={deleteIcon} alt="Delete Task" className="icon-img"/>
           </IconButton>
-          {/*<button onClick={() => setIsTaskDetailsDialogOpen(true)}>Edit Task Details</button>*/}
-          {/*<button onClick={() => setShowDeleteDialog(true)}>Delete Task</button>*/}
         </div>
       </div>
 

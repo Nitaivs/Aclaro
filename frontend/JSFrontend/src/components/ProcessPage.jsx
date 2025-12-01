@@ -11,15 +11,22 @@ import ProcessNode from "./ProcessNode.jsx";
 import TaskNode from "./TaskNode.jsx";
 import {ProcessOperationsProvider} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
 import {IconButton} from "@mui/material";
+import CustomEdge from "./CustomEdge.jsx";
 import editIcon from '../assets/edit.svg';
 import deleteIcon from '../assets/delete.svg';
 import '../style/DetailPanel.css';
 import '../style/ReactFlow.css';
+import {DataContext} from "../Context/DataContext/DataContext.jsx";
 
 // Define custom node types for React Flow
 const nodeTypes = {
   processNode: ProcessNode,
   taskNode: TaskNode
+}
+
+// Define custom edge types for React Flow
+const edgeTypes = {
+  customEdge: CustomEdge
 }
 
 /**
@@ -32,7 +39,8 @@ const nodeTypes = {
  */
 export default function ProcessPage() {
   const {processId} = useParams();
-  const {processes, updateProcess, deleteProcess} = use(ProcessContext);
+  const {updateProcess, deleteProcess} = use(ProcessContext);
+  const {processes} = use(DataContext);
   const parsedProcessId = processId ? parseInt(processId) : undefined;
   const foundProcess = processes.find(p => p.id === parsedProcessId);
   const {tasks} = use(TaskContext);
@@ -47,7 +55,12 @@ export default function ProcessPage() {
    * @effect Update associated tasks when foundProcess or tasks change
    */
   useEffect(() => {
-    setAssociatedTasks(findAssociatedTasks)
+    if (!foundProcess || tasks.length === 0) {
+      setAssociatedTasks([]);
+      return;
+    }
+    const newAssociatedTasks = findAssociatedTasks()
+    setAssociatedTasks(newAssociatedTasks);
   }, [foundProcess, tasks]);
 
   /**
@@ -178,6 +191,20 @@ export default function ProcessPage() {
     }
 
     /**
+     * @function extractTaskId
+     * @description Extracts the task ID from a node ID of the format 'task-{taskId}' (e.g. 'task-123' -> 123).
+     * Returns null if the node ID does not start with 'task-'.
+     * @param nodeId The node ID string.
+     * @returns {number|null} The extracted task ID as a number, or null if not applicable.
+     */
+    function extractTaskId(nodeId) {
+      if (nodeId.startsWith('task-')) {
+        return parseInt(nodeId.split('-')[1]);
+      }
+      return null;
+    }
+
+    /**
      * @function layoutTree
      * @description Recursively lays out the tree structure by assigning x and y positions to each node.
      * The root node is positioned at (x, (yStart + yEnd) / 2).
@@ -208,6 +235,11 @@ export default function ProcessPage() {
           id: `edge-${node.id}-${child.id}`,
           source: node.id,
           target: child.id,
+          type: 'customEdge',
+          data: {
+            parentTaskId: extractTaskId(node.id),
+            childTaskId: extractTaskId(child.id),
+          },
           animated: false
         });
         layoutTree(child, x + horizontalSpacing, childYStart, childYEnd, currentY = childYEnd);
@@ -258,26 +290,43 @@ export default function ProcessPage() {
   }
 
   return (
-    <div className="detail-container">
-      {/* Header */}
-      <div className="detail-header">
-        <h2>
-          Process
-        </h2>
-      </div>
-      {/* Process Details */}
-      <div className="detail-content">
-        <div className="detail-info">
-          <h2 className="detail-title">{foundProcess.name}</h2>
-          <p className="detail-description">{foundProcess.description}</p>
+    <>
+      <div className="detail-container">
+        {/* Header */}
+        <div className="detail-header">
+          <h2>
+            Process
+          </h2>
         </div>
-        <div className="detail-actions">
-          <IconButton onClick={() => setIsProcessDetailsDialogOpen(true)} size="large">
-            <img src={editIcon} alt="Edit Process Details" className="icon-img"/>
-          </IconButton>
-          <IconButton onClick={() => setIsDeleteDialogOpen(true)} size="large">
-            <img src={deleteIcon} alt="Delete Process" className="icon-img"/>
-          </IconButton>
+        {/* Process Details */}
+        <div className="detail-content">
+          <div className="detail-info">
+            <h2 className="detail-title">{foundProcess.name}</h2>
+            <p className="detail-description">{foundProcess.description}</p>
+          </div>
+          <div className="detail-actions">
+            <IconButton onClick={() => setIsProcessDetailsDialogOpen(true)} size="large">
+              <img src={editIcon} alt="Edit Process Details" className="icon-img"/>
+            </IconButton>
+            <IconButton onClick={() => setIsDeleteDialogOpen(true)} size="large">
+              <img src={deleteIcon} alt="Delete Process" className="icon-img"/>
+            </IconButton>
+          </div>
+        </div>
+        {/* React Flow Diagram */}
+        <div className="react-flow-container">
+          <ProcessOperationsProvider processId={parsedProcessId}>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              proOptions={{hideAttribution: true}}
+              fitView
+              nodesDraggable={false}
+              nodesConnectable={false}
+            />
+          </ProcessOperationsProvider>
         </div>
       </div>
       <EditProcessDetailsDialog
@@ -294,19 +343,6 @@ export default function ProcessPage() {
         message={`Are you sure you want to delete the process "${foundProcess.name}" and all associated tasks? This action cannot be undone.`}
         onConfirm={() => handleDeleteProcess()}
       />
-      {/* React Flow Diagram */}
-      <div className="react-flow-container">
-        <ProcessOperationsProvider processId={parsedProcessId}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            proOptions={{hideAttribution: true}}
-            fitView
-            nodesDraggable={false}
-          />
-        </ProcessOperationsProvider>
-      </div>
-    </div>
+    </>
   )
 }

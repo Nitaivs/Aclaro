@@ -1,15 +1,16 @@
 import {Route, Routes, BrowserRouter, useLocation} from "react-router";
-import Dashboard from "./Dashboard.jsx";
 import ProcessPage from "./ProcessPage.jsx";
 import TaskPage from "./TaskPage.jsx";
 import EmployeeListPage from "./EmployeeListPage.jsx";
 import EmployeePage from "./EmployeePage.jsx";
 import ProcessListPage from "./ProcessListPage.jsx";
-import Navbar from "./Navbar.jsx";
 import TaskListPage from "./TaskListPage.jsx";
 import TagListPage from "./TagListPage.jsx";
 import DepartmentPage from "./DepartmentPage.jsx";
 import TaskModal from "./TaskModal.jsx";
+import Navbar from "./Navbar.jsx";
+import Header from "./Header.jsx";
+import '../style/Content.css'
 
 function AppRoutes() {
   const location = useLocation();
@@ -18,7 +19,7 @@ function AppRoutes() {
   return (
     <>
       <Routes location={background || location}>
-        <Route path="/" element={<Dashboard/>}/>
+        <Route path="/" element={<ProcessListPage/>}/>
         <Route path="/processes" element={<ProcessListPage/>}/>
         <Route path="/process/:processId" element={<ProcessPage/>}/>
         <Route path="/tasks" element={<TaskListPage/>}/>
@@ -46,8 +47,13 @@ function AppRoutes() {
 export default function Router() {
   return (
     <BrowserRouter>
-      <Navbar/>
-      <AppRoutes/>
+      <div className={"content"}>
+        <Header/>
+        <Navbar/>
+        <main style={{padding: 16}}>
+          <AppRoutes/>
+        </main>
+      </div>
     </BrowserRouter>
   )
 }

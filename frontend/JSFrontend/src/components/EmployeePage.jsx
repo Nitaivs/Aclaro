@@ -38,11 +38,6 @@ export default function EmployeePage() {
       <div>
         <h1>Employee Page</h1>
         <p>Error: Invalid employee ID.</p>
-        <Link to="/employees">
-          <button>
-            Return to employee list
-          </button>
-        </Link>
       </div>
     );
   }
@@ -52,11 +47,6 @@ export default function EmployeePage() {
       <div>
         <h1>Employee Page</h1>
         <p>Error: Employee with id: {parsedEmployeeId} not found.</p>
-        <Link to="/employees">
-          <button>
-            Return to employee list
-          </button>
-        </Link>
       </div>
     );
   }
@@ -70,11 +60,6 @@ const skillsList = Array.isArray(foundEmployee.skills)
 
 return (
     <div>
-        <Link to="/employees">
-            <button>
-                Return to employee list
-            </button>
-        </Link>
         <h2>Employee Page</h2>
         <h1>{foundEmployee.firstName} {foundEmployee.lastName}</h1>
         <p>Department: {foundEmployee.department?.name || "None"}</p>

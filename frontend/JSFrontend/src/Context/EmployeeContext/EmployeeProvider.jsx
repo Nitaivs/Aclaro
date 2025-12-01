@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {EmployeeContext} from "./EmployeeContext.jsx";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 /**
  * @Component EmployeeProvider
@@ -81,6 +82,11 @@ async function fetchAllEmployees() {
       setEmployees([...employees, response.data]);
     } catch (error) {
       console.error(`Error fetching employee with id ${id} from DB:`, error);
+      if (error.response && error.response.status === 404) {
+        toast.error(`Employee with ID ${id} not found.`);
+    } else {
+        toast.error(`Backend failure while fetching employee with ID ${id}.`);
+      }
     }
   }
 
@@ -88,14 +94,15 @@ async function fetchAllEmployees() {
    * @function updateEmployee
    * @description Updates an employee's details in the database.
    * Sends a patch request and updates the state with the updated employee details.
-   * @param {*} id is the employee id to update
-   * @param {*} updatedFields - An object containing the fields to update.
+   * @param {number} id is the employee id to update
+   * @param {Object} updatedFields - An object containing the fields to update.
    * @returns
    */
-    async function updateEmployee(id, newFields) {
+    async function updateEmployee(id, updatedFields) {
         try {
-            console.log(`Patching employee ${id} with payload:`, newFields);
-            const response = await axios.patch(`${BASE_URL}employees/${id}`, newFields);
+            console.log(`Patching employee ${id} with payload:`, updatedFields);
+            const response = await axios.patch(`${BASE_URL}employees/${id}`, updatedFields);
+            console.log(response.data);
             const updatedEmployee = response.data;
             setEmployees(prev =>
                 prev.some(e => e.id === id)
@@ -106,7 +113,11 @@ async function fetchAllEmployees() {
             return updatedEmployee;
         } catch (error) {
             console.error(`Error updating employee with id ${id} on DB:`, error);
-            throw error;
+            if (error.response && error.response.status === 400) {
+                toast.error("Cannot update employee. Invalid data provided.");
+            } else {
+                toast.error("Cannot update employee. Backend failure");
+            }
         }
     }
 
@@ -114,7 +125,7 @@ async function fetchAllEmployees() {
   /**
    * @function deleteEmployeeById Deletes an employee by their ID from the database.
    * Sends a delete request and updates the state to remove the deleted employee.
-   * @param id - The ID of the employee to delete.
+   * @param {number} id - The ID of the employee to delete.
    * @returns {Promise<void>} A promise that resolves when the employee is deleted and state is updated.
    */
   async function deleteEmployeeById(id) {
@@ -126,6 +137,11 @@ async function fetchAllEmployees() {
       setEmployees(employees.filter(employee => employee.id !== id));
     } catch (error) {
       console.error(`Error deleting employee with id ${id} from DB:`, error);
+        if (error.response && error.response.status === 404) {
+            toast.error(`Employee with ID ${id} not found. Please refresh the page.`);
+        } else {
+            toast.error("Cannot delete employee. Backend failure");
+        }
     }
   }
 
@@ -147,7 +163,11 @@ async function addEmployee(firstName, lastName) {
         return response.data;
     } catch (error) {
         console.error(`Error adding employee ${firstName} ${lastName} to DB:`, error);
-        throw error;
+        if (error.response && error.response.status === 400) {
+            throw new Error("Cannot add employee. Invalid data provided.");
+        } else {
+            throw new Error("Cannot add employee. Backend failure");
+        }
     }
 }
 

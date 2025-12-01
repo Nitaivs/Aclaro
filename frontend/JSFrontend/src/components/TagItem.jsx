@@ -30,6 +30,13 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
     foundTag = skills.find(s => s.id === tagId);
   }
 
+  /**
+   * @function handleUpdateTag
+   * @description Handles the update of a tag's name.
+   * Calls the updateTag function from TagContext and manages error handling.
+   * @param newName - The new name for the tag.
+   * @returns {Promise<void>} A promise that resolves when the tag is updated or an error occurs.
+   */
   async function handleUpdateTag(newName) {
     try {
       await updateTag(foundTag.id, type, {name: newName});
@@ -40,6 +47,12 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
     }
   }
 
+  /**
+   * @function handleDeleteTag
+   * @description Handles the deletion of a tag.
+   * Calls the deleteTagById function from TagContext and manages error handling.
+   * @returns {Promise<void>} A promise that resolves when the tag is deleted or an error occurs.
+   */
   async function handleDeleteTag() {
     try {
       await deleteTagById(foundTag.id, type);
@@ -77,9 +90,7 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
           aria-label={`delete-${foundTag.id}`}
           size="small"
           style={{marginLeft: 'auto'}}
-          onClick={() => {
-            setIsDeleteDialogOpen(true);
-          }}
+          onClick={() => setIsDeleteDialogOpen(true)}
         >
           <img src={deleteIcon} alt={"tag delete button"} height={30} width={30}/>
         </IconButton>

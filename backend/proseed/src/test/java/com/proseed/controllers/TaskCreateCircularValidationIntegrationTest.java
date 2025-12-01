@@ -25,28 +25,28 @@ public class TaskCreateCircularValidationIntegrationTest {
     @Test
     void createTask_withSelfReferencingSubtree_shouldReturn400() throws Exception {
         // Create a process
-        ObjectNode proc = objectMapper.createObjectNode().put("processName", "Create Cycle Proc");
+        ObjectNode proc = objectMapper.createObjectNode().put("name", "Create Cycle Proc");
         long processId = objectMapper.readTree(
             mockMvc.perform(post("/api/processes")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(proc)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString()
-        ).get("processId").asLong();
+        ).get("id").asLong();
 
         // Create an existing task X to reference
-        ObjectNode xReq = objectMapper.createObjectNode().put("taskName", "X").put("completed", false);
+        ObjectNode xReq = objectMapper.createObjectNode().put("name", "X").put("completed", false);
         long xId = objectMapper.readTree(
             mockMvc.perform(post("/api/tasks?processId=" + processId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(xReq)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString()
-        ).get("taskId").asLong();
+        ).get("id").asLong();
 
         // Now attempt to create a new Task A with subTasks including X, but make X reference itself in its subTasks
         ObjectNode aReq = objectMapper.createObjectNode()
-            .put("taskName", "A").put("completed", false);
+            .put("name", "A").put("completed", false);
         var xDto = objectMapper.createObjectNode().put("taskId", xId);
         xDto.set("subTasks", objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("taskId", xId))); // self-reference
         aReq.set("employeeIds", objectMapper.createArrayNode());

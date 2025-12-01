@@ -53,7 +53,7 @@ export default function EditProcessDetailsDialog({currentName, currentDescriptio
   }
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onClose={handleOnClose}>
       <DialogTitle>Edit Process Details</DialogTitle>
       <DialogContent>
         <TextField

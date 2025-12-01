@@ -349,6 +349,41 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
     curl -X DELETE "http://localhost:8080/api/tasks/1/employees/3" -w "\nHTTP %{http_code}\n"
     ```
 
+- POST /api/tasks/insert-between?parentTaskId={parentId}&childTaskId={childId}
+  - Description: Insert a new task between an existing parent and child task in the hierarchy. The new task becomes a child of the parent and the new parent of the child. This is useful for adding intermediate tasks without manually reparenting.
+  - Query params:
+    - `parentTaskId` (required) — ID of the task that will become the parent of the new task
+    - `childTaskId` (required) — ID of the task that will become the child of the new task (must currently be a direct child of parentTaskId)
+  - Request body: TaskDTO JSON with the new task's data.
+  - Success: 201 Created, body: created TaskDTO with updated relationships
+  - Errors:
+    - 400 Bad Request — if the child is not actually a direct child of the parent
+    - 404 Not Found — if parent or child task does not exist
+  - Example: Insert a task between task 1 (parent) and task 5 (child of task 1)
+    
+    Before: Task 1 → Task 5
+    After:  Task 1 → New Task → Task 5
+    
+    ```bash
+    curl -X POST "http://localhost:8080/api/tasks/insert-between?parentTaskId=1&childTaskId=5" \
+      -H "Content-Type: application/json" \
+      -d '{"name":"Intermediate Task","description":"Inserted between parent and child","completed":false}'
+    ```
+    
+    Response (201 Created):
+    ```json
+    {
+      "id": 10,
+      "name": "Intermediate Task",
+      "description": "Inserted between parent and child",
+      "completed": false,
+      "parentTaskId": 1,
+      "subTasks": [
+        { "id": 5, "name": "...", "parentTaskId": 10, ... }
+      ]
+    }
+    ```
+
 ---
 
 ### Departments

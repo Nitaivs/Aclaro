@@ -1,51 +1,47 @@
-import {useState} from "react";
+import {use, useState} from "react";
 import plusIcon from '../assets/plusIcon.svg';
 import AddTaskDialog from "./AddTaskDialog.jsx";
+import '../style/PlusButton.css'
+import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
+import {ProcessOperationsContext} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
+import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
 
 export default function PlusButton({parentTaskId, position = 'right'}) {
-  const [hover, setHover] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const {addTask} = use(TaskContext);
+  const {processId} = use(ProcessOperationsContext);
+  const {fetchProcessById} = use(ProcessContext);
+
+  async function handleAddTask(name, description) {
+    try {
+      if (!processId) {
+        console.error("No processId available in context");
+        return;
+      }
+      console.log(`Adding task to process ${processId} with name: ${name}, description: ${description}, parentTaskId: ${parentTaskId}`);
+      await addTask(processId, name, description, parentTaskId);
+      //TODO: hack to refresh process task list, rewrite
+      await fetchProcessById(processId);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
+  }
 
   return (
-    <div>
+    <div className={`plus-button-container position-${position}`}>
       <button
         onClick={() => setIsDialogOpen(true)}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        style={{
-          position: 'absolute',
-          top: '50%',
-          [position]: -12,
-          transform: 'translateY(-50%)',
-          background: 'none',
-          border: 'none',
-          padding: 0,
-          margin: 0,
-          cursor: 'pointer',
-        }}
+        className="plus-button"
         aria-label="Add Task"
       >
         <img
           src={plusIcon}
           alt="Add Task"
-          style={{
-            width: 24,
-            height: 24,
-            position: 'absolute',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            [position]: -12,
-            backgroundColor: 'white',
-            borderRadius: '50%',
-            boxShadow: '0 0 4px rgba(0,0,0,0.3)',
-            cursor: 'pointer',
-            padding: 4,
-            filter: hover ? 'brightness(0.9)' : 'none',
-            transition: 'filter 0.2s',
-          }}
+          className={`plus-button-icon position-${position}`}
         />
       </button>
       <AddTaskDialog
+        onSave={handleAddTask}
         isOpen={isDialogOpen}
         parentTaskId={parentTaskId}
         onClose={() => setIsDialogOpen(false)}
