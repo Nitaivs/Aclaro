@@ -19,7 +19,7 @@ import '../style/ItemCard.css'
  * @returns {JSX.Element} The rendered TaskCard component.
  */
 export default function TaskItem({taskId}) {
-  const {tasks, updateTask, deleteTask} = use(TaskContext);
+  const {tasks, updateTask, updateTaskRequirements, deleteTask} = use(TaskContext);
   const {deleteTaskIdFromProcess} = use(ProcessContext);
   const foundTask = tasks.find(t => t.id === taskId);
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
@@ -39,17 +39,29 @@ export default function TaskItem({taskId}) {
    * Calls the updateTask function from TaskContext with the new name and description.
    * @param {string} newName the new name for the task. May be undefined, in which case the current name is retained.
    * @param {string} newDescription the new description for the task. May be undefined, in which case the current description is retained.
+   * @param {Object} department the new department for the task. May be undefined, in which case the current department is retained.
+   * @param {Array<Object>} skills the new skills for the task. May be undefined, in which case the current skills are retained.
    * @returns {Promise<void>} A promise that resolves when the task update is complete.
    */
-  async function handleUpdateTask(newName, newDescription) {
-    if (newName === foundTask.name && newDescription === foundTask.description) {
-      setIsTaskDetailsDialogOpen(false);
+  async function handleUpdateTask(newName, newDescription, department, skills) {
+    console.log("updating task:", foundTask.id, newName, newDescription, department, skills);
+    if (!foundTask.id) {
+      console.error("Invalid taskId:", taskId);
       return;
     }
-    await updateTask(foundTask.id, {
-      name: newName || foundTask.name,
-      description: newDescription || foundTask.description
-    });
+    if (newName !== foundTask.name || newDescription !== foundTask.description) {
+      await updateTask(foundTask, newName || foundTask.name, newDescription || foundTask.description);
+    }
+
+    if (department !== undefined || skills !== undefined) {
+      //TODO: currently only single department supported, update when multi-department is added
+      const departmentId = department && department !== ""  ? [department.id] : [];
+      const skillIds = Array.isArray(skills) ? skills.map(s => s.id) : [];
+      console.log("Updating task requirements:", foundTask.id, departmentId, skillIds);
+      await updateTaskRequirements(foundTask.id, departmentId, skillIds);
+    }
+
+    console.debug("Task updated successfully");
     setIsTaskDetailsDialogOpen(false);
   }
 
@@ -113,6 +125,8 @@ export default function TaskItem({taskId}) {
       <EditTaskDetailsDialog
         currentName={foundTask.name}
         currentDescription={foundTask.description}
+        currentDepartment={foundTask.departments[0]}
+        currentSkills={foundTask.skills}
         onSave={handleUpdateTask}
         isOpen={isTaskDetailsDialogOpen}
         onClose={() => setIsTaskDetailsDialogOpen(false)}
