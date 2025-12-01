@@ -276,7 +276,15 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
       "description": "...",
       "completed": false,
       "employeeIds": [1, 3],
-      "subTasks": []
+      "subTasks": [],
+      "parentTaskId": null,
+      "processId": 1,
+      "skills": [
+        { "id": 1, "name": "Java" }
+      ],
+      "departments": [
+        { "id": 1, "name": "Backend" }
+      ]
     }
     ```
 
@@ -348,6 +356,50 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
     ```bash
     curl -X DELETE "http://localhost:8080/api/tasks/1/employees/3" -w "\nHTTP %{http_code}\n"
     ```
+
+- PUT /api/tasks/{id}/requirements
+  - Description: Update the skill and department requirements for a task. This is a combined endpoint that replaces both skill and department assignments in a single request. The provided lists completely replace any existing requirements.
+  - Request body: `TaskRequirementsDTO` JSON with `skillIds` and `departmentIds` arrays.
+  - Success: 200 OK, body: updated TaskDTO (includes the updated `skills` and `departments` arrays)
+  - Not found: 404 Not Found (if task, skill, or department id does not exist)
+  - Example request body:
+    ```json
+    {
+      "skillIds": [1, 2, 3],
+      "departmentIds": [1, 2]
+    }
+    ```
+  - Example curl:
+    ```bash
+    curl -X PUT "http://localhost:8080/api/tasks/1/requirements" \
+      -H "Content-Type: application/json" \
+      -d '{"skillIds": [1, 2], "departmentIds": [1]}'
+    ```
+  - Example response (200 OK):
+    ```json
+    {
+      "id": 1,
+      "name": "Design API",
+      "description": "...",
+      "completed": false,
+      "employeeIds": [1, 3],
+      "subTasks": [],
+      "parentTaskId": null,
+      "processId": 1,
+      "skills": [
+        { "id": 1, "name": "Java" },
+        { "id": 2, "name": "Spring Boot" }
+      ],
+      "departments": [
+        { "id": 1, "name": "Backend" }
+      ]
+    }
+    ```
+  - Notes:
+    - To clear all requirements, send empty arrays: `{"skillIds": [], "departmentIds": []}`
+    - Skills represent the technical skills required to complete the task
+    - Departments represent which departments are involved in the task
+    - Requirements on a parent task do not automatically propagate to subtasks
 
 - POST /api/tasks/insert-between?parentTaskId={parentId}&childTaskId={childId}
   - Description: Insert a new task between an existing parent and child task in the hierarchy. The new task becomes a child of the parent and the new parent of the child. This is useful for adding intermediate tasks without manually reparenting.
