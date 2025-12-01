@@ -70,6 +70,14 @@ export default function TaskItem({taskId}) {
     }
   }
 
+  if (!foundTask) {
+    return (
+      <div>
+        <p>Task not found</p>
+      </div>
+    )
+  }
+
   return (
     <>
       <div>
