@@ -1,8 +1,8 @@
-import { use } from "react";
-import { TaskContext } from "./TaskContext.jsx";
-import { DataContext } from "../DataContext/DataContext.jsx";
+import {use} from "react";
+import {TaskContext} from "./TaskContext.jsx";
+import {DataContext} from "../DataContext/DataContext.jsx";
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 
 const BASE_URL = "http://localhost:8080/api/";
 
@@ -13,45 +13,47 @@ const BASE_URL = "http://localhost:8080/api/";
  * @param {JSX.Element} props.children The child components that will have access to the task context.
  * @returns {JSX.Element} The TaskProvider component.
  */
-export function TaskProvider({ children }) {
-    const { tasks, setTasks, fetchAllTasks, addTaskBetweenTasks } = use(DataContext);
+export function TaskProvider({children}) {
+  const {tasks, setTasks, fetchAllTasks, addTaskBetweenTasks} = use(DataContext);
 
-    /**
-     * @function addTask
-     * @description Adds a new task to a process. Makes a POST request to the backend with the task details,
-     * then fetches all tasks to update the state.
-     * @param {Number} processId - The ID of the process to which the task will be added. Expected to be an integer. Required.
-     * @param {string} name - The name of the new task. Required.
-     * @param {string} description - The description of the new task. Optional.
-     * @param parentTaskId - The ID of the parent task, if this task is a subtask. Optional.
-     * @returns {Promise<void>} A promise that resolves when the task is added and tasks are fetched.
-     */
-    async function addTask(processId, name, description = null, parentTaskId = null) {
-        try {
-            if (!processId) {
-                throw new Error("Process ID is required to add a task.");
-            }
+  /**
+   * @function addTask
+   * @description Adds a new task to a process. Makes a POST request to the backend with the task details,
+   * then fetches all tasks to update the state.
+   * @param {Number} processId - The ID of the process to which the task will be added. Expected to be an integer. Required.
+   * @param {string} name - The name of the new task. Required.
+   * @param {string} description - The description of the new task. Optional.
+   * @param parentTaskId - The ID of the parent task, if this task is a subtask. Optional.
+   * @returns {Promise<void>} A promise that resolves when the task is added and tasks are fetched.
+   */
+  async function addTask(processId, name, description = null, parentTaskId = null) {
+    try {
+      if (!processId) {
+        toast.error("No processId provided");
+        return;
+      }
 
-            if (!name) {
-                throw new Error("Task name is required.");
-            }
+      if (!name) {
+        toast.error("Task name is required");
+        return;
+      }
 
-            if (parentTaskId !== null && isNaN(parentTaskId)) {
-                throw new Error("Provided parentTaskId is not a valid number.");
-            }
+      if (parentTaskId !== null && isNaN(parentTaskId)) {
+        toast.error("parentTaskId must be a number or null");
+        return;
+      }
 
-            await axios.post(`${BASE_URL}tasks?processId=${processId}`, {
-                processId,
-                name,
-                description,
-                parentTaskId
-            });
-            await fetchAllTasks();
-        } catch (error) {
-            console.error("Error adding task:", error);
-            throw error;
-        }
+      await axios.post(`${BASE_URL}tasks?processId=${processId}`, {
+        processId,
+        name,
+        description,
+        parentTaskId
+      });
+      await fetchAllTasks();
+    } catch (error) {
+      toast.error("Error adding task:", error);
     }
+  }
 
     /**
      * @function updateTask
