@@ -44,13 +44,14 @@ export default function TaskItem({taskId}) {
    * @returns {Promise<void>} A promise that resolves when the task update is complete.
    */
   async function handleUpdateTask(newName, newDescription, department, skills) {
+    //TODO: move into utility function to avoid code duplication with TaskPage
     console.log("updating task:", foundTask.id, newName, newDescription, department, skills);
     if (!foundTask.id) {
       console.error("Invalid taskId:", taskId);
       return;
     }
     if (newName !== foundTask.name || newDescription !== foundTask.description) {
-      await updateTask(foundTask, newName || foundTask.name, newDescription || foundTask.description);
+      await updateTask(foundTask.id, newName || foundTask.name, newDescription || foundTask.description);
     }
 
     if (department !== undefined || skills !== undefined) {
