@@ -2,7 +2,7 @@
 .dialog-container {
     display: inline-block;
     max-width: 100%;
-    min-width: 600px;
+    min-width: 400px;
     box-sizing: border-box;
     overflow: visible;
     vertical-align: top;
@@ -42,6 +42,8 @@
     align-items: center;
     gap: 8px;
     padding: 16px 20px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
 }
 
 .dialog-actions-buttons {
@@ -50,6 +52,22 @@
     gap: 12px;
     width: 100%;
     box-sizing: border-box;
+}
+
+.dialog-actions-radio-group {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.dialog-actions-skills {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
 }
 
 .dialog-actions button {
