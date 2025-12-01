@@ -10,7 +10,7 @@ import { useEffect } from "react";
  * @returns {JSX.Element} The ConnectionProvider component.
  */
 export function ConnectionProvider({ children }) {
-    const BASE_URL = "http://localhost:8080/api/";
+    const BASE_URL = "/api/";
 
     const getStatus = async () => {
         try {

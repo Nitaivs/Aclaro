@@ -4,7 +4,7 @@ import {DataContext} from "../DataContext/DataContext.jsx";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const BASE_URL = "http://localhost:8080/api/";
+const BASE_URL = "/api/";
 
 /**
  * @Component ProcessProvider
