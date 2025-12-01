@@ -50,7 +50,11 @@ export function TaskProvider({ children }) {
             await fetchAllTasks();
         } catch (error) {
             console.error("Error adding task:", error);
-            throw error;
+            if (error.response && error.response.status === 400) {
+                toast.error("Cannot add task. Invalid data provided.");
+            } else {
+                toast.error("Backend failure. Please refresh the page and try again.");
+            }
         }
     }
 
