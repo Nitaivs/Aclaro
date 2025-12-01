@@ -1,6 +1,4 @@
 /* Styles for the global content area */
 .content {
-    margin-top: 80px; /* Account for fixed header height */
     padding-left: 240px; /* Account for fixed navbar width */
-    height: calc(100vh - 80px); /* Full height minus header */
 }
