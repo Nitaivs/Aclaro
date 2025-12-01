@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {TagContext} from "./TagContext.jsx";
 import axios from "axios";
+import {toast} from "react-toastify";
 
 /**
  * @Component EmployeeProvider
@@ -91,7 +92,10 @@ export function TagProvider({children}) {
       setDepartments([...departments, response.data]);
     } catch (error) {
       console.error(`Error adding department with name ${name} to DB:`, error);
-      throw error;
+      if (error.response && error.response.status === 409) {
+        throw new Error("Department with this name already exists.");
+      }
+        throw new error("Failed to add department. Backend failure");
     }
   }
 
@@ -105,7 +109,12 @@ export function TagProvider({children}) {
       }
     } catch (error) {
       console.error(`Error deleting tag with id ${id} from DB:`, error);
-      throw error;
+      if (error.response && error.response.status === 409) {
+        throw new Error("Cannot delete tag: it is associated with existing employees or tasks.");
+        } else if (error.response && error.response.status === 404) {
+        throw new Error("Tag not found.");
+        }
+        throw new Error("Failed to delete tag. Backend failure");
     }
   }
 
@@ -123,7 +132,10 @@ export function TagProvider({children}) {
       setDepartments(departments.filter(department => department.id !== id));
     } catch (error) {
       console.error(`Error deleting department with id ${id} from DB:`, error);
-      throw error;
+      if (error.response && error.response.status === 409) {
+        throw new Error("Cannot delete department: it is associated with existing employees.");
+      }
+      throw new Error("Failed to delete department. Backend failure");
     }
   }
 
@@ -141,7 +153,12 @@ export function TagProvider({children}) {
       setSkills(skills.filter(skill => skill.id !== id));
     } catch (error) {
       console.error(`Error deleting skill with id ${id} from DB:`, error);
-      throw error;
+      if (error.response && error.response.status === 409) {
+        throw new Error("Cannot delete skill: it is associated with existing employees or tasks.");
+      } else if (error.response && error.response.status === 404) {
+        throw new Error("Skill not found.");
+      }
+        throw new Error("Failed to delete skill.");
     }
   }
 
@@ -159,7 +176,10 @@ export function TagProvider({children}) {
       setSkills([...skills, response.data]);
     } catch (error) {
       console.error(`Error adding skill with name ${name} to DB:`, error);
-      throw error;
+        if (error.response && error.response.status === 409) {
+        throw new Error("Skill with this name already exists.");
+        }
+        throw new Error("Failed to add skill.");
     }
   }
 
@@ -181,7 +201,13 @@ export function TagProvider({children}) {
       }
     } catch (error) {
       console.error(`Error updating skill with id ${id} on DB:`, error);
-      throw error;
+      if (error.response && error.response.status === 404) {
+        toast.error("Tag not found.");
+      } else if (error.response && error.response.status === 409) {
+        toast.error("Tag with this name already exists.");
+      } else {
+        toast.error("Failed to update tag.");
+      }
     }
   }
 
@@ -190,6 +216,7 @@ export function TagProvider({children}) {
    * @description Updates a department's name in the database and updates the state.
    * @param id - The ID of the department to update.
    * @param newName - The new name of the department.
+   * @param toast - Toast notification instance for displaying messages.
    * @returns {Promise<void>} A promise that resolves when the department is updated and state is updated.
    */
   async function updateDepartment(id, newName) {
@@ -205,7 +232,13 @@ export function TagProvider({children}) {
       );
     } catch (error) {
       console.error(`Error updating department with id ${id} on DB:`, error);
-      throw error;
+        if (error.response && error.response.status === 404) {
+        toast.error("Department not found.");
+        } else if (error.response && error.response.status === 409) {
+        toast.error("Department with this name already exists.");
+        } else {
+        toast.error("Failed to update department.");
+        }
     }
   }
 
@@ -214,6 +247,7 @@ export function TagProvider({children}) {
    * @description Updates a skill's name in the database and updates the state.
    * @param id - The ID of the skill to update.
    * @param newName - The new name of the skill.
+   * @param toast - Toast notification instance for displaying messages.
    * @returns {Promise<void>} A promise that resolves when the skill is updated and state is updated.
    */
   async function updateSkill(id, newName) {
@@ -228,8 +262,13 @@ export function TagProvider({children}) {
           : [...prev, updatedSkill]
       );
     } catch (error) {
-      console.error(`Error updating skill with id ${id} on DB:`, error);
-      throw error;
+       if (error.response && error.response.status === 404) {
+        toast.error("Skill not found.");
+        } else if (error.response && error.response.status === 409) {
+        toast.error("Skill with this name already exists.");
+        } else {
+        toast.error("Failed to update skill.");
+        }
     }
   }
 

@@ -1,7 +1,8 @@
-import {use} from "react";
+import { useContext } from "react";
 import {ProcessContext} from "./ProcessContext.jsx";
 import {DataContext} from "../DataContext/DataContext.jsx";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const BASE_URL = "http://localhost:8080/api/";
 
@@ -14,7 +15,7 @@ const BASE_URL = "http://localhost:8080/api/";
  * @constructor
  */
 export function ProcessProvider({children}) {
-  const {processes, setProcesses, fetchAllTasks, fetchProcessById} = use(DataContext);
+  const {processes, setProcesses, fetchAllTasks, fetchProcessById} = useContext(DataContext);
 
   /**
    * @function addProcess
@@ -30,11 +31,15 @@ export function ProcessProvider({children}) {
         name,
         description
       });
-      const newProcess = {...response.data, taskIds: []};
+      const newProcess = { ...response.data, taskIds: [] };
       setProcesses([...processes, newProcess]);
     } catch (error) {
       console.error("Error adding process:", error);
-      throw error;
+      if (error.response && error.response.status === 400) {
+        throw new Error("Cannot add process. Invalid data provided.");
+      } else {
+        throw new Error("Cannot add process. Backend failure:" + error.response.status);
+      }
     }
   }
 
@@ -52,7 +57,11 @@ export function ProcessProvider({children}) {
       await fetchAllTasks();
     } catch (error) {
       console.error("Error deleting process:", error);
-      throw error;
+      if (error.response && error.response.status === 404) {
+        toast.error(`Process with ID ${processId} not found.`);
+        } else {
+        toast.error("Cannot delete process. Backend failure:" + error.response.status);
+        }
     }
   }
 
@@ -70,6 +79,11 @@ export function ProcessProvider({children}) {
       setProcesses(processes.map(p => p.id === processId ? response.data : p));
     } catch (error) {
       console.error("Error updating process:", error);
+        if (error.response && error.response.status === 400) {
+            toast.error("Cannot update process. Invalid data provided.");
+        } else {
+            toast.error("Cannot update process. Backend failure:" + error.response.status);
+        }
     }
   }
 
