@@ -41,6 +41,7 @@ export function ProcessProvider({children}) {
         throw new Error("Cannot add process. Backend failure:" + error.response.status);
       }
     }
+    }
 
   /**
    * @function deleteProcess
