@@ -29,6 +29,23 @@ This application has initially been done with Docker for simple containerization
 portions of the application. For any other containerization method (such as Podman), you must do your own file for that.
 
 
+# Build instructions and running the container
+
+## Building the docker container:
+
+Open up a terminal and go the root of this repository. Then proceed to build the Docker image by inputting this command
+
+`docker build -t proseed .`
+
+This will proceed to build the image to use with the Docker engine
+
+## Running the container:
+
+To run the container and expose it to the necessary ports to host it, run this command.
+
+`docker run -d -t -p 8080:8080 proseed`
+
+The following command will boot up the image in the background and outputs the container ID that was created from running the image.
 
 ## Backend - Running locally
 
