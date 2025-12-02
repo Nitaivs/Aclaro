@@ -229,11 +229,6 @@ When testing from a browser-hosted page on a different port/origin, ensure CORS 
   - Success: `201 Created`, body: saved `Employee` (entity JSON, includes generated `id`).
   - Validation errors: `400 Bad Request`
 
-- PUT /api/employees/{id}
-
-  - Description: Update an existing employee.
-  - Success: 200 OK (updated Employee) or 404 Not Found
-
 - PATCH /api/employees/{id}
 
   - Description: Partial update; only supplied fields are applied. Supported fields in `EmployeePatchDTO`: `firstName`, `lastName`, `departmentId`, `roleId`, `skillIds` (array of skill ids to replace the entire skill set).
