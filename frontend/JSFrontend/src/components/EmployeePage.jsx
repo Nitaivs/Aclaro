@@ -1,12 +1,12 @@
 import {Link} from "react-router";
-import {use, useEffect, useState} from 'react';
+import {use, useState} from 'react';
 import {EmployeeContext} from "../Context/EmployeeContext/EmployeeContext.jsx";
 import {useParams} from "react-router";
 import EditEmployeeDialog from "./EditEmployeeDialog.jsx";
 
 /**
  * @component EmployeePage
- * @description A page that displays the employeelist component
+ * @description A page that displays the employee's details.
  * @returns {JSX.Element} The rendered EmployeePage component.
  */
 export default function EmployeePage() {
@@ -16,21 +16,28 @@ export default function EmployeePage() {
   const foundEmployee = employees.find(e => e.id === parseInt(employeeId));
   const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] = useState(false);
 
-  function handleUpdateEmployee(newFirstName, newLastName) {
-    updateEmployee(parsedEmployeeId, {firstName: newFirstName, lastName: newLastName});
-    setIsEditEmployeeDialogOpen(false);
-  }
+    async function handleUpdateEmployee(newFirstName, newLastName, newDepartment, newSkills) {
+        const requestForm = {
+            firstName: newFirstName,
+            lastName: newLastName,
+            //Extract ID from department object, or send null if removed
+            departmentId: newDepartment ? newDepartment.id : null,
+            //Map array of skill objects to array of skill IDs
+            skillIds: Array.isArray(newSkills) ? newSkills.map(s => s.id) : []
+        };
+        try {
+            await updateEmployee(foundEmployee.id, requestForm);
+            setIsEditEmployeeDialogOpen(false);
+        } catch (error) {
+            console.error("Failed to update employee:", error);
+        }
+    }
 
   if (!parsedEmployeeId) {
     return (
       <div>
         <h1>Employee Page</h1>
         <p>Error: Invalid employee ID.</p>
-        <Link to="/employees">
-          <button>
-            Return to employee list
-          </button>
-        </Link>
       </div>
     );
   }
@@ -40,34 +47,35 @@ export default function EmployeePage() {
       <div>
         <h1>Employee Page</h1>
         <p>Error: Employee with id: {parsedEmployeeId} not found.</p>
-        <Link to="/employees">
-          <button>
-            Return to employee list
-          </button>
-        </Link>
       </div>
     );
   }
 
-  return (
+const skillsList = Array.isArray(foundEmployee.skills)
+    ? foundEmployee.skills
+            .map(s => (typeof s === 'string' ? s : s && s.name ? s.name : ''))
+            .filter(Boolean)
+            .join(', ')
+    : (foundEmployee.skills || '');
+
+return (
     <div>
-      <Link to="/employees">
-        <button>
-          Return to employee list
+        <h2>Employee Page</h2>
+        <h1>{foundEmployee.firstName} {foundEmployee.lastName}</h1>
+        <p>Department: {foundEmployee.department?.name || "None"}</p>
+        <p>Skills: {skillsList || "None"}</p>
+        <button onClick={() => setIsEditEmployeeDialogOpen(true)}>
+            Edit Employee
         </button>
-      </Link>
-      <h2>Employee Page</h2>
-      <h1>{foundEmployee.firstName} {foundEmployee.lastName}</h1>
-      <button onClick={() => setIsEditEmployeeDialogOpen(true)}>
-        Edit Employee
-      </button>
-      <EditEmployeeDialog
-        currentFirstName={foundEmployee.firstName}
-        currentLastName={foundEmployee.lastName}
-        isOpen={isEditEmployeeDialogOpen}
-        onClose={() => setIsEditEmployeeDialogOpen(false)}
-        onSave={handleUpdateEmployee}
-      />
+        <EditEmployeeDialog
+            currentFirstName={foundEmployee.firstName}
+            currentLastName={foundEmployee.lastName}
+            currentSkills={foundEmployee.skills}
+            isOpen={isEditEmployeeDialogOpen}
+            onClose={() => setIsEditEmployeeDialogOpen(false)}
+            onSave={handleUpdateEmployee}
+            currentDepartment={foundEmployee.department}
+        />
     </div>
-  );
+);
 }

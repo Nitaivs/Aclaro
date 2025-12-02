@@ -1,181 +1,116 @@
-import {useEffect, useState} from "react";
+import { useContext } from "react";
 import {ProcessContext} from "./ProcessContext.jsx";
+import {DataContext} from "../DataContext/DataContext.jsx";
 import axios from "axios";
+import { toast } from "react-toastify";
+
+const BASE_URL = "http://localhost:8080/api/";
 
 /**
  * @Component ProcessProvider
- * @description Provides process-related state and functions to its children via ProcessContext.
- * @param children The child components that will have access to the process context.
+ * @description Provides state and functions related to processes to its children via ProcessContext.
+ * @param {Object} props - The component props.
+ * @param {JSX.Element} children - The child components that will have access to the process context.
  * @returns {JSX.Element} The ProcessProvider component.
+ * @constructor
  */
 export function ProcessProvider({children}) {
-  const [processes, setProcesses] = useState([]);
-  const [initialized, setInitialized] = useState(false);
-  const BASE_URL = "http://localhost:8080/api/";
-  //TODO: move BASE_URL to config file
-
-  /**
-   * Effect hook that initializes processes from the database when the component mounts.
-   */
-  useEffect(() => {
-    if (!initialized) {
-      console.log("initializing processes");
-      initializeProcessesFromDB();
-    } else {
-      console.log("Processes already initialized");
-    }
-  }, [initialized]);
-
-  /**
-   * @function initializeProcessesFromDB
-   * @description Initializes processes from the database by fetching all processes and setting the local state.
-   * Sets the initialized state to true once done.
-   * @returns {Promise<void>} A promise that resolves when the processes are fetched and set
-   */
-  async function initializeProcessesFromDB() {
-    try {
-      console.log("Initializing processes from DB");
-      await fetchAllProcesses()
-      setInitialized(true);
-    } catch (error) {
-      console.error("Error fetching processes from DB:", error);
-    }
-  }
-
-  /**
-   * @function fetchAllProcesses
-   * @description Fetches all processes from the database and sets the local state.
-   * @returns {Promise<void>} A promise that resolves when the processes are fetched and set
-   */
-  async function fetchAllProcesses() {
-    try {
-      console.log("Fetching all processes from DB");
-      const response = await axios.get(`${BASE_URL}processes`);
-      console.log(response);
-      setProcesses(response.data);
-    } catch (error) {
-      console.error("Error fetching processes from DB:", error);
-    }
-  }
-
-  /**
-   * @function fetchProcessById
-   * @description Fetches a process by its ID from the database and updates the local state.
-   * @param processId the ID of the process to fetch
-   * @returns {Promise<void>} A promise that resolves when the process is fetched and the state is updated
-   */
-  async function fetchProcessById(processId) {
-    try {
-      console.log("Fetching process by ID from DB:", processId);
-      const response = await axios.get(`${BASE_URL}processes/${processId}`);
-      console.log("Fetched process:", response.data);
-      const existingProcess = processes.find(p => p.processId === processId);
-      if (existingProcess) {
-        setProcesses(processes.map(p => p.processId === processId ? response.data : p));
-        return;
-      }
-      setProcesses([...processes, response.data]);
-    } catch (error) {
-      console.error("Error fetching process by ID from DB:", error);
-    }
-  }
-
-
-  /**
-   * @function deleteTaskIdFromProcess
-   * @description Deletes a task ID from a process's taskIds array in the local state.
-   * @param processId the ID of the process
-   * @param taskId the ID of the task to delete
-   */
-  function deleteTaskIdFromProcess(processId, taskId) {
-    const foundProcess = processes.find(p => p.processId === processId);
-    if (!foundProcess) {
-      console.error("Process not found:", processId);
-      return;
-    }
-    const updatedTaskIds = foundProcess.taskIds.filter(id => id !== taskId);
-    const updatedProcess = {...foundProcess, taskIds: updatedTaskIds};
-    setProcesses(processes.map(p => p.processId === processId ? updatedProcess : p));
-  }
+  const {processes, setProcesses, fetchAllTasks, fetchProcessById} = useContext(DataContext);
 
   /**
    * @function addProcess
-   * @description Sends a POST request to add a new process to the database and updates the local state.
-   * @param name the name of the new process
-   * @param description the description of the new process
-   * @returns {Promise<void>} A promise that resolves when the process is added
+   * @description Adds a new process. Makes a POST request to the backend with the process details,
+   * then updates the state with the new process.
+   * @param {string} name - The name of the new process. Required.
+   * @param {string} description - The description of the new process. Optional.
+   * @returns {Promise<void>} A promise that resolves when the process is added.
    */
   async function addProcess(name, description) {
     try {
-      console.log("Adding process to DB");
       const response = await axios.post(`${BASE_URL}processes`, {
-        processName: name,
-        processDescription: description
+        name,
+        description
       });
-      const newProcess = response.data;
-      console.log("Process added to DB:", newProcess);
-      newProcess.taskIds = [];
+      const newProcess = { ...response.data, taskIds: [] };
       setProcesses([...processes, newProcess]);
-      console.log("Process added locally:", newProcess);
     } catch (error) {
-      console.error("Error adding process to DB:", error);
+      console.error("Error adding process:", error);
+      if (error.response && error.response.status === 400) {
+        toast.error("Cannot add process. Invalid data provided.");
+      } else {
+        toast.error("Cannot add process. Backend failure");
+      }
     }
   }
 
   /**
    * @function deleteProcess
-   * @description Sends a DELETE request to remove a process from the database and updates the local state.
-   * @param processId the ID of the process to delete
-   * @returns {Promise<void>} A promise that resolves when the process is deleted
+   * @description Deletes a process by its ID. Makes a DELETE request to the backend,
+   * then updates the state to remove the deleted process and fetches all tasks.
+   * @param {Number} processId - The ID of the process to delete. Expected to be an integer. Required.
+   * @returns {Promise<void>} A promise that resolves when the process is deleted and tasks are fetched.
    */
   async function deleteProcess(processId) {
     try {
-      console.log("Deleting process from DB");
       await axios.delete(`${BASE_URL}processes/${processId}`);
-      console.log("Process deleted from DB:", processId);
+      setProcesses(processes.filter(p => p.id !== processId));
+      await fetchAllTasks();
     } catch (error) {
-      console.error("Error deleting process from DB:", error);
+        console.error("Error deleting process:", error);
+      if (error.response && error.response.status === 404) {
+        toast.error(`Process with ID ${processId} not found.`);
+        } else {
+        toast.error("Cannot delete process. Backend failure");
+        }
     }
-    setProcesses(processes.filter(process => process.processId !== processId));
   }
 
   /**
    * @function updateProcess
-   * @description Sends a PUT request to update a process in the database and updates the local state.
-   * @param processId the ID of the process to update
-   * @param updatedFields an object containing the fields to update
-   * @returns {Promise<void>} A promise that resolves when the process is updated
+   * @description Updates an existing process with new fields. Makes a PUT request to the backend,
+   * then updates the process in the state.
+   * @param {Number} processId - The ID of the process to be updated. Expected to be an integer. Required.
+   * @param {Object} updatedFields - An object containing the fields to be updated. Required.
+   * @returns {Promise<void>} A promise that resolves when the process is updated.
    */
   async function updateProcess(processId, updatedFields) {
     try {
-      const foundProcess = processes.find(p => p.processId === processId);
-      if (!foundProcess) {
-        console.error("Process not found:", processId);
-        return;
-      }
-      console.log("Updating process:", updatedFields);
       const response = await axios.put(`${BASE_URL}processes/${processId}`, updatedFields);
-      console.log("response:", response.data);
-      //TODO: replace with response data once backend updates description
-      const updatedProcess = {...foundProcess, ...updatedFields};
-      setProcesses(processes.map(p => p.processId === processId ? updatedProcess : p));
+      setProcesses(processes.map(p => p.id === processId ? response.data : p));
     } catch (error) {
-      console.error("Error updating process in DB:", error);
+      console.error("Error updating process:", error);
+        if (error.response && error.response.status === 400) {
+            toast.error("Cannot update process. Invalid data provided.");
+        } else {
+            toast.error("Cannot update process. Backend failure");
+        }
     }
   }
 
+  /**
+   * @function deleteTaskIdFromProcess
+   * @description Deletes a task ID from a process's taskIds array in the state.
+   * @param {Number} processId - The ID of the process from which to delete the task ID. Expected to be an integer. Required.
+   * @param {Number} taskId - The task ID to delete from the process's taskIds array. Expected to be an integer. Required.
+   */
+  function deleteTaskIdFromProcess(processId, taskId) {
+    setProcesses(processes.map(p =>
+      p.id === processId
+        ? {...p, taskIds: p.taskIds.filter(id => id !== taskId)}
+        : p
+    ));
+  }
+
   return (
-    <ProcessContext value={{
+    <ProcessContext.Provider value={{
       processes,
       addProcess,
       deleteProcess,
       updateProcess,
-      initializeProcessesFromDB,
-      fetchAllProcesses,
-      fetchProcessById,
-      deleteTaskIdFromProcess
+      deleteTaskIdFromProcess,
+      fetchProcessById
     }}>
       {children}
-    </ProcessContext>
-  )
+    </ProcessContext.Provider>
+  );
 }

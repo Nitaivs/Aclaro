@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {EmployeeContext} from "./EmployeeContext.jsx";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 /**
  * @Component EmployeeProvider
@@ -44,27 +45,19 @@ export function EmployeeProvider({children}) {
    * @description Fetches all employees from the database and updates the state.
    * @returns {Promise<void>} A promise that resolves when the employees are fetched and state is updated.
    */
-  async function fetchAllEmployees() {
+async function fetchAllEmployees() {
     try {
-      console.log("Fetching all employees from DB");
-      //TODO: replace mock response once backend is ready
-      const response = {
-        data: [
-          {
-            firstName: "John", lastName: "Doe", id: 1
-          },
-          {
-            firstName: "Jane", lastName: "Doe", id: 2
-          }]
-      }
-      //TODO: update endpoint if needed
-      // const response = await axios.get(`${BASE_URL}employees`);
-      console.log("Employees:", response.data)
-      setEmployees(response.data);
+        console.log("Fetching all employees from DB");
+        const response = await axios.get(`${BASE_URL}employees`);
+        const data = Array.isArray(response.data) ? response.data : response.data?.employees ?? [];
+        console.log("Employees:", data);
+        setEmployees(data);
+        return data;
     } catch (error) {
-      console.error("Error fetching employees from DB:", error);
+        console.error("Error fetching employees from DB:", error);
+        throw error;
     }
-  }
+}
 
   /**
    * @function fetchEmployeeById
@@ -89,21 +82,50 @@ export function EmployeeProvider({children}) {
       setEmployees([...employees, response.data]);
     } catch (error) {
       console.error(`Error fetching employee with id ${id} from DB:`, error);
+      if (error.response && error.response.status === 404) {
+        toast.error(`Employee with ID ${id} not found.`);
+    } else {
+        toast.error(`Backend failure while fetching employee with ID ${id}.`);
+      }
     }
   }
 
-  //TODO: implement adding departments to employees
-  function updateEmployee(id, updatedFields) {
-    //TODO: implement update request to backend when backend is ready
-    setEmployees(employees.map(employee =>
-      employee.id === id ? {...employee, ...updatedFields} : employee
-    ));
-  }
+  /**
+   * @function updateEmployee
+   * @description Updates an employee's details in the database.
+   * Sends a patch request and updates the state with the updated employee details.
+   * @param {number} id is the employee id to update
+   * @param {Object} updatedFields - An object containing the fields to update.
+   * @returns
+   */
+    async function updateEmployee(id, updatedFields) {
+        try {
+            console.log(`Patching employee ${id} with payload:`, updatedFields);
+            const response = await axios.patch(`${BASE_URL}employees/${id}`, updatedFields);
+            console.log(response.data);
+            const updatedEmployee = response.data;
+            setEmployees(prev =>
+                prev.some(e => e.id === id)
+                    ? prev.map(e => (e.id === id ? updatedEmployee : e))
+                    : [...prev, updatedEmployee]
+            );
+            await fetchAllEmployees();
+            return updatedEmployee;
+        } catch (error) {
+            console.error(`Error updating employee with id ${id} on DB:`, error);
+            if (error.response && error.response.status === 400) {
+                toast.error("Cannot update employee. Invalid data provided.");
+            } else {
+                toast.error("Cannot update employee. Backend failure");
+            }
+        }
+    }
+
 
   /**
    * @function deleteEmployeeById Deletes an employee by their ID from the database.
    * Sends a delete request and updates the state to remove the deleted employee.
-   * @param id - The ID of the employee to delete.
+   * @param {number} id - The ID of the employee to delete.
    * @returns {Promise<void>} A promise that resolves when the employee is deleted and state is updated.
    */
   async function deleteEmployeeById(id) {
@@ -111,9 +133,15 @@ export function EmployeeProvider({children}) {
       console.log(`Deleting employee with id ${id} from DB`);
       const response = await axios.delete(`${BASE_URL}employees/${id}`);
       console.log(response);
+      await fetchAllEmployees()
       setEmployees(employees.filter(employee => employee.id !== id));
     } catch (error) {
       console.error(`Error deleting employee with id ${id} from DB:`, error);
+        if (error.response && error.response.status === 404) {
+            toast.error(`Employee with ID ${id} not found. Please refresh the page.`);
+        } else {
+            toast.error("Cannot delete employee. Backend failure");
+        }
     }
   }
 
@@ -125,22 +153,23 @@ export function EmployeeProvider({children}) {
    * @param lastName - The last name of the employee to add.
    * @returns {Promise<void>} A promise that resolves when the employee is added and state is updated.
    */
-  async function addEmployee(firstName, lastName) {
+async function addEmployee(firstName, lastName) {
     try {
-      console.log(`Adding employee with name ${name} to DB`);
-      // const response = await axios.post(`${BASE_URL}employees`, {name});
-      // console.log(response);
-      // setEmployees([...employees, response.data]);
-      //TODO: remove mock response once backend is ready
-      // const mockResponse = {data: {name: name, id: Math.floor(Math.random() * 10000)}};
-      const mockResponse = {data: {firstName: firstName, lastName: lastName, id: Math.floor(Math.random() * 10000)}};
-      console.log(mockResponse);
-      setEmployees([...employees, mockResponse.data]);
+        console.log(`Adding employee ${firstName} ${lastName} to DB`);
+        const response = await axios.post(`${BASE_URL}employees`, { firstName, lastName });
+        console.log("Added employee:", response.data);
+        setEmployees(prev => [...prev, response.data]);
+        await fetchAllEmployees()
+        return response.data;
     } catch (error) {
-      console.error(`Error adding employee with name ${name} to DB:`, error);
-      throw error; // Rethrow error to inform caller
+        console.error(`Error adding employee ${firstName} ${lastName} to DB:`, error);
+        if (error.response && error.response.status === 400) {
+            throw new Error("Cannot add employee. Invalid data provided.");
+        } else {
+            throw new Error("Cannot add employee. Backend failure");
+        }
     }
-  }
+}
 
   return (
     <EmployeeContext.Provider value={{

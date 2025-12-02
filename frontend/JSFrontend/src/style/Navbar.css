@@ -1,0 +1,74 @@
+/* CSS for Navbar.jsx */
+.navbar {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 240px;
+    height: calc(100vh - 80px);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px 16px 16px;
+    border-right: 1px solid #ccc;
+    background-color: #C1121F;
+    z-index: 1000;
+}
+
+.navbar-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: white;
+}
+
+
+/* Link used as button */
+.navbar-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: white;
+    text-align: left;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 120ms linear;
+    text-decoration: none;
+    color: inherit;
+    border: none;
+    border-radius: 0;
+}
+
+/* slightly darken on hover/focus */
+.navbar-button:hover,
+.navbar-button:focus {
+    background-color: #f2f2f2;
+    outline: none;
+}
+
+/* icon sizing and placement; don't capture pointer so the parent receives hover */
+.navbar-button img {
+    height: 30px;
+    width: 30px;
+    flex: 0 0 30px;
+    margin: 0;
+    display: block;
+    pointer-events: none;
+}
+
+/* button title: allow pointer events so it can receive hover/focus styling */
+.navbar-button h4 {
+    margin: 0;
+    font-weight: 600;
+    display: block;
+    color: #444;
+    transition: color 120ms linear;
+}
+
+/* darken title color when the button/link is hovered or focused */
+.navbar-button:hover h4,
+.navbar-button:focus h4 {
+    color: #000;
+}

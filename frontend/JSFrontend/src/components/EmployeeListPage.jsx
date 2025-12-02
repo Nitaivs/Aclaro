@@ -1,7 +1,6 @@
-import {use, useState} from "react";
+import {useContext, useState} from "react";
 import {EmployeeContext} from "../Context/EmployeeContext/EmployeeContext.jsx";
 import AddEmployeeDialog from "./AddEmployeeDialog.jsx";
-import {Link} from "react-router";
 import {
   Alert,
   AlertTitle,
@@ -10,11 +9,11 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemAvatar,
-  Avatar,
-  Divider
+  Divider,
 } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
+import EmployeeItem from "./EmployeeItem.jsx";
+import '../style/DetailPanel.css'
 
 /**
  * @component EmployeeListPage
@@ -23,7 +22,7 @@ import Collapse from "@mui/material/Collapse";
  * @returns {JSX.Element} The rendered EmployeeListPage component.
  */
 export default function EmployeeListPage() {
-  const {employees, addEmployee} = use(EmployeeContext);
+  const {employees, addEmployee} = useContext(EmployeeContext);
   const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,7 +31,6 @@ export default function EmployeeListPage() {
   // Filter employees based on the filterString
   const filtered = employees.filter(emp => `
     ${emp?.firstName || ''} ${emp?.lastName || ''}`.toLowerCase().includes(filterString.trim().toLowerCase())
-
   );
 
   /**
@@ -54,49 +52,32 @@ export default function EmployeeListPage() {
   }
 
   return (
-    <div>
-      <Link to={"/"}>
-        <button>
-          Return to dashboard
-        </button>
-      </Link>
-
-      <h1>Employee list</h1>
-      <button onClick={() => setIsAddEmployeeDialogOpen(true)}>
-        Add employee
-      </button>
-
-      <AddEmployeeDialog
-        isOpen={isAddEmployeeDialogOpen}
-        onSave={handleAddEmployee}
-        onClose={() => setIsAddEmployeeDialogOpen(false)}
-      />
-
-      <Collapse in={showErrorAlert}>
-        <Alert sx={{width: '100%'}} title="Error" severity="error" onClose={() => setShowErrorAlert(false)}>
-          <AlertTitle>Error</AlertTitle>
-          {errorMessage}
-        </Alert>
-      </Collapse>
-
-      {/* Search Field */}
-      <TextField
-        value={filterString}
-        onChange={(e) => setFilterString(e.target.value)}
-        placeholder="Search by name"
-        fullWidth
-        size="small"
-        color="white"
-        sx={{
-          mb: 1,
-          '& .MuiInputBase-root': {
-            backgroundColor: 'white',
-            borderRadius: 1,
-          },
-        }}
-      />
-
-      <Paper variant="outlined" sx={{p: 1}}>
+    <>
+      <div className="detail-container">
+        <div className="detail-header">
+          <h2>Employees</h2>
+        </div>
+        <div className="detail-actions-container">
+          <button onClick={() => setIsAddEmployeeDialogOpen(true)}>
+            Add employee
+          </button>
+          {/* Search Field */}
+          <TextField
+            value={filterString}
+            onChange={(e) => setFilterString(e.target.value)}
+            placeholder="Search by name"
+            fullWidth
+            size="small"
+            color="white"
+            sx={{
+              mb: 1,
+              '& .MuiInputBase-root': {
+                backgroundColor: 'white',
+                borderRadius: 1,
+              },
+            }}
+          />
+        </div>
         <List>
           {filtered.length === 0 ? (
             <ListItem>
@@ -106,24 +87,32 @@ export default function EmployeeListPage() {
               />
             </ListItem>
           ) : (
-            filtered.map((emp, idx) => (
-              <div key={emp.id ?? idx}>
-                <Link to={`/employees/${emp.id}`}>
+            filtered.map((emp, idx) => {
+              return (
+                <div key={emp.id ?? idx}>
                   <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                      <Avatar></Avatar>
-                    </ListItemAvatar>
-                    <p>
-                      {emp.firstName} {emp.lastName}
-                    </p>
+                    <EmployeeItem employeeId={emp.id}/>
                   </ListItem>
                   {idx < filtered.length - 1 && <Divider component="li"/>}
-                </Link>
-              </div>
-            ))
+                </div>
+              );
+            })
           )}
         </List>
-      </Paper>
-    </div>
+      </div>
+
+      <Collapse in={showErrorAlert}>
+        <Alert sx={{width: '100%'}} title="Error" severity="error" onClose={() => setShowErrorAlert(false)}>
+          <AlertTitle>Error</AlertTitle>
+          {errorMessage}
+        </Alert>
+      </Collapse>
+
+      <AddEmployeeDialog
+        isOpen={isAddEmployeeDialogOpen}
+        onSave={handleAddEmployee}
+        onClose={() => setIsAddEmployeeDialogOpen(false)}
+      />
+    </>
   )
 }

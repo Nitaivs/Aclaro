@@ -1,0 +1,106 @@
+/* Description: Reusable CSS for use with components such as ProcessPage, TaskPage, etc. */
+.detail-container {
+    min-width: 600px;
+    border-radius: 16px;
+    border: 1px solid black;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+}
+
+.detail-container ul {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.detail-container ul li {
+    border-bottom: 1px solid grey;
+    transition: background-color 0.12s ease;
+}
+
+.detail-container ul li:hover {
+    background-color: #f9f9f9;
+}
+
+.detail-container ul li:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+/* Modal variant for displaying TaskPage in a modal */
+.detail-container.modal {
+    margin-left: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.detail-header {
+    background: linear-gradient(90deg, #8b0000 0%, #d00000 100%);
+    color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.detail-header h2 {
+    margin: 0 0 0 20px;
+}
+
+.detail-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border-bottom: 1px solid grey;
+}
+
+.detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.detail-title {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.detail-description {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #333;
+}
+
+/* For use with actions that are in the same row as the detail info */
+.detail-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 20px;
+}
+
+.detail-actions .icon-img {
+    width: 40px;
+    height: 40px;
+}
+
+/* For use when actions are in their own container */
+.detail-actions-container {
+    display: flex;
+    gap: 12px;
+    padding: 20px 20px;
+    align-items: center;
+    border-bottom: 2px solid grey;
+}

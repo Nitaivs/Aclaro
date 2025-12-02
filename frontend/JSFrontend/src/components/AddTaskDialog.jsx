@@ -1,32 +1,39 @@
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 export default function AddTaskDialog({onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
   const [nameError, setNameError] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(isOpen || false);
 
-  useEffect(() => {
-    setIsDialogOpen(isOpen);
-  }, [isOpen]);
+  //TODO: improve error handling across file
 
-  function handleOnSave() {
-    if (!nameInput) {
-      setNameError(true);
-      return;
+  async function handleOnSave() {
+    try {
+      if (!nameInput) {
+        setNameError(true);
+        return;
+      }
+      //TODO: only close dialog if onSave is successful
+      await onSave(nameInput, descriptionInput);
+      handleOnClose()
+    } catch (error) {
+      console.error("Error adding task:", error);
     }
-    onSave(nameInput, descriptionInput);
+  }
+
+  function handleOnClose() {
     setNameInput("");
     setDescriptionInput("");
+    setNameError(false);
     onClose();
   }
 
   return (
-    <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-      <DialogTitle>Add New Process</DialogTitle>
+    <Dialog open={isOpen} onClose={handleOnClose}>
+      <DialogTitle>Add New Task</DialogTitle>
       <div style={{padding: '0 24px 24px 24px'}}>
         <TextField
           autoFocus

@@ -1,10 +1,42 @@
-import { Route, Routes, BrowserRouter } from "react-router";
-import Dashboard from "./Dashboard.jsx";
+import {Route, Routes, BrowserRouter, useLocation} from "react-router";
 import ProcessPage from "./ProcessPage.jsx";
 import TaskPage from "./TaskPage.jsx";
 import EmployeeListPage from "./EmployeeListPage.jsx";
 import EmployeePage from "./EmployeePage.jsx";
 import ProcessListPage from "./ProcessListPage.jsx";
+import TaskListPage from "./TaskListPage.jsx";
+import TagListPage from "./TagListPage.jsx";
+import DepartmentPage from "./DepartmentPage.jsx";
+import TaskModal from "./TaskModal.jsx";
+import Navbar from "./Navbar.jsx";
+import Header from "./Header.jsx";
+import '../style/Content.css'
+
+function AppRoutes() {
+  const location = useLocation();
+  const background = location.state && location.state.background;
+
+  return (
+    <>
+      <Routes location={background || location}>
+        <Route path="/" element={<ProcessListPage/>}/>
+        <Route path="/processes" element={<ProcessListPage/>}/>
+        <Route path="/process/:processId" element={<ProcessPage/>}/>
+        <Route path="/tasks" element={<TaskListPage/>}/>
+        <Route path="/tasks/:taskId" element={<TaskPage/>}/>
+        <Route path="/employees" element={<EmployeeListPage/>}/>
+        <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
+        <Route path="/tags/" element={<TagListPage/>}/>
+        <Route path="/tags/department/:departmentId" element={<DepartmentPage/>}/>
+      </Routes>
+      {background && (
+        <Routes>
+          <Route path={"/tasks/:taskId"} element={<TaskModal/>}/>
+        </Routes>
+      )}
+    </>
+  );
+}
 
 /**
  * @component Router
@@ -15,14 +47,13 @@ import ProcessListPage from "./ProcessListPage.jsx";
 export default function Router() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Dashboard/>}/>
-        <Route path="/processes" element={<ProcessListPage/>}/>
-        <Route path="/process/:processId" element={<ProcessPage/>}/>
-        <Route path="/process/:processId/task/:taskId" element={<TaskPage/>}/>
-        <Route path="/employees" element={<EmployeeListPage/>}/>
-        <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
-      </Routes>
+      <div className={"content"}>
+        <Header/>
+        <Navbar/>
+        <main style={{padding: 16}}>
+          <AppRoutes/>
+        </main>
+      </div>
     </BrowserRouter>
   )
 }
