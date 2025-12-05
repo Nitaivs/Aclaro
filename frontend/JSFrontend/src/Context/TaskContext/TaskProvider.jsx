@@ -43,15 +43,21 @@ export function TaskProvider({children}) {
         return;
       }
 
-      await axios.post(`${BASE_URL}tasks?processId=${processId}`, {
-        processId,
-        name,
-        description,
-        parentTaskId
-      });
-      await fetchAllTasks();
-    } catch (error) {
-      toast.error("Error adding task:", error);
+            await axios.post(`${BASE_URL}tasks?processId=${processId}`, {
+                processId,
+                name,
+                description,
+                parentTaskId
+            });
+            await fetchAllTasks();
+        } catch (error) {
+            console.error("Error adding task:", error);
+            if (error.response && error.response.status === 400) {
+                toast.error("Cannot add task. Invalid data provided.");
+            } else {
+                toast.error("Backend failure. Please refresh the page and try again.");
+            }
+        }
     }
   }
 

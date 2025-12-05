@@ -95,7 +95,7 @@ export function TagProvider({children}) {
       if (error.response && error.response.status === 409) {
         throw new Error("Department with this name already exists.");
       }
-        throw new error("Failed to add department. Backend failure");
+        throw new Error("Failed to add department. Backend failure");
     }
   }
 
