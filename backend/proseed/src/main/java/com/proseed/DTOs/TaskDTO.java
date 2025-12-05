@@ -19,4 +19,6 @@ public class TaskDTO {
     private List<TaskDTO> subTasks;
     private Long parentTaskId;
     private Long processId;
+    private List<SkillDTO> skills;
+    private List<DepartmentDTO> departments;
 }

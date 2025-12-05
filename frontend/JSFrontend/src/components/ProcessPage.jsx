@@ -1,22 +1,21 @@
 import {useParams, useNavigate} from "react-router";
-import {use, useEffect} from "react";
+import {use, useEffect, useState} from "react";
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
-import {useState} from "react";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
+import {DataContext} from "../Context/DataContext/DataContext.jsx";
+import {ProcessOperationsProvider} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
+import {IconButton} from "@mui/material";
 import EditProcessDetailsDialog from "./EditProcessDetailsDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
 import '@xyflow/react/dist/style.css'
 import {ReactFlow} from "@xyflow/react";
 import ProcessNode from "./ProcessNode.jsx";
 import TaskNode from "./TaskNode.jsx";
-import {ProcessOperationsProvider} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
-import {IconButton} from "@mui/material";
 import CustomEdge from "./CustomEdge.jsx";
 import editIcon from '../assets/edit.svg';
 import deleteIcon from '../assets/delete.svg';
 import '../style/DetailPanel.css';
 import '../style/ReactFlow.css';
-import {DataContext} from "../Context/DataContext/DataContext.jsx";
 
 // Define custom node types for React Flow
 const nodeTypes = {
@@ -291,7 +290,10 @@ export default function ProcessPage() {
 
   return (
     <>
-      <div className="detail-container">
+      <div className="detail-container" style={{
+        //TODO: fix hardcoded width
+        width: 'calc(100vw - 360px)'
+      }}>
         {/* Header */}
         <div className="detail-header">
           <h2>

@@ -1,5 +1,6 @@
 import {Dialog, DialogTitle, TextField} from '@mui/material';
 import {useState} from 'react';
+import '../style/Dialog.css';
 
 /**
  * @Component AddTagDialog
@@ -51,28 +52,40 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
 
   //Can currently only add names. No links to employees or skills, etc.
   return (
-    <Dialog open={isOpen} onClose={handleClose}>
-      <DialogTitle>Add a new tag</DialogTitle>
-      <div style={{padding: '0 24px 24px 24px'}}>
-        <label>
-          <input
-            type={"radio"}
-            name={"tagType"}
-            value={"department"}
-            checked={selectedType === "department"}
-            onChange={() => setSelectedType("department")}
-          /> Department
-        </label>
-        <label>
-          <input
-            type={"radio"}
-            name={"tagType"}
-            value={"skill"}
-            checked={selectedType === "skill"}
-            onChange={() => setSelectedType("skill")}
-            style={{marginLeft: '12px'}}
-          /> Skill
-        </label>
+    <Dialog
+      slotProps={{
+        paper: {
+          className: 'dialog-paper'
+        }
+      }}
+      open={isOpen}
+      onClose={handleClose}>
+      <div className="dialog-container">
+      <div className="dialog-header">
+        <h3>Add a new tag</h3>
+      </div>
+      <div className="dialog-actions">
+        <div className="dialog-actions-radio-group">
+          <label>
+            <input
+              type={"radio"}
+              name={"tagType"}
+              value={"department"}
+              checked={selectedType === "department"}
+              onChange={() => setSelectedType("department")}
+            /> Department
+          </label>
+          <label>
+            <input
+              type={"radio"}
+              name={"tagType"}
+              value={"skill"}
+              checked={selectedType === "skill"}
+              onChange={() => setSelectedType("skill")}
+              style={{marginLeft: '12px'}}
+            /> Skill
+          </label>
+        </div>
         <TextField
           autoFocus
           margin="dense"
@@ -86,12 +99,11 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
           value={nameInput}
           onChange={(e) => setNameInput(e.target.value)}
         />
-        <button onClick={() => handleOnSave()}>Add</button>
-        <button onClick={() => {
-          handleClose();
-        }}>
-          Cancel
-        </button>
+        <div className="dialog-actions-buttons">
+          <button className="cancel-button" onClick={() => handleClose()}>Cancel</button>
+          <button className="confirm-button" onClick={() => handleOnSave()}>Add</button>
+        </div>
+      </div>
       </div>
     </Dialog>
   );
