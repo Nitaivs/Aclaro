@@ -121,7 +121,6 @@ async function fetchAllEmployees() {
         }
     }
 
-
   /**
    * @function deleteEmployeeById Deletes an employee by their ID from the database.
    * Sends a delete request and updates the state to remove the deleted employee.

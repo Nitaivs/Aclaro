@@ -5,36 +5,48 @@ import {
   Alert,
   AlertTitle,
   TextField,
-  Paper,
-  List,
   ListItem,
   ListItemText,
-  Divider,
-  IconButton
+  Box
 } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 import TagItem from "./TagItem.jsx";
+import '../style/DetailPanel.css';
 
 export default function TagListPage() {
   const {departments, skills, addDepartment, addSkill} = useContext(TagContext);
   const [isAddTagDialogOpen, setIsAddDepartmentDialogOpen] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [filterString, setFilterString] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("");
+  const [skillFilter, setSkillFilter] = useState("");
+  const [tagFilter, setTagFilter] = useState("");
 
-  //Combine departments and skills into a single list with type information
-  const combinedTags = useMemo(() => {
-    const departmentsWithType = (departments || []).map(dept => ({...dept, type: 'department'}));
-    const skillsWithType = (skills || []).map(skill => ({...skill, type: 'skill'}));
-    return [...departmentsWithType, ...skillsWithType];
-  }, [departments, skills]);
+  //TODO: clean up unused code
+  const filteredDepartments = useMemo(() => {
+    const query = (departmentFilter || "").trim().toLowerCase();
+    const list = (departments || []);
+    if (!query) return list;
+    return list.filter(dept => dept.name?.toLowerCase().includes(query));
+  }, [departments, departmentFilter]);
 
-  const filtered = useMemo(() => {
-    const query = (filterString || "").trim().toLowerCase();
-    return combinedTags.filter(tag => {
-      return tag.name.toLowerCase().includes(query);
-    });
-  }, [combinedTags, filterString]);
+  const filteredSkills = useMemo(() => {
+    const query = (skillFilter || "").trim().toLowerCase();
+    const list = (skills || []);
+    if (!query) return list;
+    return list.filter(skill => skill.name?.toLowerCase().includes(query));
+  }, [skills, skillFilter]);
+
+  const filteredTags = useMemo(() => {
+    const query = (tagFilter || "").trim().toLowerCase();
+    const deptList = (departments || []);
+    const skillList = (skills || []);
+    if (!query) return {departments: deptList, skills: skillList};
+    return {
+      departments: deptList.filter(dept => dept.name?.toLowerCase().includes(query)),
+      skills: skillList.filter(skill => skill.name?.toLowerCase().includes(query))
+    };
+  }, [departments, skills, tagFilter]);
 
   /**
    * @function handleAddTag
@@ -62,68 +74,155 @@ export default function TagListPage() {
   }
 
   return (
-    <div>
-      <h1>Tag list</h1>
-      <button style={{marginBottom: '10px'}} onClick={() => setIsAddDepartmentDialogOpen(true)}>
-        Add tag
-      </button>
-
+    <>
       <AddTagDialog
         isOpen={isAddTagDialogOpen}
         onSave={handleAddTag}
         onClose={() => setIsAddDepartmentDialogOpen(false)}
       />
 
-      <Collapse in={showErrorAlert}>
-        <Alert sx={{width: '100%'}} title="Error" severity="error" onClose={() => setShowErrorAlert(false)}>
-          <AlertTitle>Error</AlertTitle>
-          {errorMessage}
-        </Alert>
-      </Collapse>
-      {/* Search Field */}
-      <TextField
-        value={filterString}
-        onChange={(e) => setFilterString(e.target.value)}
-        placeholder="Search by name"
-        fullWidth
-        size="small"
-        color="white"
-        sx={{
-          mb: 1,
-          '& .MuiInputBase-root': {
-            backgroundColor: 'white',
-            borderRadius: 1,
-          },
-        }}
-      />
+      <div>
+        <div className="detail-container">
+          <div className="detail-header">
+            <h2>Tag list</h2>
+          </div>
+          <div className="detail-actions-container">
+            <button className="add-button" onClick={() => setIsAddDepartmentDialogOpen(true)}>
+              Add Tag
+            </button>
+            {/* TODO: unify search fields(?)*/}
+            <TextField
+              value={tagFilter}
+              onChange={(e) => setTagFilter(e.target.value)}
+              placeholder="Search by name"
+              size="small"
+              color="white"
+              sx={{
+                width: '70%',
+                mx: 'auto',
+                // display: 'block',
+                '& .MuiInputBase-root': {
+                  backgroundColor: 'white',
+                  borderRadius: 3,
+                },
+              }}
+            />
+          </div>
 
-      <Paper variant="outlined" sx={{p: 1}}>
-        <List>
-          {filtered.length === 0 ? (
-            <ListItem>
-              <ListItemText
-                primary="No tags found"
-                secondary={filterString ? `No tags match "${filterString}".` : "There are currently no tags to display."}
-              />
-            </ListItem>
-          ) : (
-            filtered.map((tag, idx) => (
-              <div key={`${tag.type}-${tag.id}`}>
-                <ListItem alignItems="flex-start">
-                  <TagItem
-                    type={tag.type}
-                    name={tag.name}
-                    tagId={tag.id}
-                    isEditable={tag.type === "skill"}
-                    isDeletable={true}
-                  />
-                </ListItem>
-                {idx < filtered.length - 1 && <Divider component="li"/>}
-              </div>
-            ))
-          )}
-        </List>
-      </Paper>
-    </div>
+          <Collapse in={showErrorAlert}>
+            <Alert sx={{width: '100%'}} title="Error" severity="error" onClose={() => setShowErrorAlert(false)}>
+              <AlertTitle>Error</AlertTitle>
+              {errorMessage}
+            </Alert>
+          </Collapse>
+
+          <div className="detail-content">
+            {/* Side-by-side lists */}
+            <Box sx={{display: 'flex', gap: 4, flexWrap: 'wrap'}}>
+              {/* Departments List */}
+              <Box sx={{flex: 1, minWidth: 300}}>
+                <div className="detail-container detail-container-small">
+                  <div className="detail-header">
+                    <h2>Departments</h2>
+                  </div>
+                  {/*TODO: delete individual search fields?*/}
+                  {/*<div className="detail-actions-container">*/}
+                  {/*<TextField*/}
+                  {/*  value={departmentFilter}*/}
+                  {/*  onChange={(e) => setDepartmentFilter(e.target.value)}*/}
+                  {/*  placeholder="Search by name"*/}
+                  {/*  size="small"*/}
+                  {/*  color="white"*/}
+                  {/*  sx={{*/}
+                  {/*    width: '100%',*/}
+                  {/*    mx: 'auto',*/}
+                  {/*    display: 'block',*/}
+                  {/*    '& .MuiInputBase-root': {*/}
+                  {/*      backgroundColor: 'white',*/}
+                  {/*      borderRadius: 3,*/}
+                  {/*    },*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                  {/*</div>*/}
+                  {filteredTags.departments.length === 0 ? (
+                    <ListItem>
+                      <ListItemText
+                        primary="No departments found"
+                        secondary={tagFilter ? `No departments match "${tagFilter}".` : "There are currently no departments to display."}
+                      />
+                    </ListItem>
+                  ) : (
+                    <ul>
+                      {filteredTags.departments.map((dept) => (
+                        <li key={`dept-${dept.id}`}>
+                          <TagItem
+                            type="department"
+                            name={dept.name}
+                            tagId={dept.id}
+                            isEditable={false}
+                            isDeletable={true}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </Box>
+              {/* Skills List */}
+              <Box sx={{flex: 1, minWidth: 300}}>
+                <div className="detail-container detail-container-small">
+                  <div className="detail-header">
+                    <h2>Skills</h2>
+                  </div>
+                  {/*TODO: delete individual search bars and use only the main one*/}
+                  {/*<div className="detail-actions-container">*/}
+                  {/*<TextField*/}
+                  {/*  value={skillFilter}*/}
+                  {/*  onChange={(e) => setSkillFilter(e.target.value)}*/}
+                  {/*  placeholder="Search by name"*/}
+                  {/*  size="small"*/}
+                  {/*  color="white"*/}
+                  {/*  sx={{*/}
+                  {/*    width: '100%',*/}
+                  {/*    mx: 'auto',*/}
+                  {/*    display: 'block',*/}
+                  {/*    '& .MuiInputBase-root': {*/}
+                  {/*      backgroundColor: 'white',*/}
+                  {/*      borderRadius: 3,*/}
+                  {/*    },*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                  {/*</div>*/}
+                  {filteredTags.skills.length === 0 ? (
+                    <ListItem>
+                      <ListItemText
+                        primary="No skills found"
+                        secondary={tagFilter ? `No skills match "${tagFilter}".` : "There are currently no skills to display."}
+                      />
+                    </ListItem>
+                  ) : (
+                    <div>
+                      <ul>
+                        {filteredTags.skills.map((skill) => (
+                          <li key={`skill-${skill.id}`}>
+                            <TagItem
+                              type="skill"
+                              name={skill.name}
+                              tagId={skill.id}
+                              isEditable={true}
+                              isDeletable={true}
+                            />
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </Box>
+            </Box>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

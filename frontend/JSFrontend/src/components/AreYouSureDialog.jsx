@@ -1,19 +1,30 @@
 import {Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@mui/material';
+import '../style/Dialog.css'
+
 export default function AreYouSureDialog({message, title, isOpen, onConfirm, onCancel}) {
   return (
-    <Dialog open={isOpen} onClose={onCancel}>
-      <DialogTitle>{title || "Are you sure?"}</DialogTitle>
-      <DialogContent>
-        <p>{message || "Are you sure you want to proceed with this action?"}</p>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onCancel} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={onConfirm} color="secondary" autoFocus>
-          Confirm
-        </Button>
-      </DialogActions>
+    <Dialog
+      slotProps={{
+        paper: {
+          className: 'dialog-paper'
+        }
+      }}
+      open={isOpen}
+      onClose={onCancel}>
+      <div className="dialog-container">
+        <div className="dialog-header">
+          <h3>{title || "Are you sure?"}</h3>
+        </div>
+        <div className="dialog-content">
+          <p>{message || "Are you sure you want to proceed with this action?"}</p>
+        </div>
+        <div className="dialog-actions">
+          <div className="dialog-actions-buttons">
+            <button className="cancel-button" onClick={onConfirm} autoFocus>Confirm</button>
+            <button className="confirm-button" onClick={onCancel}>Cancel</button>
+          </div>
+        </div>
+      </div>
     </Dialog>
   )
 }

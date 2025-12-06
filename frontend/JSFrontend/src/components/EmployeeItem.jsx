@@ -6,7 +6,6 @@ import editIcon from "../assets/edit.svg";
 import deleteIcon from "../assets/delete.svg";
 import EditEmployeeDialog from "./EditEmployeeDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
-import {Link} from 'react-router';
 
 
 export default function EmployeeItem({employeeId}) {

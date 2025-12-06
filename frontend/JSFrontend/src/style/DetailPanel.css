@@ -1,9 +1,14 @@
 /* Description: Reusable CSS for use with components such as ProcessPage, TaskPage, etc. */
 .detail-container {
     min-width: 600px;
+    width: 100%;
     border-radius: 16px;
-    border: 1px solid black;
+    border: 1px solid grey;
     box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+}
+
+.detail-container.detail-container-small {
+    min-width: 280px;
 }
 
 .detail-container ul {
@@ -64,8 +69,9 @@
 .detail-info {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     min-width: 0;
+    align-items: flex-start;
 }
 
 .detail-title {
@@ -89,6 +95,19 @@
     align-items: center;
     gap: 8px;
     margin-left: 20px;
+}
+
+.add-button {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: 1px grey solid;
+    cursor: pointer;
+    background: linear-gradient(180deg, #f2fff6 0%, #b2ffcc 100%);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.add-button:hover {
+    background: linear-gradient(180deg, #e0ffe8 0%, #a0ffbb 100%);
 }
 
 .detail-actions .icon-img {

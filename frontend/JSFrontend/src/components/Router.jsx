@@ -48,7 +48,6 @@ export default function Router() {
   return (
     <BrowserRouter>
       <div className={"content"}>
-        <Header/>
         <Navbar/>
         <main style={{padding: 16}}>
           <AppRoutes/>
