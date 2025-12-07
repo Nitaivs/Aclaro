@@ -1,5 +1,6 @@
 import {Dialog, DialogTitle, TextField} from '@mui/material';
 import {useState} from 'react';
+import '../style/Dialog.css'
 
 /**
  * @Component AddEmployeeDialog
@@ -42,43 +43,52 @@ export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleClose}>
-      <DialogTitle>Add New Employee</DialogTitle>
-      <div style={{padding: '0 24px 24px 24px'}}>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="First Name"
-          type="text"
-          fullWidth
-          variant="outlined"
-          required={true}
-          error={nameError}
-          helperText={nameError ? "First name is required" : ""}
-          value={firstNameInput}
-          onChange={(e) => setFirstNameInput(e.target.value)}
-        />
+    <Dialog
+      slotProps={{
+        paper: {
+          className: 'dialog-paper'
+        }
+      }}
+      open={isOpen}
+      onClose={handleClose}>
+      <div className="dialog-container">
+        <div className="dialog-header">
+          <h3>Add New Employee</h3>
+        </div>
+        <div className="dialog-actions">
+          <TextField
+            autoFocus
+            margin="dense"
+            label="First Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            required={true}
+            error={nameError}
+            helperText={nameError ? "First name is required" : ""}
+            value={firstNameInput}
+            onChange={(e) => setFirstNameInput(e.target.value)}
+          />
 
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Last Name"
-          type="text"
-          fullWidth
-          variant="outlined"
-          required={true}
-          error={nameError}
-          helperText={nameError ? "Last name is required" : ""}
-          value={lastNameInput}
-          onChange={(e) => setLastNameInput(e.target.value)}
-        />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Last Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            required={true}
+            error={nameError}
+            helperText={nameError ? "Last name is required" : ""}
+            value={lastNameInput}
+            onChange={(e) => setLastNameInput(e.target.value)}
+          />
 
-        <button onClick={() => handleOnSave()}>Add</button>
-        <button onClick={() => {
-          handleClose();
-        }}>
-          Cancel
-        </button>
+          <div className="dialog-actions-buttons">
+            <button className="cancel-button" onClick={() => handleClose()}>Cancel</button>
+            <button className="confirm-button" onClick={() => handleOnSave()}>Add</button>
+          </div>
+        </div>
       </div>
     </Dialog>
   )

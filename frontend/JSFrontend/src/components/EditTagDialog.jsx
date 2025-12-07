@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
-import {Dialog, DialogTitle, TextField, Button} from '@mui/material';
+import {Dialog, TextField} from '@mui/material';
+import '../style/Dialog.css'
 
 /**
  * @Component EditTagDialog
@@ -58,29 +59,46 @@ export default function EditTagDialog({currentName, onSave, isOpen, onClose}) {
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleOnClose}>
-      <DialogTitle>Edit Tag</DialogTitle>
-      <div style={{padding: '0 24px 24px 24px'}}>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Tag Name"
-          type="text"
-          fullWidth
-          variant="outlined"
-          required={true}
-          error={nameError}
-          helperText={nameError ? errorMessage : ""}
-          defaultValue={defaultName}
-          onChange={(e) => setNameInput(e.target.value)}
-        />
-        <div style={{marginTop: '16px'}}>
-          <Button variant="contained" color="primary" onClick={handleOnSave} style={{marginRight: '8px'}}>
-            Save
-          </Button>
-          <Button variant="outlined" color="secondary" onClick={handleOnClose}>
-            Cancel
-          </Button>
+    <Dialog
+      slotProps={{
+        paper: {
+          className: "dialog-paper",
+        }
+      }}
+      open={isOpen}
+      onClose={handleOnClose}>
+      <div className="dialog-container">
+        <div className="dialog-header">
+          <h3>Edit Tag</h3>
+        </div>
+        <div className="dialog-actions">
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Tag Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            required={true}
+            error={nameError}
+            helperText={nameError ? errorMessage : ""}
+            defaultValue={defaultName}
+            onChange={(e) => setNameInput(e.target.value)}
+            sx={{
+              '& .MuiInputBase-root': {
+                backgroundColor: 'white',
+                borderRadius: 3,
+              },
+            }}
+          />
+          <div className="dialog-actions-buttons">
+            <button className="cancel-button" onClick={handleOnClose}>
+              Cancel
+            </button>
+            <button className="confirm-button" onClick={handleOnSave}>
+              Save
+            </button>
+          </div>
         </div>
       </div>
     </Dialog>

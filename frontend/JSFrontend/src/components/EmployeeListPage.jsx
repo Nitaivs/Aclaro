@@ -5,7 +5,6 @@ import {
   Alert,
   AlertTitle,
   TextField,
-  Paper,
   List,
   ListItem,
   ListItemText,
@@ -58,8 +57,8 @@ export default function EmployeeListPage() {
           <h2>Employees</h2>
         </div>
         <div className="detail-actions-container">
-          <button onClick={() => setIsAddEmployeeDialogOpen(true)}>
-            Add employee
+          <button className="add-button" onClick={() => setIsAddEmployeeDialogOpen(true)}>
+            Add Employee
           </button>
           {/* Search Field */}
           <TextField
@@ -70,10 +69,12 @@ export default function EmployeeListPage() {
             size="small"
             color="white"
             sx={{
-              mb: 1,
+              width: '70%',
+              mx: 'auto',
+              display: 'block',
               '& .MuiInputBase-root': {
                 backgroundColor: 'white',
-                borderRadius: 1,
+                borderRadius: 3,
               },
             }}
           />

@@ -5,6 +5,7 @@ import '../style/PlusButton.css'
 import {TaskContext} from "../Context/TaskContext/TaskContext.jsx";
 import {ProcessOperationsContext} from "../Context/ProcessOperationsContext/ProcessOperationsContext.jsx";
 import {ProcessContext} from "../Context/ProcessContext/ProcessContext.jsx";
+import { toast } from "react-toastify";
 
 export default function PlusButton({parentTaskId, position = 'right'}) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -24,6 +25,7 @@ export default function PlusButton({parentTaskId, position = 'right'}) {
       await fetchProcessById(processId);
     } catch (error) {
       console.error("Error adding task:", error);
+      toast.error("Error adding task: " + error.message);
     }
   }
 

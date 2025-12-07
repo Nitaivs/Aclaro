@@ -2,6 +2,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import {useState} from "react";
+import '../style/Dialog.css'
 
 export default function AddTaskDialog({onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState("");
@@ -10,6 +11,12 @@ export default function AddTaskDialog({onSave, isOpen, onClose}) {
 
   //TODO: improve error handling across file
 
+  /**
+   * @function handleOnSave
+   * @description Handles the save action when adding a new task.
+   * Validates the input and calls the onSave callback if valid.
+   * @returns {Promise<void>} A promise that resolves when the save operation is complete.
+   */
   async function handleOnSave() {
     try {
       if (!nameInput) {
@@ -24,6 +31,11 @@ export default function AddTaskDialog({onSave, isOpen, onClose}) {
     }
   }
 
+  /**
+   * @function handleOnClose
+   * @description Handles the close action for the dialog.
+   * Resets the input fields and error state, then calls the onClose callback.
+   */
   function handleOnClose() {
     setNameInput("");
     setDescriptionInput("");
@@ -32,38 +44,46 @@ export default function AddTaskDialog({onSave, isOpen, onClose}) {
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleOnClose}>
-      <DialogTitle>Add New Task</DialogTitle>
-      <div style={{padding: '0 24px 24px 24px'}}>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Task Name"
-          type="text"
-          fullWidth
-          variant="outlined"
-          required={true}
-          error={nameError}
-          helperText={nameError ? "Task name is required" : ""}
-          value={nameInput}
-          onChange={(e) => setNameInput(e.target.value)}
-        />
-        <TextField
-          margin="dense"
-          label="Task Description"
-          type="text"
-          fullWidth
-          variant="outlined"
-          value={descriptionInput}
-          onChange={(e) => setDescriptionInput(e.target.value)}
-        />
-        <button onClick={() => handleOnSave()}>Add</button>
-        <button onClick={() => {
-          setNameInput("");
-          setDescriptionInput("");
-          onClose();
-        }}>Cancel
-        </button>
+    <Dialog
+      slotProps={{
+        paper: {
+          className: 'dialog-paper'
+        }
+      }}
+      open={isOpen}
+      onClose={handleOnClose}>
+      <div className="dialog-container">
+        <div className="dialog-header">
+        <h3>Add New Task</h3>
+        </div>
+        <div className="dialog-actions">
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Task Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            required={true}
+            error={nameError}
+            helperText={nameError ? "Task name is required" : ""}
+            value={nameInput}
+            onChange={(e) => setNameInput(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Task Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={descriptionInput}
+            onChange={(e) => setDescriptionInput(e.target.value)}
+          />
+          <div className="dialog-actions-buttons">
+            <button className="cancel-button" onClick={() => handleOnClose()}>Cancel</button>
+            <button className="confirm-button" onClick={() => handleOnSave()}>Add</button>
+          </div>
+        </div>
       </div>
     </Dialog>
   )
