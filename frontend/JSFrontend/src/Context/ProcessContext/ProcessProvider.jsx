@@ -36,9 +36,9 @@ export function ProcessProvider({children}) {
     } catch (error) {
       console.error("Error adding process:", error);
       if (error.response && error.response.status === 400) {
-        throw new Error("Cannot add process. Invalid data provided.");
+        toast.error("Cannot add process. Invalid data provided.");
       } else {
-        throw new Error("Cannot add process. Backend failure:" + error.response.status);
+        toast.error("Cannot add process. Backend failure");
       }
     }
     }
@@ -56,11 +56,11 @@ export function ProcessProvider({children}) {
       setProcesses(processes.filter(p => p.id !== processId));
       await fetchAllTasks();
     } catch (error) {
-      console.error("Error deleting process:", error);
+        console.error("Error deleting process:", error);
       if (error.response && error.response.status === 404) {
         toast.error(`Process with ID ${processId} not found.`);
         } else {
-        toast.error("Cannot delete process. Backend failure:" + error.response.status);
+        toast.error("Cannot delete process. Backend failure");
         }
     }
   }
@@ -82,7 +82,7 @@ export function ProcessProvider({children}) {
         if (error.response && error.response.status === 400) {
             toast.error("Cannot update process. Invalid data provided.");
         } else {
-            toast.error("Cannot update process. Backend failure:" + error.response.status);
+            toast.error("Cannot update process. Backend failure");
         }
     }
   }
