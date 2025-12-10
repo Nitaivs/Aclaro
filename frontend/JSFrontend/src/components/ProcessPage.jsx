@@ -72,7 +72,7 @@ export default function ProcessPage() {
   /**
    * @function findAssociatedTasks
    * @description Finds and returns tasks associated with the found process.
-   * @returns {*[]} An array of tasks associated with the found process.
+   * @returns {Array<Object>} An array of tasks associated with the found process.
    */
   function findAssociatedTasks() {
     if (!foundProcess) {
@@ -103,7 +103,6 @@ export default function ProcessPage() {
     }
   }
 
-  //TODO: refactor. Move into separate utility file and divide into smaller functions
   /**
    * @function generateNodesAndEdges
    * @description Generates nodes and edges for React Flow based on the associated tasks.
@@ -146,7 +145,7 @@ export default function ProcessPage() {
        * @description Recursively builds a subtree for a given task and its subtasks.
        * The subtree node has an id of the format 'task-{taskId}', type 'taskNode', and data containing the task's name and id.
        * The node's children are its subtasks, recursively built in the same manner.
-       * @param task The task object for which to build the subtree.
+       * @param {Object} task The task object for which to build the subtree.
        * @returns {{id: string, type: string, data: {label: string, taskId: number}, children: *[]}} The subtree node representing the task and its subtasks.
        */
       function buildSubtree(task) {
@@ -181,8 +180,8 @@ export default function ProcessPage() {
      * @function calculateSubtreeSize
      * @description Recursively calculates the size of a subtree rooted at the given node.
      * The size is defined as the total number of nodes in the subtree, including the root node.
-     * @param node The root node of the subtree.
-     * @returns {*|number} The size of the subtree.
+     * @param {Object} node The root node of the subtree.
+     * @returns {number} The size of the subtree.
      */
     function calculateSubtreeSize(node) {
       if (node.children.length === 0) return 1;
@@ -193,7 +192,7 @@ export default function ProcessPage() {
      * @function extractTaskId
      * @description Extracts the task ID from a node ID of the format 'task-{taskId}' (e.g. 'task-123' -> 123).
      * Returns null if the node ID does not start with 'task-'.
-     * @param nodeId The node ID string.
+     * @param {String} nodeId The node ID string.
      * @returns {number|null} The extracted task ID as a number, or null if not applicable.
      */
     function extractTaskId(nodeId) {
@@ -209,10 +208,10 @@ export default function ProcessPage() {
      * The root node is positioned at (x, (yStart + yEnd) / 2).
      * Child nodes are positioned horizontally spaced by horizontalSpacing and vertically distributed
      * within the range [yStart, yEnd] based on their subtree sizes.
-     * @param node The current node to layout.
-     * @param x The x position for the current node.
-     * @param yStart The starting y position for the current node's subtree.
-     * @param yEnd The ending y position for the current node's subtree.
+     * @param {Object} node The current node to layout.
+     * @param {number} x The x position for the current node.
+     * @param {number} yStart The starting y position for the current node's subtree.
+     * @param {number} yEnd The ending y position for the current node's subtree.
      */
     function layoutTree(node, x, yStart, yEnd) {
       const yCenter = (yStart + yEnd) / 2;
@@ -258,8 +257,8 @@ export default function ProcessPage() {
    * @function handleUpdateProcess
    * @description Handles the update of process details.
    * Calls the updateProcess function from ProcessContext with the new name and description.
-   * @param newName The new name for the process. May be undefined, in which case the current name is retained.
-   * @param newDescription The new description for the process.
+   * @param {string|undefined} newName The new name for the process. May be undefined, in which case the current name is retained.
+   * @param {string|undefined}newDescription The new description for the process. May be undefined, in which case the current description is retained.
    * May be undefined, in which case the current description is retained.
    */
   function handleUpdateProcess(newName, newDescription) {
@@ -291,7 +290,6 @@ export default function ProcessPage() {
   return (
     <>
       <div className="detail-container" style={{
-        //TODO: fix hardcoded width
         width: 'calc(100vw - 360px)'
       }}>
         {/* Header */}
