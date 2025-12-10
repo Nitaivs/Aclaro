@@ -5,10 +5,10 @@ import '../style/Dialog.css'
 /**
  * @Component EditTagDialog
  * @description A dialog component for editing an existing tag.
- * @param currentName The current name of the tag to be edited.
- * @param onSave Callback function to handle saving the edited tag.
- * @param isOpen Boolean to control the dialog open state.
- * @param onClose Callback function to handle closing the dialog.
+ * @param {String} currentName The current name of the tag to be edited.
+ * @param {function} onSave Callback function to handle saving the edited tag.
+ * @param {boolean} isOpen Boolean to control the dialog open state.
+ * @param {function} onClose Callback function to handle closing the dialog.
  * @returns {JSX.Element} The EditTagDialog component.
  */
 export default function EditTagDialog({currentName, onSave, isOpen, onClose}) {
