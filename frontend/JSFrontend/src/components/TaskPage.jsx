@@ -52,7 +52,7 @@ export default function TaskPage({isModal = false}) {
     }
 
     if (department !== undefined || skills !== undefined) {
-      //TODO: currently only single department supported, update when multi-department is added
+      //currently only single department supported, update if changed
       const departmentId = department && department !== ""  ? [department.id] : [];
       const skillIds = Array.isArray(skills) ? skills.map(s => s.id) : [];
       console.log("Updating task requirements:", parsedTaskId, departmentId, skillIds);
@@ -72,7 +72,6 @@ export default function TaskPage({isModal = false}) {
   async function handleDeleteTask() {
     try {
       await deleteTask(taskId);
-      //TODO: A bit of a hack to refresh process task list, rewrite
       deleteTaskIdFromProcess(processId, taskId);
       // close the modal or navigate back
       navigate(-1);
