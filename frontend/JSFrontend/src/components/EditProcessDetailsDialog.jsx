@@ -5,11 +5,11 @@ import '../style/Dialog.css'
 /**
  * @component EditProcessDetailsDialog
  * @description A dialog component for editing the details of a process.
- * @param currentName The current name of the process.
- * @param currentDescription The current description of the process.
- * @param onSave Function to call when saving the updated details.
- * @param isOpen Boolean indicating if the dialog is open.
- * @param onClose Function to call when closing the dialog.
+ * @param {String} currentName The current name of the process.
+ * @param {String} currentDescription The current description of the process.
+ * @param {function} onSave Function to call when saving the updated details.
+ * @param {boolean} isOpen Boolean indicating if the dialog is open.
+ * @param {function} onClose Function to call when closing the dialog.
  * @returns {JSX.Element} The rendered EditProcessDetailsDialog component.
  */
 export default function EditProcessDetailsDialog({currentName, currentDescription, onSave, isOpen, onClose}) {
