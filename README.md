@@ -68,7 +68,7 @@ cd backend/proseed
 
 This runs Spring Boot with the default `dev` profile (H2). The app will create/update the schema automatically.
 
-Run with MariaDB + Flyway migrations (dev-maria)
+Run with MariaDB (dev-maria)
 
 1. Ensure a MariaDB database and user are available and match the values in `backend/proseed/src/main/resources/application-dev-maria.properties` (defaults used by the project):
 
@@ -80,12 +80,6 @@ Run with MariaDB + Flyway migrations (dev-maria)
 
 cd backend/proseed
 SPRING_PROFILES_ACTIVE=dev-maria ./gradlew bootRun
-
-Flyway troubleshooting
-
-- If Flyway reports a validation failure like `Detected failed migration to version 1 (initial schema)` it means a previous migration run was recorded as failed or the migration file changed after it was applied.
-
-delete history from the database for a quick fix
 
 ---
 
@@ -274,12 +268,8 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
       "subTasks": [],
       "parentTaskId": null,
       "processId": 1,
-      "skills": [
-        { "id": 1, "name": "Java" }
-      ],
-      "departments": [
-        { "id": 1, "name": "Backend" }
-      ]
+      "skills": [{ "id": 1, "name": "Java" }],
+      "departments": [{ "id": 1, "name": "Backend" }]
     }
     ```
 
@@ -344,6 +334,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
   - Not found: 404 Not Found
 
 - DELETE /api/tasks/{taskId}/employees/{employeeId}
+
   - Description: Remove a single employee assignment from a task. Idempotent; returns 204 even if the employee was not assigned.
   - Success: 204 No Content
   - Not found task: 404 Not Found (if the task id does not exist). Employee id not found: 404.
@@ -353,6 +344,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
     ```
 
 - PUT /api/tasks/{id}/requirements
+
   - Description: Update the skill and department requirements for a task. This is a combined endpoint that replaces both skill and department assignments in a single request. The provided lists completely replace any existing requirements.
   - Request body: `TaskRequirementsDTO` JSON with `skillIds` and `departmentIds` arrays.
   - Success: 200 OK, body: updated TaskDTO (includes the updated `skills` and `departments` arrays)
@@ -385,9 +377,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
         { "id": 1, "name": "Java" },
         { "id": 2, "name": "Spring Boot" }
       ],
-      "departments": [
-        { "id": 1, "name": "Backend" }
-      ]
+      "departments": [{ "id": 1, "name": "Backend" }]
     }
     ```
   - Notes:
@@ -397,6 +387,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
     - Requirements on a parent task do not automatically propagate to subtasks
 
 - POST /api/tasks/insert-between?parentTaskId={parentId}&childTaskId={childId}
+
   - Description: Insert a new task between an existing parent and child task in the hierarchy. The new task becomes a child of the parent and the new parent of the child. This is useful for adding intermediate tasks without manually reparenting.
   - Query params:
     - `parentTaskId` (required) — ID of the task that will become the parent of the new task
@@ -407,17 +398,18 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
     - 400 Bad Request — if the child is not actually a direct child of the parent
     - 404 Not Found — if parent or child task does not exist
   - Example: Insert a task between task 1 (parent) and task 5 (child of task 1)
-    
+
     Before: Task 1 → Task 5
-    After:  Task 1 → New Task → Task 5
-    
+    After: Task 1 → New Task → Task 5
+
     ```bash
     curl -X POST "http://localhost:8080/api/tasks/insert-between?parentTaskId=1&childTaskId=5" \
       -H "Content-Type: application/json" \
       -d '{"name":"Intermediate Task","description":"Inserted between parent and child","completed":false}'
     ```
-    
+
     Response (201 Created):
+
     ```json
     {
       "id": 10,
