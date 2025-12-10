@@ -13,7 +13,6 @@ import {ConnectionProvider} from "./Context/ConnectionContext/ConnectionProvider
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/*TODO: refactor context providers placement (?)*/}
     <ToastContainer />
     <ConnectionProvider>
     <DataProvider>
