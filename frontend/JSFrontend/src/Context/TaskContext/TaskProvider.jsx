@@ -129,6 +129,8 @@ export function TaskProvider({ children }) {
             console.error("Error deleting task:", error);
             if (error.response && error.response.status === 404) {
                 toast.error("Task not found. It may have been deleted or edited. Refresh the page.");
+            } if (error.response && error.response.status === 409) {
+                toast.error("Cannot delete task. A task under it is relying on it. Please remove any tasks linked to this task.");
             }
             toast.error("Backend failure. Please refresh the page and try again.");
         }
