@@ -6,8 +6,13 @@ import ProcessesIcon from '../assets/process.svg'
 import '../style/Navbar.css'
 import liveIcon from "../assets/l1ve.svg";
 
+/**
+ * @component Navbar
+ * @description A navigation bar component that provides links to different sections of the application:
+ * Processes, Tasks, Employees, and Tags.
+ * @returns {React.JSX.Element} The rendered Navbar component.
+ */
 export default function Navbar() {
-
   return (
     <nav className="navbar">
       <div className="navbar-container">
