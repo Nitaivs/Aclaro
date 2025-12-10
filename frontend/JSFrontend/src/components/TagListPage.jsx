@@ -13,6 +13,12 @@ import Collapse from "@mui/material/Collapse";
 import TagItem from "./TagItem.jsx";
 import '../style/DetailPanel.css';
 
+/**
+ * @component TagListPage
+ * @description A page component that displays a list of tags (departments and skills).
+ * It retrieves the tag data from TagContext and renders each tag using the TagItem component.
+ * @returns {React.JSX.Element} The rendered TagListPage component.
+ */
 export default function TagListPage() {
   const {departments, skills, addDepartment, addSkill} = useContext(TagContext);
   const [isAddTagDialogOpen, setIsAddDepartmentDialogOpen] = useState(false);
@@ -73,7 +79,6 @@ export default function TagListPage() {
             <button className="add-button" onClick={() => setIsAddDepartmentDialogOpen(true)}>
               Add Tag
             </button>
-            {/* TODO: unify search fields(?)*/}
             <TextField
               value={tagFilter}
               onChange={(e) => setTagFilter(e.target.value)}
@@ -83,7 +88,6 @@ export default function TagListPage() {
               sx={{
                 width: '70%',
                 mx: 'auto',
-                // display: 'block',
                 '& .MuiInputBase-root': {
                   backgroundColor: 'white',
                   borderRadius: 3,
