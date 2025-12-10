@@ -10,10 +10,10 @@ import '../style/TagItem.css'
 /**
  * @component TagItem
  * @description A component that displays a tag (department or skill) with optional edit functionality.
- * @param type The type of tag ('department' or 'skill')
- * @param tagId The ID of the tag to display
- * @param isEditable Whether the tag is editable (default: false)
- * @param isDeletable Whether the tag is deletable (default: false)
+ * @param {String} type The type of tag ('department' or 'skill')
+ * @param {number} tagId The ID of the tag to display
+ * @param {boolean} isEditable Whether the tag is editable (default: false)
+ * @param {boolean} isDeletable Whether the tag is deletable (default: false)
  * @returns {JSX.Element} The rendered TagItem component.
  */
 export default function TagItem({type, tagId, isEditable = false, isDeletable = false}) {
@@ -32,7 +32,7 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
    * @function handleUpdateTag
    * @description Handles the update of a tag's name.
    * Calls the updateTag function from TagContext and manages error handling.
-   * @param newName - The new name for the tag.
+   * @param {String} newName - The new name for the tag.
    * @returns {Promise<void>} A promise that resolves when the tag is updated or an error occurs.
    */
   async function handleUpdateTag(newName) {
