@@ -5,7 +5,6 @@ import deleteIcon from '../assets/delete.svg';
 import {IconButton} from "@mui/material";
 import EditTagDialog from "./EditTagDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
-import ErrorDialog from "./ErrorDialog.jsx";
 import '../style/TagItem.css'
 
 /**
@@ -21,8 +20,6 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
   const {departments, skills, updateTag, deleteTagById} = use(TagContext);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   let foundTag = null;
   if (type === 'department') {
@@ -39,13 +36,7 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
    * @returns {Promise<void>} A promise that resolves when the tag is updated or an error occurs.
    */
   async function handleUpdateTag(newName) {
-    try {
-      await updateTag(foundTag.id, type, {name: newName});
-    } catch (error) {
-      console.error("Error updating tag:", error);
-      setErrorMessage(error.message);
-      setShowErrorDialog(true);
-    }
+    await updateTag(foundTag.id, type, {name: newName});
   }
 
   /**
@@ -55,13 +46,7 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
    * @returns {Promise<void>} A promise that resolves when the tag is deleted or an error occurs.
    */
   async function handleDeleteTag() {
-    try {
-      await deleteTagById(foundTag.id, type);
-    } catch (error) {
-      console.error("Error deleting tag:", error);
-      setErrorMessage(error.message);
-      setShowErrorDialog(true);
-    }
+    await deleteTagById(foundTag.id, type);
   }
 
   if (!foundTag) {
@@ -112,12 +97,6 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
         message={`Are you sure you want to delete the tag "${foundTag.name}"? This action cannot be undone.`}
         onConfirm={handleDeleteTag}
         onCancel={() => setIsDeleteDialogOpen(false)}
-      />
-      <ErrorDialog
-        isOpen={showErrorDialog}
-        onClose={() => setShowErrorDialog(false)}
-        title="Error"
-        message={errorMessage}
       />
     </>
   );
