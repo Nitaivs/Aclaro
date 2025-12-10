@@ -14,7 +14,7 @@ import '../style/ItemCard.css'
  * @component TaskCard
  * @description A card component that displays information about a task within a process.
  * The card serves as a link to the detailed task page.
- * @param props The properties for the TaskCard component.
+ * @param {Object} props The properties for the TaskCard component.
  * @param {number} props.taskId The ID of the task.
  * @returns {JSX.Element} The rendered TaskCard component.
  */
@@ -44,7 +44,6 @@ export default function TaskItem({taskId}) {
    * @returns {Promise<void>} A promise that resolves when the task update is complete.
    */
   async function handleUpdateTask(newName, newDescription, department, skills) {
-    //TODO: move into utility function to avoid code duplication with TaskPage
     console.log("updating task:", foundTask.id, newName, newDescription, department, skills);
     if (!foundTask.id) {
       console.error("Invalid taskId:", taskId);
@@ -55,7 +54,7 @@ export default function TaskItem({taskId}) {
     }
 
     if (department !== undefined || skills !== undefined) {
-      //TODO: currently only single department supported, update when multi-department is added
+      //currently only single department supported, update if changed
       const departmentId = department && department !== ""  ? [department.id] : [];
       const skillIds = Array.isArray(skills) ? skills.map(s => s.id) : [];
       console.log("Updating task requirements:", foundTask.id, departmentId, skillIds);
