@@ -18,24 +18,7 @@ export default function TagListPage() {
   const [isAddTagDialogOpen, setIsAddDepartmentDialogOpen] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [departmentFilter, setDepartmentFilter] = useState("");
-  const [skillFilter, setSkillFilter] = useState("");
   const [tagFilter, setTagFilter] = useState("");
-
-  //TODO: clean up unused code
-  const filteredDepartments = useMemo(() => {
-    const query = (departmentFilter || "").trim().toLowerCase();
-    const list = (departments || []);
-    if (!query) return list;
-    return list.filter(dept => dept.name?.toLowerCase().includes(query));
-  }, [departments, departmentFilter]);
-
-  const filteredSkills = useMemo(() => {
-    const query = (skillFilter || "").trim().toLowerCase();
-    const list = (skills || []);
-    if (!query) return list;
-    return list.filter(skill => skill.name?.toLowerCase().includes(query));
-  }, [skills, skillFilter]);
 
   const filteredTags = useMemo(() => {
     const query = (tagFilter || "").trim().toLowerCase();
@@ -125,25 +108,6 @@ export default function TagListPage() {
                   <div className="detail-header">
                     <h2>Departments</h2>
                   </div>
-                  {/*TODO: delete individual search fields?*/}
-                  {/*<div className="detail-actions-container">*/}
-                  {/*<TextField*/}
-                  {/*  value={departmentFilter}*/}
-                  {/*  onChange={(e) => setDepartmentFilter(e.target.value)}*/}
-                  {/*  placeholder="Search by name"*/}
-                  {/*  size="small"*/}
-                  {/*  color="white"*/}
-                  {/*  sx={{*/}
-                  {/*    width: '100%',*/}
-                  {/*    mx: 'auto',*/}
-                  {/*    display: 'block',*/}
-                  {/*    '& .MuiInputBase-root': {*/}
-                  {/*      backgroundColor: 'white',*/}
-                  {/*      borderRadius: 3,*/}
-                  {/*    },*/}
-                  {/*  }}*/}
-                  {/*/>*/}
-                  {/*</div>*/}
                   {filteredTags.departments.length === 0 ? (
                     <ListItem>
                       <ListItemText
@@ -174,25 +138,6 @@ export default function TagListPage() {
                   <div className="detail-header">
                     <h2>Skills</h2>
                   </div>
-                  {/*TODO: delete individual search bars and use only the main one*/}
-                  {/*<div className="detail-actions-container">*/}
-                  {/*<TextField*/}
-                  {/*  value={skillFilter}*/}
-                  {/*  onChange={(e) => setSkillFilter(e.target.value)}*/}
-                  {/*  placeholder="Search by name"*/}
-                  {/*  size="small"*/}
-                  {/*  color="white"*/}
-                  {/*  sx={{*/}
-                  {/*    width: '100%',*/}
-                  {/*    mx: 'auto',*/}
-                  {/*    display: 'block',*/}
-                  {/*    '& .MuiInputBase-root': {*/}
-                  {/*      backgroundColor: 'white',*/}
-                  {/*      borderRadius: 3,*/}
-                  {/*    },*/}
-                  {/*  }}*/}
-                  {/*/>*/}
-                  {/*</div>*/}
                   {filteredTags.skills.length === 0 ? (
                     <ListItem>
                       <ListItemText
