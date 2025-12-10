@@ -13,7 +13,6 @@ import '../style/Dialog.css'
 export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
   const [firstNameInput, setFirstNameInput] = useState("");
   const [lastNameInput, setLastNameInput] = useState("");
-  //TODO: error currently does not distinguish between first and last name, fix later
   const [nameError, setNameError] = useState(false);
 
   /**
