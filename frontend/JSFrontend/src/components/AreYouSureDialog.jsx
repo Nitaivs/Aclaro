@@ -1,6 +1,16 @@
 import {Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@mui/material';
 import '../style/Dialog.css'
 
+/**
+ * @component AreYouSureDialog
+ * @description A dialog component that prompts the user with a confirmation message.
+ * @param {String} message - The confirmation message to display in the dialog.
+ * @param {String} title - The title of the dialog.
+ * @param {boolean} isOpen - Indicates whether the dialog is open.
+ * @param {function} onConfirm - Callback function to handle the confirm action.
+ * @param {function} onCancel - Callback function to handle the cancel action.
+ * @returns {React.JSX.Element} The rendered AreYouSureDialog component.
+ */
 export default function AreYouSureDialog({message, title, isOpen, onConfirm, onCancel}) {
   return (
     <Dialog
