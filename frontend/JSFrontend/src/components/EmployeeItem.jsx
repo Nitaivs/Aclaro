@@ -7,7 +7,13 @@ import deleteIcon from "../assets/delete.svg";
 import EditEmployeeDialog from "./EditEmployeeDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
 
-
+/**
+ * @component EmployeeItem
+ * @description A component that displays information about a single employee.
+ * Shows the employee's name, department, and skills, and provides buttons to edit or delete the employee.
+ * @param {number} employeeId - The ID of the employee to display. Expected to be an integer.
+ * @returns {React.JSX.Element} The rendered EmployeeItem component.
+ */
 export default function EmployeeItem({employeeId}) {
   const {employees} = use(EmployeeContext);
   const foundEmployee = employees.find(e => e.id === parseInt(employeeId));
@@ -54,7 +60,6 @@ export default function EmployeeItem({employeeId}) {
   return (
     <>
       <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%'}}>
-        {/*<Link style={{textDecoration: 'none'}} to={`/employees/${foundEmployee.id}`}>*/}
           <div style={{display: 'flex', alignItems: 'center'}}>
             <ListItemAvatar>
               <Avatar/>
@@ -73,7 +78,6 @@ export default function EmployeeItem({employeeId}) {
               </Typography>
             </div>
           </div>
-        {/*</Link>*/}
         <div style={{display: 'flex', alignItems: 'center'}}>
           <IconButton
             edge="end"
