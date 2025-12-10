@@ -5,9 +5,9 @@ import '../style/Dialog.css'
 /**
  * @Component AddEmployeeDialog
  * @description A dialog component for adding a new employee.
- * @param onSave Callback function to handle saving the new employee.
- * @param isOpen Boolean to control the dialog open state.
- * @param onClose Callback function to handle closing the dialog.
+ * @param {function} onSave Callback function to handle saving the new employee.
+ * @param {function} isOpen Boolean to control the dialog open state.
+ * @param {function} onClose Callback function to handle closing the dialog.
  * @returns {JSX.Element} The AddEmployeeDialog component.
  */
 export default function AddEmployeeDialog({onSave, isOpen, onClose}) {
