@@ -16,6 +16,16 @@ export default function EmployeePage() {
   const foundEmployee = employees.find(e => e.id === parseInt(employeeId));
   const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] = useState(false);
 
+  /**
+   * @function handleUpdateEmployee
+   * @description Handles the update of an employee's details.
+   * Calls the updateEmployee function from EmployeeContext with the new details.
+   * @param {String} newFirstName - The new first name for the employee.
+   * @param {String} newLastName - The new last name for the employee.
+   * @param {Object} newDepartment - The new department for the employee.
+   * @param {Array<Object>} newSkills - The new skills for the employee.
+   * @returns {Promise<void>} A promise that resolves when the employee is updated or an error occurs.
+   */
     async function handleUpdateEmployee(newFirstName, newLastName, newDepartment, newSkills) {
         const requestForm = {
             firstName: newFirstName,
