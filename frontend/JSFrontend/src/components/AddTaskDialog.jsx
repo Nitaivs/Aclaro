@@ -30,7 +30,6 @@ export default function AddTaskDialog({onSave, isOpen, onClose}) {
         setNameError(true);
         return;
       }
-      //TODO: only close dialog if onSave is successful
       await onSave(nameInput, descriptionInput);
       handleOnClose()
     } catch (error) {
