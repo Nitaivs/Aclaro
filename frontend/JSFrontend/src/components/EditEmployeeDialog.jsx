@@ -16,6 +16,18 @@ import {
 import {useState, useEffect, useContext} from 'react';
 import {TagContext} from "../Context/TagContext/TagContext.jsx";
 
+/**
+ * @component EditEmployeeDialog
+ * @description A dialog component for editing an employee's details, including first name, last name, department, and skills.
+ * @param {String} currentFirstName - The current first name of the employee.
+ * @param {String} currentLastName - The current last name of the employee.
+ * @param {Object|null} currentDepartment - The current department of the employee. May be null if there is no department assigned.
+ * @param {Array<Object>} currentSkills - The current skills of the employee.
+ * @param {function} onSave - Function to call when saving the updated employee details.
+ * @param {boolean} isOpen - Boolean indicating if the dialog is open.
+ * @param {function} onClose - Function to call when closing the dialog.
+ * @returns {React.JSX.Element} The rendered EditEmployeeDialog component.
+ */
 export default function EditEmployeeDialog({
                                              currentFirstName,
                                              currentLastName,
@@ -200,16 +212,6 @@ export default function EditEmployeeDialog({
           <Button variant="contained" color="primary" onClick={handleOnSave}>Save</Button>
         </div>
       </DialogContent>
-      {/*
-            <button onClick={() => setIsAddTagDialogOpen(true)}>
-                Add tag
-            </button>
-
-            <AddTagDialog
-                    isOpen={isAddTagDialogOpen}
-                    onSave={handleAddTag}
-                    onClose={() => setIsAddTagDialogOpen(false)}
-            /> //TODO: implement this later if needed */}
     </Dialog>
   );
 }
