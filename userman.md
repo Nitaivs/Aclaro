@@ -25,14 +25,19 @@ When creating a new task, the user must enter a name and, optionally, a descript
 
 ## Task List Page
 
+On this page, you can see every current task related to every process. You can search and filter to find a specific one using the search bar and even edit or delete them.
 ---
 
 ## Task Detail Page
 
+In the task detail popup, you can either edit or remove the task. Clicking edit will bring up an additional popup where you can assign its name, description, department and any related skills.
 ---
 
 ## Employee List Page
 
+In the employee page, you can quickly get an overview over every employee, their deparment and skills. As an admin, you can also edit any of their details or delete them if necessary.
 ---
 
 ## Tag list page
+
+In the tag list page you can add, edit and delete deparments and skill tags to assign into employees and tasks. 
