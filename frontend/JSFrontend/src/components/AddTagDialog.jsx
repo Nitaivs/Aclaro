@@ -5,9 +5,9 @@ import '../style/Dialog.css';
 /**
  * @Component AddTagDialog
  * @description A dialog component for adding a new tag.
- * @param onSave Callback function to handle saving the new tag.
- * @param isOpen Boolean to control the dialog open state.
- * @param onClose Callback function to handle closing the dialog.
+ * @param {function} onSave Callback function to handle saving the new tag.
+ * @param {function} isOpen Boolean to control the dialog open state.
+ * @param {function} onClose Callback function to handle closing the dialog.
  * @returns {JSX.Element} The AddTagDialog component.
  */
 export default function AddTagDialog({onSave, isOpen, onClose}) {
@@ -61,49 +61,49 @@ export default function AddTagDialog({onSave, isOpen, onClose}) {
       open={isOpen}
       onClose={handleClose}>
       <div className="dialog-container">
-      <div className="dialog-header">
-        <h3>Add a new tag</h3>
-      </div>
-      <div className="dialog-actions">
-        <div className="dialog-actions-radio-group">
-          <label>
-            <input
-              type={"radio"}
-              name={"tagType"}
-              value={"department"}
-              checked={selectedType === "department"}
-              onChange={() => setSelectedType("department")}
-            /> Department
-          </label>
-          <label>
-            <input
-              type={"radio"}
-              name={"tagType"}
-              value={"skill"}
-              checked={selectedType === "skill"}
-              onChange={() => setSelectedType("skill")}
-              style={{marginLeft: '12px'}}
-            /> Skill
-          </label>
+        <div className="dialog-header">
+          <h3>Add a new tag</h3>
         </div>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Tag Name"
-          type="text"
-          fullWidth
-          variant="outlined"
-          required={true}
-          error={nameError}
-          helperText={nameError ? errorMessage : ""}
-          value={nameInput}
-          onChange={(e) => setNameInput(e.target.value)}
-        />
-        <div className="dialog-actions-buttons">
-          <button className="cancel-button" onClick={() => handleClose()}>Cancel</button>
-          <button className="confirm-button" onClick={() => handleOnSave()}>Add</button>
+        <div className="dialog-actions">
+          <div className="dialog-actions-radio-group">
+            <label>
+              <input
+                type={"radio"}
+                name={"tagType"}
+                value={"department"}
+                checked={selectedType === "department"}
+                onChange={() => setSelectedType("department")}
+              /> Department
+            </label>
+            <label>
+              <input
+                type={"radio"}
+                name={"tagType"}
+                value={"skill"}
+                checked={selectedType === "skill"}
+                onChange={() => setSelectedType("skill")}
+                style={{marginLeft: '12px'}}
+              /> Skill
+            </label>
+          </div>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Tag Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            required={true}
+            error={nameError}
+            helperText={nameError ? errorMessage : ""}
+            value={nameInput}
+            onChange={(e) => setNameInput(e.target.value)}
+          />
+          <div className="dialog-actions-buttons">
+            <button className="cancel-button" onClick={() => handleClose()}>Cancel</button>
+            <button className="confirm-button" onClick={() => handleOnSave()}>Add</button>
+          </div>
         </div>
-      </div>
       </div>
     </Dialog>
   );
