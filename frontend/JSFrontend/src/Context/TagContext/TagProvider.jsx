@@ -126,11 +126,12 @@ export function TagProvider({children}) {
     } catch (error) {
       console.error(`Error deleting department with id ${id} from DB:`, error);
       if (error.response && error.response.status === 409) {
-        toast.error("Cannot delete department: it is associated with existing employees.");
+        toast.error("Cannot delete department: it is associated with an employee or task.");
       } else if (error.response && error.response.status === 404) {
         toast.error("Cannot delete department: Department not found.");
+      } else {
+        toast.error("Failed to delete department. Backend failure");
       }
-      toast.error("Failed to delete department. Backend failure");
     }
   }
 
@@ -149,11 +150,12 @@ export function TagProvider({children}) {
     } catch (error) {
       console.error(`Error deleting skill with id ${id} from DB:`, error);
       if (error.response && error.response.status === 409) {
-        toast.error("Cannot delete skill: it is associated with existing employees or tasks.");
+        toast.error("Cannot delete skill: it is associated with an existing employee or task.");
       } else if (error.response && error.response.status === 404) {
         toast.error("Cannot delete skill: Skill not found.");
+      } else {
+        toast.error("Failed to delete skill.");
       }
-      toast.error("Failed to delete skill.");
     }
   }
 
