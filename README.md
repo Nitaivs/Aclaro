@@ -2,49 +2,50 @@
 
 [[_TOC_]]
 
-# Welcome
+# Proseed introduction
 
-This Gitlab by LRZ project is here to be utilized for **completely managing your SCRUM project**.
+This is a readme file for Proseed, the software for managing processes and tasks, tailored for L1VE.
 
-So, you will use it
+This readme file will include sections on how to set up the service and container, and glosses over any relevant
+code areas that are important. For more information, please see the technical document.
 
-- to create and update your **product backlog** with epics and user stories (=gitlab issues)
+# System requirements
 
----
+## OS:
 
-- to agree on and maintain your **sprint backlog for each sprint**
+Linux (Amazon Linux, Ubuntu LTS and Debian recommended as distros)
 
-- update the **user stories and tasks within a sprint**
+(This Docker container is HEAVILY recommended to be used with Linux for maximum operational security. Use Windows
+only if strictly necessary!)
 
-For some hints on SCRUM in Gitlab see section further below.
+## Components:
 
-Additionally, you document your project in the **Wiki of this Gitlab project** (see menu item `Plan` on the left and then `Wiki`).
-This includes
+The program at the very moment is incredibly light, but component requirements will rise with how big the data stored becomes
+and how far it is scaled.
 
-- to define your **DoD** (Definition of Done)
-- to document your **sprint goal and backlog** per sprint
-- to prepare an **sprint review agenda** for each sprint and
-- to record the created and presented **documents** of sprint
+## Docker:
 
-With finishing your project you will **hand in all required deliverables for grading** via this Gitlab project.
+This application has initially been done with Docker for simple containerization and includes a basic file for running the back- and frontend
+portions of the application. For any other containerization method (such as Podman), you must do your own file for that.
 
-# Hints
 
-## SCRUM Artifacts in Gitlab
+# Build instructions and running the container
 
-The following table shows which SCRUM Artifacts translate into which Gitlab Features
+## Building the docker container:
 
-| SCRUM Artifacts       | Gitlab Feature                     |
-| --------------------- | ---------------------------------- |
-| User story            | Issues                             |
-| Task                  | Task list                          |
-| Epic                  | Epics                              |
-| Points and estimation | Weights                            |
-| Product backlog       | Issue lists and Prioritized labels |
-| Sprint / iteration    | Milestones                         |
+Open up a terminal and go the root of this repository. Then proceed to build the Docker image by inputting this command
 
-| Burndown chart | Burndown charts |
-| Agile board | Issue boards |
+`docker build -t proseed .`
+
+This will proceed to build the image to use with the Docker engine
+
+## Running the container:
+
+To run the container and expose it to the necessary ports to host it, run this command.
+
+`docker run -d -t -p 8080:8080 proseed`
+
+The following command will boot up the image in the background and outputs the container ID that was created from running the image.
 
 ## Backend - Running locally
 
