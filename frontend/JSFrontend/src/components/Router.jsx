@@ -30,6 +30,7 @@ function AppRoutes() {
         <Route path="/employees" element={<EmployeeListPage/>}/>
         <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
         <Route path="/tags/" element={<TagListPage/>}/>
+        <Route path="*" element={<h2>Page Not Found</h2>}/>
       </Routes>
       {background && (
         <Routes>
