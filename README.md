@@ -58,6 +58,14 @@ To run the container and expose it to the necessary ports to host it, run this c
 
 The following command will boot up the image in the background and outputs the container ID that was created from running the image.
 
+To shut down the docker container from the terminal use:
+
+`docker stop <container id here>`
+
+To find the IDs of all running docker containers, use:
+
+`docker ps`
+
 ---
 
 # Running the application in development mode locally
