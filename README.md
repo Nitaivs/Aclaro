@@ -2,7 +2,7 @@
 
 [[_TOC_]]
 
-# ProSeed introduction
+# ProSeed 
 
 ProSeed is a process and task management software created for L1VE GmbH to help manage internal processes and tasks. It is a web application consisting of a backend REST API and a frontend user interface.
 The backend is built with Java and Spring Boot, while the frontend is developed using JavaScript and React. 
