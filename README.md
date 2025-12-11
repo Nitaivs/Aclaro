@@ -2,12 +2,25 @@
 
 [[_TOC_]]
 
-# Proseed introduction
+# ProSeed introduction
 
-This is a readme file for Proseed, the software for managing processes and tasks, tailored for L1VE.
+ProSeed is a process and task management software created for L1VE GmbH to help manage internal processes and tasks. It is a web application consisting of a backend REST API and a frontend user interface.
+The backend is built with Java and Spring Boot, while the frontend is developed using JavaScript and React. 
 
-This readme file will include sections on how to set up the service and container, and glosses over any relevant
-code areas that are important. For more information, please see the technical document.
+This README file provides instructions on how to build, run, and test the ProSeed application. For instructions on using the application, please refer to MANUAL.md.
+
+The project was created as a part of the multidisciplinary project course at the Tampere School of Applied Sciences in collaboration with Hochschule München, during the autumn semester of 2025.
+
+---
+# Authors
+
+- Nitai Spira
+- Santeri Sillanaukee
+- Tuuli Marttila
+- Noora Nevalainen
+- Henri Nieminen
+
+---
 
 # System requirements
 
@@ -20,14 +33,12 @@ only if strictly necessary!)
 
 ## Components:
 
-The program at the very moment is incredibly light, but component requirements will rise with how big the data stored becomes
-and how far it is scaled.
+The program at the very moment is very light, but component requirements will increase with how big the data stored becomes and how far it is scaled.
 
 ## Docker:
 
-This application has initially been done with Docker for simple containerization and includes a basic file for running the back- and frontend
-portions of the application. For any other containerization method (such as Podman), you must do your own file for that.
-
+This application uses Docker for simple containerization and includes a basic file for running the back- and frontend
+portions of the application. For any other containerization method (such as Podman), you must create and configure the container yourself.
 
 # Build instructions and running the container
 
@@ -47,6 +58,36 @@ To run the container and expose it to the necessary ports to host it, run this c
 
 The following command will boot up the image in the background and outputs the container ID that was created from running the image.
 
+---
+
+# Running the application in development mode locally
+
+## Frontend - Running locally
+
+This repository contains a React frontend in `frontend/JSFrontend`. 
+
+Prerequisites
+- Node.js
+- npm (comes with Node.js)
+
+To run the frontend locally:
+Navigate to the frontend directory from the root of the repository:
+`cd frontend/JSFrontend`
+
+Install dependencies:
+`npm install`
+
+Start the development server:
+`npm run dev`
+
+Install dependencies:
+`npm install`
+
+Start the frontend in development mode:
+`npm run dev`
+
+This starts the React development server, typically accessible at `http://localhost:5173`.
+
 ## Backend - Running locally
 
 This repository contains a Spring Boot backend in `backend/proseed`. The backend supports three profiles:
@@ -64,8 +105,11 @@ Prerequisites
 
 Quick start (dev, in-memory H2)
 
-cd backend/proseed
-./gradlew bootRun
+Navigate to the backend directory from the root of the repository:
+`cd backend/proseed`
+
+Start the backend in development mode with H2:
+`./gradlew bootRun`
 
 This runs Spring Boot with the default `dev` profile (H2). The app will create/update the schema automatically.
 
@@ -79,8 +123,11 @@ Run with MariaDB (dev-maria)
 
 2. Start with the `dev-maria` profile:
 
-cd backend/proseed
-SPRING_PROFILES_ACTIVE=dev-maria ./gradlew bootRun
+Navigate to the backend directory from the root of the repository:
+`cd backend/proseed`
+
+Start the backend using the MariaDB profile:
+`SPRING_PROFILES_ACTIVE=dev-maria ./gradlew bootRun`
 
 ---
 
