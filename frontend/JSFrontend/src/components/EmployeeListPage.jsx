@@ -36,8 +36,8 @@ export default function EmployeeListPage() {
    * @function handleAddEmployee
    * @description Handles the addition of a new employee.
    * Calls the addEmployee function from EmployeeContext and manages error handling.
-   * @param firstName - The first name of the new employee.
-   * @param lastName - The last name of the new employee.
+   * @param {String} firstName - The first name of the new employee.
+   * @param {String} lastName - The last name of the new employee.
    * @returns {Promise<void>} A promise that resolves when the employee is added or an error occurs.
    */
   async function handleAddEmployee(firstName, lastName) {

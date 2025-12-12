@@ -5,24 +5,21 @@ import deleteIcon from '../assets/delete.svg';
 import {IconButton} from "@mui/material";
 import EditTagDialog from "./EditTagDialog.jsx";
 import AreYouSureDialog from "./AreYouSureDialog.jsx";
-import ErrorDialog from "./ErrorDialog.jsx";
 import '../style/TagItem.css'
 
 /**
  * @component TagItem
  * @description A component that displays a tag (department or skill) with optional edit functionality.
- * @param type The type of tag ('department' or 'skill')
- * @param tagId The ID of the tag to display
- * @param isEditable Whether the tag is editable (default: false)
- * @param isDeletable Whether the tag is deletable (default: false)
+ * @param {String} type The type of tag ('department' or 'skill')
+ * @param {number} tagId The ID of the tag to display
+ * @param {boolean} isEditable Whether the tag is editable (default: false)
+ * @param {boolean} isDeletable Whether the tag is deletable (default: false)
  * @returns {JSX.Element} The rendered TagItem component.
  */
 export default function TagItem({type, tagId, isEditable = false, isDeletable = false}) {
   const {departments, skills, updateTag, deleteTagById} = use(TagContext);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   let foundTag = null;
   if (type === 'department') {
@@ -35,17 +32,11 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
    * @function handleUpdateTag
    * @description Handles the update of a tag's name.
    * Calls the updateTag function from TagContext and manages error handling.
-   * @param newName - The new name for the tag.
+   * @param {String} newName - The new name for the tag.
    * @returns {Promise<void>} A promise that resolves when the tag is updated or an error occurs.
    */
   async function handleUpdateTag(newName) {
-    try {
-      await updateTag(foundTag.id, type, {name: newName});
-    } catch (error) {
-      console.error("Error updating tag:", error);
-      setErrorMessage(error.message);
-      setShowErrorDialog(true);
-    }
+    await updateTag(foundTag.id, type, {name: newName});
   }
 
   /**
@@ -55,13 +46,7 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
    * @returns {Promise<void>} A promise that resolves when the tag is deleted or an error occurs.
    */
   async function handleDeleteTag() {
-    try {
-      await deleteTagById(foundTag.id, type);
-    } catch (error) {
-      console.error("Error deleting tag:", error);
-      setErrorMessage(error.message);
-      setShowErrorDialog(true);
-    }
+    await deleteTagById(foundTag.id, type);
   }
 
   if (!foundTag) {
@@ -112,12 +97,6 @@ export default function TagItem({type, tagId, isEditable = false, isDeletable = 
         message={`Are you sure you want to delete the tag "${foundTag.name}"? This action cannot be undone.`}
         onConfirm={handleDeleteTag}
         onCancel={() => setIsDeleteDialogOpen(false)}
-      />
-      <ErrorDialog
-        isOpen={showErrorDialog}
-        onClose={() => setShowErrorDialog(false)}
-        title="Error"
-        message={errorMessage}
       />
     </>
   );

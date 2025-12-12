@@ -1,15 +1,22 @@
-import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import {useState} from "react";
 import '../style/Dialog.css'
 
+/**
+ * @component AddTaskDialog
+ * @description A dialog component for adding a new task.
+ * Contains input fields for the task name and description,
+ * and buttons to save or cancel the action.
+ * @param {function} onSave Callback function to handle saving the new task.
+ * @param {function} isOpen
+ * @param {function} onClose
+ * @returns {React.JSX.Element} The rendered AddTaskDialog component.
+ */
 export default function AddTaskDialog({onSave, isOpen, onClose}) {
   const [nameInput, setNameInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
   const [nameError, setNameError] = useState(false);
-
-  //TODO: improve error handling across file
 
   /**
    * @function handleOnSave
@@ -23,7 +30,6 @@ export default function AddTaskDialog({onSave, isOpen, onClose}) {
         setNameError(true);
         return;
       }
-      //TODO: only close dialog if onSave is successful
       await onSave(nameInput, descriptionInput);
       handleOnClose()
     } catch (error) {

@@ -6,12 +6,15 @@ import EmployeePage from "./EmployeePage.jsx";
 import ProcessListPage from "./ProcessListPage.jsx";
 import TaskListPage from "./TaskListPage.jsx";
 import TagListPage from "./TagListPage.jsx";
-import DepartmentPage from "./DepartmentPage.jsx";
 import TaskModal from "./TaskModal.jsx";
 import Navbar from "./Navbar.jsx";
-import Header from "./Header.jsx";
 import '../style/Content.css'
 
+/**
+ * @component AppRoutes
+ * @description Defines the main application routes using React Router.
+ * @returns {React.JSX.Element} The rendered AppRoutes component.
+ */
 function AppRoutes() {
   const location = useLocation();
   const background = location.state && location.state.background;
@@ -27,7 +30,7 @@ function AppRoutes() {
         <Route path="/employees" element={<EmployeeListPage/>}/>
         <Route path="/employees/:employeeId" element={<EmployeePage/>}/>
         <Route path="/tags/" element={<TagListPage/>}/>
-        <Route path="/tags/department/:departmentId" element={<DepartmentPage/>}/>
+        <Route path="*" element={<h2>Page Not Found</h2>}/>
       </Routes>
       {background && (
         <Routes>

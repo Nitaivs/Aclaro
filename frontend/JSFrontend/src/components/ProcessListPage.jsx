@@ -7,11 +7,9 @@ import {TextField, Paper, List, ListItem, ListItemText, Divider} from "@mui/mate
 
 /**
  * @component ProcessListPage
- * @description
- * Displays a list of processes fetched from `ProcessContext` and provides a
+ * @description Displays a list of processes fetched from `ProcessContext` and provides a
  * filter input for searching by process name. This behavior mirrors the
  * filtering implementation used in `TagListPage` and `TaskListPage`.
- *
  * @returns {JSX.Element} The rendered ProcessListPage component.
  */
 export default function ProcessListPage() {

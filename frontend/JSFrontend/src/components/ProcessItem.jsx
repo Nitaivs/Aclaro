@@ -59,7 +59,6 @@ export default function ProcessItem(props) {
       deleteProcess(foundProcess.id);
       setIsDeleteDialogOpen(false);
     } catch (error) {
-      //TODO: add error alert to UI
       console.error("Error deleting process:", error);
     }
   }

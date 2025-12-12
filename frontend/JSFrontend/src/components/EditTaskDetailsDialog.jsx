@@ -94,7 +94,6 @@ export default function EditTaskDetailsDialog({
       return;
     }
 
-    //TODO: currently only single department supported, update when multi-department is added
     onSave(nameInput, descriptionInput, department, skillsInput);
     handleOnClose();
   }
@@ -152,7 +151,6 @@ export default function EditTaskDetailsDialog({
           />
 
           {/* --- Department Dropdown --- */}
-          {/*TODO: Make multi-department selection if needed in future, use same pattern as skills*/}
           <FormControl fullWidth margin="dense">
             <InputLabel id="department-select-label">Department</InputLabel>
             <Select

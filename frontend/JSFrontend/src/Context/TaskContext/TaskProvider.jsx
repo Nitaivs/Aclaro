@@ -59,7 +59,6 @@ export function TaskProvider({children}) {
             }
         }
     }
-  }
 
   /**
    * @function updateTask
@@ -93,7 +92,7 @@ export function TaskProvider({children}) {
    * @description Updates the department and skills required for a task.
    * Makes a PUT request to the backend to update the task's requirements.
    * @param {number} taskId - The ID of the task to be updated. Expected to be an integer. Required.
-   * @param departmentId - The ID of the department required for the task. May be null to indicate no department requirement.
+   * @param {Array[number]} departmentIds - The ID of the department required for the task. May be null to indicate no department requirement.
    * @param {Array<number>} skillIds - An array of skill IDs required for the task. IDs are expected to be integers. Required, but may be an empty array.
    * @returns {Promise<void>}
    */
@@ -119,7 +118,7 @@ export function TaskProvider({children}) {
    * @function deleteTask
    * @description Deletes a task by its ID. Makes a DELETE request to the backend,
    * and then fetches all tasks to update the state.
-   * @param {Number} taskId - The ID of the task to be deleted. Expected to be an integer. Required.
+   * @param {number} taskId - The ID of the task to be deleted. Expected to be an integer. Required.
    * @returns {Promise<void>} A promise that resolves when the task is deleted and tasks are fetched.
    */
   async function deleteTask(taskId) {

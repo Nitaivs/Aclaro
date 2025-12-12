@@ -11,6 +11,13 @@ import {
 } from "@mui/material";
 import '../style/DetailPanel.css'
 
+/**
+ * @component TaskListPage
+ * @description Displays a list of tasks fetched from `TaskContext` and provides a
+ * filter input for searching by task name. This behavior mirrors the
+ * filtering implementation used in `TagListPage` and `ProcessListPage`.
+ * @returns {React.JSX.Element} The rendered TaskListPage component.
+ */
 export default function TaskListPage() {
   const {tasks} = useContext(TaskContext);
   const [filterString, setFilterString] = useState("");

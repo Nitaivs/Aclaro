@@ -3,10 +3,12 @@ import { useContext, useState } from 'react';
 import { TagContext } from "../Context/TagContext/TagContext.jsx";
 import { useParams } from "react-router";
 import EditEmployeeDialog from "./EditEmployeeDialog.jsx";
-//import EditDepartmentDialog from "./EditDepartmentDialog.jsx";
-//TODO: When ready above component is ready, uncomment
 
-
+/**
+ * @function DepartmentPage
+ * @description Page component for displaying and editing a specific department. Not currently used.
+ * @returns {React.JSX.Element} The DepartmentPage component.
+ */
 export default function DepartmentPage() {
     const { departments, updateDepartment } = useContext(TagContext);
     const { departmentId } = useParams();
@@ -23,10 +25,10 @@ export default function DepartmentPage() {
         return (
           <div>
             <h1>Department Page</h1>
-            <p>Error: Invalid deparment ID.</p>
+            <p>Error: Invalid department ID.</p>
             <Link to="/departments">
               <button>
-                Return to deparment list
+                Return to department list
               </button>
             </Link>
           </div>

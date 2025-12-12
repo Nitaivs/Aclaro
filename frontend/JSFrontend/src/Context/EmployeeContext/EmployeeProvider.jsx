@@ -13,7 +13,6 @@ export function EmployeeProvider({children}) {
   const [employees, setEmployees] = useState([]);
   const [initialized, setInitialized] = useState(false);
   const BASE_URL = "http://localhost:8080/api/";
-  //TODO: move BASE_URL to config file
 
   /**
    * Effect hook that initializes employees from the database when the component mounts.

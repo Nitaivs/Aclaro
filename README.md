@@ -2,12 +2,25 @@
 
 [[_TOC_]]
 
-# Proseed introduction
+# ProSeed 
 
-This is a readme file for Proseed, the software for managing processes and tasks, tailored for L1VE.
+ProSeed is a process and task management software created for L1VE GmbH to help manage internal processes and tasks. It is a web application consisting of a backend REST API and a frontend user interface.
+The backend is built with Java and Spring Boot, while the frontend is developed using JavaScript and React. 
 
-This readme file will include sections on how to set up the service and container, and glosses over any relevant
-code areas that are important. For more information, please see the technical document.
+This README file provides instructions on how to build, run, and test the ProSeed application. For instructions on using the application, please refer to MANUAL.md.
+
+The project was created as a part of the multidisciplinary project course at the Tampere School of Applied Sciences in collaboration with Hochschule München, during the autumn semester of 2025.
+
+---
+# Authors
+
+- Nitai Spira
+- Santeri Sillanaukee
+- Tuuli Marttila
+- Noora Nevalainen
+- Henri Nieminen
+
+---
 
 # System requirements
 
@@ -20,14 +33,12 @@ only if strictly necessary!)
 
 ## Components:
 
-The program at the very moment is incredibly light, but component requirements will rise with how big the data stored becomes
-and how far it is scaled.
+The program at the very moment is very light, but component requirements will increase with how big the data stored becomes and how far it is scaled.
 
 ## Docker:
 
-This application has initially been done with Docker for simple containerization and includes a basic file for running the back- and frontend
-portions of the application. For any other containerization method (such as Podman), you must do your own file for that.
-
+This application uses Docker for simple containerization and includes a basic file for running the back- and frontend
+portions of the application. For any other containerization method (such as Podman), you must create and configure the container yourself.
 
 # Build instructions and running the container
 
@@ -47,6 +58,44 @@ To run the container and expose it to the necessary ports to host it, run this c
 
 The following command will boot up the image in the background and outputs the container ID that was created from running the image.
 
+To shut down the docker container from the terminal use:
+
+`docker stop <container id here>`
+
+To find the IDs of all running docker containers, use:
+
+`docker ps`
+
+---
+
+# Running the application in development mode locally
+
+## Frontend - Running locally
+
+This repository contains a React frontend in `frontend/JSFrontend`. 
+
+Prerequisites
+- Node.js
+- npm (comes with Node.js)
+
+To run the frontend locally:
+Navigate to the frontend directory from the root of the repository:
+`cd frontend/JSFrontend`
+
+Install dependencies:
+`npm install`
+
+Start the development server:
+`npm run dev`
+
+Install dependencies:
+`npm install`
+
+Start the frontend in development mode:
+`npm run dev`
+
+This starts the React development server, typically accessible at `http://localhost:5173`.
+
 ## Backend - Running locally
 
 This repository contains a Spring Boot backend in `backend/proseed`. The backend supports three profiles:
@@ -64,12 +113,15 @@ Prerequisites
 
 Quick start (dev, in-memory H2)
 
-cd backend/proseed
-./gradlew bootRun
+Navigate to the backend directory from the root of the repository:
+`cd backend/proseed`
+
+Start the backend in development mode with H2:
+`./gradlew bootRun`
 
 This runs Spring Boot with the default `dev` profile (H2). The app will create/update the schema automatically.
 
-Run with MariaDB + Flyway migrations (dev-maria)
+Run with MariaDB (dev-maria)
 
 1. Ensure a MariaDB database and user are available and match the values in `backend/proseed/src/main/resources/application-dev-maria.properties` (defaults used by the project):
 
@@ -79,14 +131,11 @@ Run with MariaDB + Flyway migrations (dev-maria)
 
 2. Start with the `dev-maria` profile:
 
-cd backend/proseed
-SPRING_PROFILES_ACTIVE=dev-maria ./gradlew bootRun
+Navigate to the backend directory from the root of the repository:
+`cd backend/proseed`
 
-Flyway troubleshooting
-
-- If Flyway reports a validation failure like `Detected failed migration to version 1 (initial schema)` it means a previous migration run was recorded as failed or the migration file changed after it was applied.
-
-delete history from the database for a quick fix
+Start the backend using the MariaDB profile:
+`SPRING_PROFILES_ACTIVE=dev-maria ./gradlew bootRun`
 
 ---
 
@@ -275,12 +324,8 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
       "subTasks": [],
       "parentTaskId": null,
       "processId": 1,
-      "skills": [
-        { "id": 1, "name": "Java" }
-      ],
-      "departments": [
-        { "id": 1, "name": "Backend" }
-      ]
+      "skills": [{ "id": 1, "name": "Java" }],
+      "departments": [{ "id": 1, "name": "Backend" }]
     }
     ```
 
@@ -345,6 +390,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
   - Not found: 404 Not Found
 
 - DELETE /api/tasks/{taskId}/employees/{employeeId}
+
   - Description: Remove a single employee assignment from a task. Idempotent; returns 204 even if the employee was not assigned.
   - Success: 204 No Content
   - Not found task: 404 Not Found (if the task id does not exist). Employee id not found: 404.
@@ -354,6 +400,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
     ```
 
 - PUT /api/tasks/{id}/requirements
+
   - Description: Update the skill and department requirements for a task. This is a combined endpoint that replaces both skill and department assignments in a single request. The provided lists completely replace any existing requirements.
   - Request body: `TaskRequirementsDTO` JSON with `skillIds` and `departmentIds` arrays.
   - Success: 200 OK, body: updated TaskDTO (includes the updated `skills` and `departments` arrays)
@@ -386,9 +433,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
         { "id": 1, "name": "Java" },
         { "id": 2, "name": "Spring Boot" }
       ],
-      "departments": [
-        { "id": 1, "name": "Backend" }
-      ]
+      "departments": [{ "id": 1, "name": "Backend" }]
     }
     ```
   - Notes:
@@ -398,6 +443,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
     - Requirements on a parent task do not automatically propagate to subtasks
 
 - POST /api/tasks/insert-between?parentTaskId={parentId}&childTaskId={childId}
+
   - Description: Insert a new task between an existing parent and child task in the hierarchy. The new task becomes a child of the parent and the new parent of the child. This is useful for adding intermediate tasks without manually reparenting.
   - Query params:
     - `parentTaskId` (required) — ID of the task that will become the parent of the new task
@@ -410,7 +456,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
   - Example: Insert a task between task 1 (parent) and task 5 (child of task 1)
 
     Before: Task 1 → Task 5
-    After:  Task 1 → New Task → Task 5
+    After: Task 1 → New Task → Task 5
 
     ```bash
     curl -X POST "http://localhost:8080/api/tasks/insert-between?parentTaskId=1&childTaskId=5" \
@@ -419,6 +465,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/employees/1" -Method Patch -Bo
     ```
 
     Response (201 Created):
+
     ```json
     {
       "id": 10,

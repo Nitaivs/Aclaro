@@ -15,8 +15,7 @@ export function TagProvider({children}) {
   const [skills, setSkills] = useState([]);
 
   const [initialized, setInitialized] = useState(false);
-    const BASE_URL = "http://localhost:8080/api/";
-  //TODO: move BASE_URL to config file
+  const BASE_URL = "http://localhost:8080/api/";
 
   /**
    * useEffect hook that initializes departments from the database when the component mounts.
@@ -41,7 +40,6 @@ export function TagProvider({children}) {
       setInitialized(true);
     } catch (error) {
       console.error("Error fetching departments from DB:", error);
-      throw error;
     }
   }
 
@@ -58,7 +56,6 @@ export function TagProvider({children}) {
       setSkills(response.data);
     } catch (error) {
       console.error("Error fetching skills from DB:", error);
-      throw error;
     }
   }
 
@@ -93,9 +90,10 @@ export function TagProvider({children}) {
     } catch (error) {
       console.error(`Error adding department with name ${name} to DB:`, error);
       if (error.response && error.response.status === 409) {
-        throw new Error("Department with this name already exists.");
+        // Backend doesn't currently check for duplicates
+        toast.error("Department with this name already exists.");
       }
-        throw new Error("Failed to add department. Backend failure");
+      toast.error("Failed to add department. Backend failure");
     }
   }
 
@@ -109,12 +107,7 @@ export function TagProvider({children}) {
       }
     } catch (error) {
       console.error(`Error deleting tag with id ${id} from DB:`, error);
-      if (error.response && error.response.status === 409) {
-        throw new Error("Cannot delete tag: it is associated with existing employees or tasks.");
-        } else if (error.response && error.response.status === 404) {
-        throw new Error("Tag not found.");
-        }
-        throw new Error("Failed to delete tag. Backend failure");
+      toast.error("Failed to delete tag. Error:" + error.message);
     }
   }
 
@@ -133,9 +126,12 @@ export function TagProvider({children}) {
     } catch (error) {
       console.error(`Error deleting department with id ${id} from DB:`, error);
       if (error.response && error.response.status === 409) {
-        throw new Error("Cannot delete department: it is associated with existing employees.");
+        toast.error("Cannot delete department: it is associated with an employee or task.");
+      } else if (error.response && error.response.status === 404) {
+        toast.error("Cannot delete department: Department not found.");
+      } else {
+        toast.error("Failed to delete department. Backend failure");
       }
-      throw new Error("Failed to delete department. Backend failure");
     }
   }
 
@@ -154,11 +150,12 @@ export function TagProvider({children}) {
     } catch (error) {
       console.error(`Error deleting skill with id ${id} from DB:`, error);
       if (error.response && error.response.status === 409) {
-        throw new Error("Cannot delete skill: it is associated with existing employees or tasks.");
+        toast.error("Cannot delete skill: it is associated with an existing employee or task.");
       } else if (error.response && error.response.status === 404) {
-        throw new Error("Skill not found.");
+        toast.error("Cannot delete skill: Skill not found.");
+      } else {
+        toast.error("Failed to delete skill.");
       }
-        throw new Error("Failed to delete skill.");
     }
   }
 
@@ -176,10 +173,11 @@ export function TagProvider({children}) {
       setSkills([...skills, response.data]);
     } catch (error) {
       console.error(`Error adding skill with name ${name} to DB:`, error);
-        if (error.response && error.response.status === 409) {
-        throw new Error("Skill with this name already exists.");
-        }
-        throw new Error("Failed to add skill.");
+      if (error.response && error.response.status === 409) {
+        // Backend doesn't currently check for duplicates
+        toast.error("Skill with this name already exists.");
+      }
+      toast.error("Failed to add skill.");
     }
   }
 
@@ -204,6 +202,7 @@ export function TagProvider({children}) {
       if (error.response && error.response.status === 404) {
         toast.error("Tag not found.");
       } else if (error.response && error.response.status === 409) {
+        // Backend doesn't currently check for duplicates
         toast.error("Tag with this name already exists.");
       } else {
         toast.error("Failed to update tag.");
@@ -214,9 +213,8 @@ export function TagProvider({children}) {
   /**
    * @function updateDepartment
    * @description Updates a department's name in the database and updates the state.
-   * @param id - The ID of the department to update.
-   * @param newName - The new name of the department.
-   * @param toast - Toast notification instance for displaying messages.
+   * @param {number} id - The ID of the department to update. Expected to be an integer. Required.
+   * @param {String} newName - The new name of the department. Required.
    * @returns {Promise<void>} A promise that resolves when the department is updated and state is updated.
    */
   async function updateDepartment(id, newName) {
@@ -232,13 +230,14 @@ export function TagProvider({children}) {
       );
     } catch (error) {
       console.error(`Error updating department with id ${id} on DB:`, error);
-        if (error.response && error.response.status === 404) {
+      if (error.response && error.response.status === 404) {
         toast.error("Department not found.");
-        } else if (error.response && error.response.status === 409) {
+      } else if (error.response && error.response.status === 409) {
+        // Backend doesn't currently check for duplicates
         toast.error("Department with this name already exists.");
-        } else {
+      } else {
         toast.error("Failed to update department.");
-        }
+      }
     }
   }
 
@@ -262,13 +261,14 @@ export function TagProvider({children}) {
           : [...prev, updatedSkill]
       );
     } catch (error) {
-       if (error.response && error.response.status === 404) {
+      if (error.response && error.response.status === 404) {
         toast.error("Skill not found.");
-        } else if (error.response && error.response.status === 409) {
+      } else if (error.response && error.response.status === 409) {
+        // Backend doesn't currently check for duplicates
         toast.error("Skill with this name already exists.");
-        } else {
+      } else {
         toast.error("Failed to update skill.");
-        }
+      }
     }
   }
 
