@@ -1,12 +1,12 @@
 *This Documentation is required for the german business concept hand-in. It encompasses task 3.6 - 3.8*
 
-# ProSeed - Project Documentation
+# Aclaro - Project Documentation
 
 ## 3.6 High-level IT Architecture
 
 ### Architecture Overview
 
-The ProSeed application follows a classic **3-tier architecture** (presentation layer, logic layer, data layer) with complete separation of frontend and backend.
+The Aclaro application follows a classic **3-tier architecture** (presentation layer, logic layer, data layer) with complete separation of frontend and backend.
 
 #### Layer Diagram
 
@@ -308,7 +308,7 @@ All endpoints are accessible under the base path `/api`:
 
 #### Initial Data Sources
 
-The initial data for the ProSeed application is provided in various ways:
+The initial data for the Aclaro application is provided in various ways:
 
 **1. Programmatic Initialization (Development Mode)**
 
@@ -474,4 +474,4 @@ Although not visible in backend code, the React frontend should:
 
 ## Summary
 
-The ProSeed application uses modern web technologies in a clear 3-tier architecture. The relational data model with 8 main entities and 5 junction tables enables flexible process and task management with hierarchical structures. Data quality is ensured at multiple levels (database, JPA, service layer, API). The use of Flyway for schema migrations and different profiles (dev/prod) enables a professional development and deployment pipeline.
+The Aclaro application uses modern web technologies in a clear 3-tier architecture. The relational data model with 8 main entities and 5 junction tables enables flexible process and task management with hierarchical structures. Data quality is ensured at multiple levels (database, JPA, service layer, API). The use of Flyway for schema migrations and different profiles (dev/prod) enables a professional development and deployment pipeline.
