@@ -1,25 +1,25 @@
 *This Documentation is required for the german business concept hand-in. It encompasses task 3.6 - 3.8*
 
-# ProSeed - Projekt Dokumentation
+# ProSeed - Project Documentation
 
 ## 3.6 High-level IT Architecture
 
-### Architektur-Übersicht
+### Architecture Overview
 
-Die ProSeed-Anwendung folgt einer klassischen **3-Tier-Architektur** (Präsentationsschicht, Logikschicht, Datenschicht) mit vollständiger Trennung von Frontend und Backend.
+The ProSeed application follows a classic **3-tier architecture** (presentation layer, logic layer, data layer) with complete separation of frontend and backend.
 
-#### Schichtendiagramm
+#### Layer Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    PRÄSENTATIONSSCHICHT                     │
+│                    PRESENTATION LAYER                       │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │            Frontend (React SPA)                        │ │
 │  │  - React 19.1 + Vite                                   │ │
-│  │  - Material-UI (MUI) für UI-Komponenten                │ │
-│  │  - React Flow für Prozessvisualisierung                │ │
-│  │  - Axios für HTTP-Kommunikation                        │ │
-│  │  - React Router für Navigation                         │ │
+│  │  - Material-UI (MUI) for UI components                 │ │
+│  │  - React Flow for process visualization                │ │
+│  │  - Axios for HTTP communication                        │ │
+│  │  - React Router for navigation                         │ │
 │  │  - Port: 5173 (Dev) / 8080 (Prod)                      │ │
 │  └────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
@@ -27,7 +27,7 @@ Die ProSeed-Anwendung folgt einer klassischen **3-Tier-Architektur** (Präsentat
                             │ HTTP/REST (JSON)
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                     LOGIKSCHICHT                            │
+│                     LOGIC LAYER                             │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │           Backend (Spring Boot REST API)               │ │
 │  │  - Java 21                                             │ │
@@ -43,23 +43,23 @@ Die ProSeed-Anwendung folgt einer klassischen **3-Tier-Architektur** (Präsentat
                             │ JPA/Hibernate
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                     DATENSCHICHT                            │
+│                     DATA LAYER                              │
 │  ┌────────────────────────────────────────────────────────┐ │
-│  │              Relationale Datenbank                     │ │
-│  │  - MariaDB (Produktion)                                │ │
-│  │  - H2 In-Memory (Entwicklung)                          │ │
-│  │  - Flyway für Schema-Migrationen                       │ │
+│  │              Relational Database                       │ │
+│  │  - MariaDB (Production)                                │ │
+│  │  - H2 In-Memory (Development)                          │ │
+│  │  - Flyway for schema migrations                        │ │
 │  │  - Port: 3306 (MariaDB)                                │ │
 │  └────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-#### Container-Diagramm
+#### Container Diagram
 
 ```
                          ┌──────────────────┐
                          │   Web Browser    │
-                         │   (Benutzer)     │
+                         │     (User)       │
                          └────────┬─────────┘
                                   │
                                   │ HTTPS (Port 8080)
@@ -84,48 +84,48 @@ Die ProSeed-Anwendung folgt einer klassischen **3-Tier-Architektur** (Präsentat
                                    │
                          ┌─────────▼────────┐
                          │   MariaDB        │
-                         │   Datenbank      │
+                         │   Database       │
                          │   Port: 3306     │
                          └──────────────────┘
 ```
 
-### Technologie-Stack
+### Technology Stack
 
-| Komponente | Technologie | Version | Zweck |
-|------------|-------------|---------|-------|
+| Component | Technology | Version | Purpose |
+|-----------|------------|---------|---------|
 | **Frontend Framework** | React | 19.1.1 | Single Page Application |
-| **Build Tool** | Vite | 7.1.7 | Schneller Development Server & Build |
-| **UI Library** | Material-UI | 7.3.4 | Komponenten-Bibliothek |
-| **Visualisierung** | React Flow | 12.9.2 | Prozess- und Task-Diagramme |
-| **HTTP Client** | Axios | 1.13.1 | REST API Kommunikation |
-| **Backend Framework** | Spring Boot | Latest | REST API & Business Logic |
-| **Programmiersprache** | Java | 21 | Backend-Entwicklung |
-| **ORM** | Hibernate/JPA | - | Object-Relational Mapping |
-| **Datenbank (Prod)** | MariaDB | Latest | Persistente Datenspeicherung |
-| **Datenbank (Dev)** | H2 | Latest | In-Memory für Entwicklung |
-| **Migration Tool** | Flyway | - | Datenbank-Schema-Verwaltung |
-| **Containerisierung** | Docker | - | Deployment & Orchestrierung |
+| **Build Tool** | Vite | 7.1.7 | Fast development server & build |
+| **UI Library** | Material-UI | 7.3.4 | Component library |
+| **Visualization** | React Flow | 12.9.2 | Process and task diagrams |
+| **HTTP Client** | Axios | 1.13.1 | REST API communication |
+| **Backend Framework** | Spring Boot | Latest | REST API & business logic |
+| **Programming Language** | Java | 21 | Backend development |
+| **ORM** | Hibernate/JPA | - | Object-relational mapping |
+| **Database (Prod)** | MariaDB | Latest | Persistent data storage |
+| **Database (Dev)** | H2 | Latest | In-memory for development |
+| **Migration Tool** | Flyway | - | Database schema management |
+| **Containerization** | Docker | - | Deployment & orchestration |
 
-### API-Endpunkte (REST)
+### API Endpoints (REST)
 
-Alle Endpunkte sind unter dem Basis-Pfad `/api` erreichbar:
+All endpoints are accessible under the base path `/api`:
 
-- `/api/processes` - Verwaltung von Prozessen
-- `/api/tasks` - Verwaltung von Tasks und Subtasks
-- `/api/employees` - Mitarbeiterverwaltung
-- `/api/departments` - Abteilungsverwaltung
-- `/api/roles` - Rollenverwaltung
-- `/api/skills` - Skill-Verwaltung
+- `/api/processes` - Process management
+- `/api/tasks` - Task and subtask management
+- `/api/employees` - Employee management
+- `/api/departments` - Department management
+- `/api/roles` - Role management
+- `/api/skills` - Skill management
 
-**Unterstützte HTTP-Methoden:** GET, POST, PUT, PATCH, DELETE
+**Supported HTTP methods:** GET, POST, PUT, PATCH, DELETE
 
-**Datenformat:** JSON
+**Data format:** JSON
 
 ---
 
-## 3.7 Data Model (Entity-Relationship-Model)
+## 3.7 Data Model (Entity-Relationship Model)
 
-### Entity-Relationship-Diagramm (ERD)
+### Entity-Relationship Diagram (ERD)
 
 ```
 ┌─────────────────────┐
@@ -134,7 +134,7 @@ Alle Endpunkte sind unter dem Basis-Pfad `/api` erreichbar:
 │ PK: privilege_id    │
 └──────────┬──────────┘
            │
-           │ m:n (auskommentiert)
+           │ m:n (commented out)
            │
 ┌──────────▼──────────┐         ┌─────────────────────┐
 │       Role          │         │    Department       │
@@ -178,8 +178,8 @@ Alle Endpunkte sind unter dem Basis-Pfad `/api` erreichbar:
          │ 1:n          │ FK: parent_task │
          └─────────────►└────────┬────────┘
                                  │
-                                 │ Selbstreferenz
-                                 │ (Hierarchie)
+                                 │ Self-reference
+                                 │ (Hierarchy)
                                  │
                         ┌────────▼────────┐
                         │    Task         │
@@ -188,7 +188,7 @@ Alle Endpunkte sind unter dem Basis-Pfad `/api` erreichbar:
 
                         ┌─────────────────┐
                         │   Department    │
-                        │  (von oben)     │
+                        │  (from above)   │
                         └────────┬────────┘
                                  │ m:n
                                  ▼
@@ -197,77 +197,77 @@ Alle Endpunkte sind unter dem Basis-Pfad `/api` erreichbar:
                             └────────┘
 ```
 
-### Entitäten und Beziehungen
+### Entities and Relationships
 
-#### 1. Employee (Mitarbeiter)
-**Attribute:**
+#### 1. Employee
+**Attributes:**
 - `employee_id` (PK, BIGINT, AUTO_INCREMENT)
 - `first_name` (VARCHAR(255), NOT NULL)
 - `last_name` (VARCHAR(255), NOT NULL)
 - `role_id` (FK, BIGINT, NULLABLE)
 - `department_id` (FK, BIGINT)
 
-**Beziehungen:**
-- **1:n mit Role** - Ein Mitarbeiter hat eine Rolle
-- **m:n mit Task** (via `task_assignees`) - Mitarbeiter können mehreren Tasks zugewiesen sein
-- **m:n mit EmployeeSkill** (via `employee_skills_mapping`) - Mitarbeiter haben mehrere Skills
-- **1:1 mit EmployeeProfile** - Jeder Mitarbeiter hat ein Profil
-- **n:1 mit Department** - Mitarbeiter gehören zu einer Abteilung
+**Relationships:**
+- **1:n with Role** - An employee has one role
+- **m:n with Task** (via `task_assignees`) - Employees can be assigned to multiple tasks
+- **m:n with EmployeeSkill** (via `employee_skills_mapping`) - Employees have multiple skills
+- **1:1 with EmployeeProfile** - Each employee has one profile
+- **n:1 with Department** - Employees belong to one department
 
 #### 2. EmployeeProfile
-**Attribute:**
+**Attributes:**
 - `id` (PK, BIGINT, AUTO_INCREMENT)
 - `description` (VARCHAR(2000))
 - `employee_id` (FK, BIGINT, UNIQUE, NOT NULL)
 
-**Beziehungen:**
-- **1:1 mit Employee** - Erweiterte Informationen zum Mitarbeiter
+**Relationships:**
+- **1:1 with Employee** - Extended information about the employee
 
-#### 3. EmployeeSkill (Skills/Fähigkeiten)
-**Attribute:**
+#### 3. EmployeeSkill
+**Attributes:**
 - `skill_id` (PK, BIGINT, AUTO_INCREMENT)
 - `skill_name` (VARCHAR(40), NOT NULL)
 
-**Beziehungen:**
-- **m:n mit Employee** (via `employee_skills_mapping`)
-- **m:n mit Task** (via `task_skills_mapping`) - Tasks erfordern bestimmte Skills
+**Relationships:**
+- **m:n with Employee** (via `employee_skills_mapping`)
+- **m:n with Task** (via `task_skills_mapping`) - Tasks require specific skills
 
-#### 4. Role (Rollen)
-**Attribute:**
+#### 4. Role
+**Attributes:**
 - `role_id` (PK, BIGINT, AUTO_INCREMENT)
 - `role_name` (VARCHAR(100), NOT NULL, UNIQUE)
 
-**Beziehungen:**
-- **1:n mit Employee** - Eine Rolle kann mehreren Mitarbeitern zugewiesen sein
-- *(m:n mit Privilege - aktuell auskommentiert für zukünftige Erweiterung)*
+**Relationships:**
+- **1:n with Employee** - A role can be assigned to multiple employees
+- *(m:n with Privilege - currently commented out for future extension)*
 
-#### 5. Privilege (Rechte)
-**Attribute:**
+#### 5. Privilege
+**Attributes:**
 - `privilege_id` (PK, BIGINT, AUTO_INCREMENT)
 
-**Beziehungen:**
-- *(m:n mit Role - aktuell auskommentiert)*
+**Relationships:**
+- *(m:n with Role - currently commented out)*
 
-#### 6. Department (Abteilung)
-**Attribute:**
+#### 6. Department
+**Attributes:**
 - `department_id` (PK, BIGINT, AUTO_INCREMENT)
 - `name` (VARCHAR(100), NOT NULL)
 
-**Beziehungen:**
-- **1:n mit Employee** - Eine Abteilung hat mehrere Mitarbeiter
-- **m:n mit Task** (via `task_departments_mapping`) - Tasks sind Abteilungen zugeordnet
+**Relationships:**
+- **1:n with Employee** - A department has multiple employees
+- **m:n with Task** (via `task_departments_mapping`) - Tasks are assigned to departments
 
-#### 7. ProcessEntity (Prozesse)
-**Attribute:**
+#### 7. ProcessEntity
+**Attributes:**
 - `process_id` (PK, BIGINT, AUTO_INCREMENT)
 - `process_name` (VARCHAR(255), NOT NULL)
 - `description` (VARCHAR(1000))
 
-**Beziehungen:**
-- **1:n mit Task** - Ein Prozess enthält mehrere Tasks
+**Relationships:**
+- **1:n with Task** - A process contains multiple tasks
 
-#### 8. Task (Aufgaben)
-**Attribute:**
+#### 8. Task
+**Attributes:**
 - `task_id` (PK, BIGINT, AUTO_INCREMENT)
 - `task_name` (VARCHAR(255), NOT NULL)
 - `task_description` (VARCHAR(1000))
@@ -275,44 +275,44 @@ Alle Endpunkte sind unter dem Basis-Pfad `/api` erreichbar:
 - `process_id` (FK, BIGINT, NOT NULL)
 - `parent_task_id` (FK, BIGINT, NULLABLE)
 
-**Beziehungen:**
-- **n:1 mit ProcessEntity** - Jeder Task gehört zu einem Prozess
-- **m:n mit Employee** (via `task_assignees`) - Tasks haben Mitarbeiter-Zuweisungen
-- **Selbstreferenz (hierarchisch):**
-  - **n:1 mit Task** (parent_task) - Ein Task kann einen Parent-Task haben
-  - **1:n mit Task** (subtasks) - Ein Task kann mehrere Subtasks haben
-- **m:n mit EmployeeSkill** (via `task_skills_mapping`) - Erforderliche Skills für Tasks
-- **m:n mit Department** (via `task_departments_mapping`) - Beteiligte Abteilungen
+**Relationships:**
+- **n:1 with ProcessEntity** - Each task belongs to one process
+- **m:n with Employee** (via `task_assignees`) - Tasks have employee assignments
+- **Self-reference (hierarchical):**
+  - **n:1 with Task** (parent_task) - A task can have a parent task
+  - **1:n with Task** (subtasks) - A task can have multiple subtasks
+- **m:n with EmployeeSkill** (via `task_skills_mapping`) - Required skills for tasks
+- **m:n with Department** (via `task_departments_mapping`) - Involved departments
 
-### Beziehungstypen-Übersicht
+### Relationship Types Overview
 
-| Beziehung | Typ | Zwischentabelle | Beschreibung |
-|-----------|-----|----------------|--------------|
-| Employee ↔ Role | n:1 | - | Jeder Mitarbeiter hat eine Rolle |
-| Employee ↔ EmployeeProfile | 1:1 | - | Erweiterte Profil-Informationen |
-| Employee ↔ EmployeeSkill | m:n | `employee_skills_mapping` | Mitarbeiter-Fähigkeiten |
-| Employee ↔ Task | m:n | `task_assignees` | Task-Zuweisungen |
-| Employee ↔ Department | n:1 | - | Abteilungszugehörigkeit |
-| Role ↔ Privilege | m:n | `role_privileges` | Rollen-Berechtigungen (auskommentiert) |
-| ProcessEntity ↔ Task | 1:n | - | Prozess enthält Tasks |
-| Task ↔ Task (Parent) | n:1 | - | Hierarchische Task-Struktur |
-| Task ↔ Task (Subtasks) | 1:n | - | Parent-Child Beziehung |
-| Task ↔ EmployeeSkill | m:n | `task_skills_mapping` | Erforderliche Skills |
-| Task ↔ Department | m:n | `task_departments_mapping` | Beteiligte Abteilungen |
+| Relationship | Type | Junction Table | Description |
+|-------------|------|----------------|-------------|
+| Employee ↔ Role | n:1 | - | Each employee has one role |
+| Employee ↔ EmployeeProfile | 1:1 | - | Extended profile information |
+| Employee ↔ EmployeeSkill | m:n | `employee_skills_mapping` | Employee skills |
+| Employee ↔ Task | m:n | `task_assignees` | Task assignments |
+| Employee ↔ Department | n:1 | - | Department membership |
+| Role ↔ Privilege | m:n | `role_privileges` | Role permissions (commented out) |
+| ProcessEntity ↔ Task | 1:n | - | Process contains tasks |
+| Task ↔ Task (Parent) | n:1 | - | Hierarchical task structure |
+| Task ↔ Task (Subtasks) | 1:n | - | Parent-child relationship |
+| Task ↔ EmployeeSkill | m:n | `task_skills_mapping` | Required skills |
+| Task ↔ Department | m:n | `task_departments_mapping` | Involved departments |
 
 ---
 
 ## 3.8 Data Sources / Migration
 
-### 3.8.1 Datenquellen
+### 3.8.1 Data Sources
 
-#### Initiale Datenquellen
+#### Initial Data Sources
 
-Die Startdaten für die ProSeed-Anwendung werden auf verschiedene Weisen bereitgestellt:
+The initial data for the ProSeed application is provided in various ways:
 
-**1. Programmatische Initialisierung (Development Mode)**
+**1. Programmatic Initialization (Development Mode)**
 
-Im Development-Modus (`dev` Profile) werden Startdaten automatisch durch die Klasse `DataInitializer.java` eingefügt:
+In development mode (`dev` profile), initial data is automatically inserted by the `DataInitializer.java` class:
 
 - **Privileges:** READ, WRITE, DELETE
 - **Roles:** ADMIN, USER, MANAGER
@@ -325,153 +325,153 @@ Im Development-Modus (`dev` Profile) werden Startdaten automatisch durch die Kla
 - **Sample Processes:**
   - Backend Development
   - Frontend Development
-- **Sample Tasks mit hierarchischer Struktur:**
-  - Design API (mit mehreren Subtasks)
+- **Sample Tasks with hierarchical structure:**
+  - Design API (with multiple subtasks)
   - Database Migration
   - UI Prototype
 
-**2. Datenbank-Migrationen (Flyway)**
+**2. Database Migrations (Flyway)**
 
-Das Schema wird durch Flyway-Migrationen verwaltet:
-- Datei: `V1__initial_schema.sql`
-- Enthält: DDL-Statements für alle Tabellen und Constraints
-- Verwendung: Automatisch bei Anwendungsstart im `dev-maria` und `prod` Profil
+The schema is managed through Flyway migrations:
+- File: `V1__initial_schema.sql`
+- Contains: DDL statements for all tables and constraints
+- Usage: Automatically on application startup in `dev-maria` and `prod` profiles
 
-**3. Manuelle Eingabe über REST API**
+**3. Manual Entry via REST API**
 
-Nach dem Deployment können neue Daten über die REST API eingegeben werden:
-- POST-Endpunkte für alle Entitäten verfügbar
-- JSON-Format für Datenübermittlung
-- Verwendung durch: Frontend-UI oder API-Tools (Postman, curl)
+After deployment, new data can be entered via the REST API:
+- POST endpoints available for all entities
+- JSON format for data transmission
+- Used by: Frontend UI or API tools (Postman, curl)
 
-**4. Zukünftige Erweiterungsmöglichkeiten**
+**4. Future Extension Possibilities**
 
-Das System ist vorbereitet für:
-- **Excel-Import:** Keine aktuelle Implementierung, aber durch REST API einfach integrierbar
-- **Externe APIs:** Architektur unterstützt API-Integration über Service-Layer
-- **CSV/Batch-Import:** Möglich über Custom Spring Boot CommandLineRunner
+The system is prepared for:
+- **Excel Import:** No current implementation, but easily integrable through REST API
+- **External APIs:** Architecture supports API integration via service layer
+- **CSV/Batch Import:** Possible via custom Spring Boot CommandLineRunner
 
-### 3.8.2 Datenqualität und Sicherstellung
+### 3.8.2 Data Quality and Assurance
 
-#### Validierungsstrategien
+#### Validation Strategies
 
-**1. Datenbankebene**
+**1. Database Level**
 
-Die Datenqualität wird auf Datenbankebene durch Constraints sichergestellt:
+Data quality is ensured at the database level through constraints:
 
 ```sql
 -- NOT NULL Constraints
-- Pflichtfelder wie employee.first_name, task.name, etc.
+- Required fields like employee.first_name, task.name, etc.
 
 -- UNIQUE Constraints
-- role.role_name (eindeutige Rollennamen)
-- employee_profile.employee_id (ein Profil pro Mitarbeiter)
+- role.role_name (unique role names)
+- employee_profile.employee_id (one profile per employee)
 
 -- Foreign Key Constraints
-- Referentielle Integrität zwischen allen Tabellen
-- ON DELETE/UPDATE Verhalten definiert
+- Referential integrity between all tables
+- ON DELETE/UPDATE behavior defined
 
--- Check Constraints (implizit)
-- Datentyp-Validierung (VARCHAR-Längen, BIGINT, BOOLEAN)
+-- Check Constraints (implicit)
+- Data type validation (VARCHAR lengths, BIGINT, BOOLEAN)
 ```
 
-**2. Anwendungsebene (JPA/Hibernate)**
+**2. Application Level (JPA/Hibernate)**
 
-Validierung durch JPA-Annotationen in Entity-Klassen:
+Validation through JPA annotations in entity classes:
 
 ```java
-@Column(nullable = false)           // Pflichtfeld
-@Column(unique = true)              // Eindeutigkeit
-@Column(length = 255)               // Maximale Länge
-@ManyToOne(optional = false)        // Pflicht-Beziehung
+@Column(nullable = false)           // Required field
+@Column(unique = true)              // Uniqueness
+@Column(length = 255)               // Maximum length
+@ManyToOne(optional = false)        // Required relationship
 ```
 
-**3. Service-Layer-Validierung**
+**3. Service Layer Validation**
 
-Business-Logic-Validierung in Service-Implementierungen:
-- Zyklus-Prüfung bei Task-Hierarchien (verhindert zirkuläre Subtask-Beziehungen)
-- Existenz-Prüfung von referenzierten Entitäten
-- Custom Validierung vor Persistierung
+Business logic validation in service implementations:
+- Cycle detection in task hierarchies (prevents circular subtask relationships)
+- Existence checks for referenced entities
+- Custom validation before persistence
 
-**4. REST API-Ebene**
+**4. REST API Level**
 
 - **HTTP Status Codes:**
-  - `400 Bad Request` - Validierungsfehler
-  - `404 Not Found` - Nicht existierende Ressourcen
-  - `409 Conflict` - Constraint-Verletzungen
+  - `400 Bad Request` - Validation errors
+  - `404 Not Found` - Non-existent resources
+  - `409 Conflict` - Constraint violations
 
-- **DTO-Validierung:**
-  - Mapping zwischen Entity und DTO trennt interne und externe Datenstrukturen
-  - Verhinderung von Over-Posting/Mass-Assignment
+- **DTO Validation:**
+  - Mapping between entity and DTO separates internal and external data structures
+  - Prevention of over-posting/mass-assignment
 
-**5. Frontend-Validierung**
+**5. Frontend Validation**
 
-Obwohl nicht im Backend-Code sichtbar, sollte das React-Frontend:
-- Input-Validierung vor API-Aufrufen durchführen
-- Benutzerfreundliche Fehlermeldungen anzeigen
-- Required-Fields kennzeichnen
+Although not visible in backend code, the React frontend should:
+- Perform input validation before API calls
+- Display user-friendly error messages
+- Mark required fields
 
-### 3.8.3 Datenmigrationsstrategie
+### 3.8.3 Data Migration Strategy
 
 #### Development Environment
 
-**Profil: `dev`**
-- Datenbank: H2 In-Memory
-- Schema-Verwaltung: `spring.jpa.hibernate.ddl-auto=update`
-- Daten-Initialisierung: `DataInitializer.java`
-- Vorteil: Schnelle Entwicklung, keine Persistenz nötig
-- Nachteil: Daten gehen bei Neustart verloren
+**Profile: `dev`**
+- Database: H2 In-Memory
+- Schema management: `spring.jpa.hibernate.ddl-auto=update`
+- Data initialization: `DataInitializer.java`
+- Advantage: Fast development, no persistence needed
+- Disadvantage: Data lost on restart
 
 #### Testing Environment
 
-**Profil: `dev-maria`**
-- Datenbank: MariaDB (lokal)
-- Schema-Verwaltung: Flyway-Migrationen
-- Hibernate-Modus: `validate` (nur Prüfung, keine Änderungen)
-- Vorteil: Testen von persistentem Verhalten
-- Verbindung: `jdbc:mariadb://localhost:3306/seed_db`
+**Profile: `dev-maria`**
+- Database: MariaDB (local)
+- Schema management: Flyway migrations
+- Hibernate mode: `validate` (verification only, no changes)
+- Advantage: Testing persistent behavior
+- Connection: `jdbc:mariadb://localhost:3306/seed_db`
 
 #### Production Environment
 
-**Profil: `prod`**
-- Datenbank: MariaDB (produktiv)
-- Schema-Verwaltung: Flyway-Migrationen
-- Hibernate-Modus: `validate`
-- Migrations-Ablauf:
-  1. Flyway prüft `flyway_schema_history` Tabelle
-  2. Führt nur neue Migrations-Skripte aus (z.B. V2__, V3__, ...)
-  3. Keine Daten-Initialisierung im Prod-Modus
+**Profile: `prod`**
+- Database: MariaDB (production)
+- Schema management: Flyway migrations
+- Hibernate mode: `validate`
+- Migration process:
+  1. Flyway checks `flyway_schema_history` table
+  2. Executes only new migration scripts (e.g., V2__, V3__, ...)
+  3. No data initialization in production mode
 
-### 3.8.4 Datenintegrität und Konsistenz
+### 3.8.4 Data Integrity and Consistency
 
-**Transaktionsmanagement:**
-- Spring `@Transactional` auf Service-Layer
-- ACID-Eigenschaften durch relationale Datenbank
-- Cascade-Operationen definiert (z.B. `CascadeType.ALL` für EmployeeProfile)
+**Transaction Management:**
+- Spring `@Transactional` on service layer
+- ACID properties through relational database
+- Cascade operations defined (e.g., `CascadeType.ALL` for EmployeeProfile)
 
 **Orphan Removal:**
-- Automatisches Löschen von verwaisten Subtasks beim Löschen eines Parent-Tasks
-- Definiert durch `orphanRemoval = true` in JPA-Beziehungen
+- Automatic deletion of orphaned subtasks when deleting a parent task
+- Defined through `orphanRemoval = true` in JPA relationships
 
-**Zyklus-Prävention:**
-- Spezielle Validierung verhindert zirkuläre Task-Hierarchien
-- Error Response: `400 Bad Request` mit detaillierter Fehlermeldung
-- Sicherstellung einer echten Baum-Struktur
+**Cycle Prevention:**
+- Special validation prevents circular task hierarchies
+- Error response: `400 Bad Request` with detailed error message
+- Ensures true tree structure
 
 **Soft Delete vs. Hard Delete:**
-- Aktuell: Hard Delete (physisches Löschen)
-- Mögliche Erweiterung: Soft Delete mit `deleted_at` Timestamp für Audit-Trail
+- Current: Hard delete (physical deletion)
+- Possible extension: Soft delete with `deleted_at` timestamp for audit trail
 
-### 3.8.5 Backup und Recovery
+### 3.8.5 Backup and Recovery
 
-**Empfohlene Strategien (nicht implementiert, aber Best Practice):**
-- Regelmäßige MariaDB Backups (z.B. `mysqldump`)
-- Point-in-Time Recovery durch Binary Logs
-- Backup-Retention-Policy definieren
-- Disaster-Recovery-Plan erstellen
+**Recommended Strategies (not implemented, but best practice):**
+- Regular MariaDB backups (e.g., `mysqldump`)
+- Point-in-time recovery through binary logs
+- Define backup retention policy
+- Create disaster recovery plan
 
 ---
 
-## Zusammenfassung
+## Summary
 
-Die ProSeed-Anwendung nutzt moderne Web-Technologien in einer klaren 3-Tier-Architektur. Das relationale Datenmodell mit 8 Hauptentitäten und 5 Zwischentabellen ermöglicht flexible Prozess- und Task-Verwaltung mit hierarchischen Strukturen. Die Datenqualität wird auf mehreren Ebenen (Datenbank, JPA, Service-Layer, API) sichergestellt. Die Verwendung von Flyway für Schema-Migrationen und verschiedene Profile (dev/prod) ermöglicht eine professionelle Entwicklungs- und Deployment-Pipeline.
+The ProSeed application uses modern web technologies in a clear 3-tier architecture. The relational data model with 8 main entities and 5 junction tables enables flexible process and task management with hierarchical structures. Data quality is ensured at multiple levels (database, JPA, service layer, API). The use of Flyway for schema migrations and different profiles (dev/prod) enables a professional development and deployment pipeline.
