@@ -1,3 +1,5 @@
+*This Documentation is required for the german business concept hand-in. It encompasses task 3.6 - 3.8*
+
 # ProSeed - Projekt Dokumentation
 
 ## 3.6 High-level IT Architecture
@@ -10,7 +12,7 @@ Die ProSeed-Anwendung folgt einer klassischen **3-Tier-Architektur** (Präsentat
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    PRÄSENTATIONSSCHICHT                      │
+│                    PRÄSENTATIONSSCHICHT                     │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │            Frontend (React SPA)                        │ │
 │  │  - React 19.1 + Vite                                   │ │
@@ -25,7 +27,7 @@ Die ProSeed-Anwendung folgt einer klassischen **3-Tier-Architektur** (Präsentat
                             │ HTTP/REST (JSON)
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                     LOGIKSCHICHT                             │
+│                     LOGIKSCHICHT                            │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │           Backend (Spring Boot REST API)               │ │
 │  │  - Java 21                                             │ │
@@ -41,7 +43,7 @@ Die ProSeed-Anwendung folgt einer klassischen **3-Tier-Architektur** (Präsentat
                             │ JPA/Hibernate
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                     DATENSCHICHT                             │
+│                     DATENSCHICHT                            │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │              Relationale Datenbank                     │ │
 │  │  - MariaDB (Produktion)                                │ │
@@ -63,7 +65,7 @@ Die ProSeed-Anwendung folgt einer klassischen **3-Tier-Architektur** (Präsentat
                                   │ HTTPS (Port 8080)
                                   │
                          ┌────────▼─────────┐
-                         │  Docker Container │
+                         │  Docker Container│
                          │  ┌──────────────┐│
                          │  │   Frontend   ││
                          │  │  (React App) ││
@@ -144,14 +146,14 @@ Alle Endpunkte sind unter dem Basis-Pfad `/api` erreichbar:
            │ 1:n                           │ 1:n
            │                               │
 ┌──────────▼───────────────────────────────▼──────────┐
-│                  Employee                            │
-│──────────────────────────────────────────────────────│
-│ PK: employee_id                                      │
-│     first_name                                       │
-│     last_name                                        │
-│ FK: role_id                                          │
-│ FK: department_id                                    │
-└──────┬───────────────────────┬───────────────────────┘
+│                  Employee                           │
+│─────────────────────────────────────────────────────│
+│ PK: employee_id                                     │
+│     first_name                                      │
+│     last_name                                       │
+│ FK: role_id                                         │
+│ FK: department_id                                   │
+└──────┬───────────────────────┬──────────────────────┘
        │                       │
        │ 1:1                   │ m:n
        │                       │
@@ -163,8 +165,8 @@ Alle Endpunkte sind unter dem Basis-Pfad `/api` erreichbar:
 │ FK: employee_id   │   └──────┬──────────────────┘
 └───────────────────┘          │
                                │ m:n
-         ┌─────────────────────┼──────────────────┐
-         │                     │                  │
+         ┌─────────────────────┼─────────────────┐
+         │                     │                 │
 ┌────────▼─────────┐    ┌──────▼──────────┐      │
 │  ProcessEntity   │    │      Task       │◄─────┘
 │──────────────────│    │─────────────────│
