@@ -2,12 +2,12 @@
 
 [[_TOC_]]
 
-# ProSeed 
+# Aclaro 
 
-ProSeed is a process and task management software created for L1VE GmbH to help manage internal processes and tasks. It is a web application consisting of a backend REST API and a frontend user interface.
+Aclaro is a process and task management software created for L1VE GmbH to help manage internal processes and tasks. It is a web application consisting of a backend REST API and a frontend user interface.
 The backend is built with Java and Spring Boot, while the frontend is developed using JavaScript and React. 
 
-This README file provides instructions on how to build, run, and test the ProSeed application. For instructions on using the application, please refer to MANUAL.md.
+This README file provides instructions on how to build, run, and test the Aclaro application. For instructions on using the application, please refer to MANUAL.md.
 
 The project was created as a part of the multidisciplinary project course at the Tampere School of Applied Sciences in collaboration with Hochschule München, during the autumn semester of 2025.
 
@@ -46,7 +46,7 @@ portions of the application. For any other containerization method (such as Podm
 
 Open up a terminal and go the root of this repository. Then proceed to build the Docker image by inputting this command
 
-`docker build -t proseed .`
+`docker build -t Aclaro .`
 
 This will proceed to build the image to use with the Docker engine
 
@@ -54,7 +54,7 @@ This will proceed to build the image to use with the Docker engine
 
 To run the container and expose it to the necessary ports to host it, run this command.
 
-`docker run -d -t -p 8080:8080 proseed`
+`docker run -d -t -p 8080:8080 Aclaro`
 
 The following command will boot up the image in the background and outputs the container ID that was created from running the image.
 
@@ -98,7 +98,7 @@ This starts the React development server, typically accessible at `http://localh
 
 ## Backend - Running locally
 
-This repository contains a Spring Boot backend in `backend/proseed`. The backend supports three profiles:
+This repository contains a Spring Boot backend in `backend/Aclaro`. The backend supports three profiles:
 
 - `dev` - H2 in-memory database. Hibernate manages schema (`spring.jpa.hibernate.ddl-auto=update`). Good for development and tests.
 - `dev-maria` - MariaDB (local) with Flyway migrations. Hibernate validates the schema (`spring.jpa.hibernate.ddl-auto=validate`). Use this to test persisten DB behavior
@@ -114,7 +114,7 @@ Prerequisites
 Quick start (dev, in-memory H2)
 
 Navigate to the backend directory from the root of the repository:
-`cd backend/proseed`
+`cd backend/Aclaro`
 
 Start the backend in development mode with H2:
 `./gradlew bootRun`
@@ -123,7 +123,7 @@ This runs Spring Boot with the default `dev` profile (H2). The app will create/u
 
 Run with MariaDB (dev-maria)
 
-1. Ensure a MariaDB database and user are available and match the values in `backend/proseed/src/main/resources/application-dev-maria.properties` (defaults used by the project):
+1. Ensure a MariaDB database and user are available and match the values in `backend/Aclaro/src/main/resources/application-dev-maria.properties` (defaults used by the project):
 
    - URL: `jdbc:mariadb://localhost:3306/seed_db`
    - Username: `seed_user`
@@ -132,7 +132,7 @@ Run with MariaDB (dev-maria)
 2. Start with the `dev-maria` profile:
 
 Navigate to the backend directory from the root of the repository:
-`cd backend/proseed`
+`cd backend/Aclaro`
 
 Start the backend using the MariaDB profile:
 `SPRING_PROFILES_ACTIVE=dev-maria ./gradlew bootRun`
@@ -147,7 +147,7 @@ All endpoints are mounted under the /api prefix when running locally (default):
 
 http://localhost:8080/api
 
-Make sure the backend is running (from `backend/proseed`):
+Make sure the backend is running (from `backend/Aclaro`):
 
 ```bash
 ./gradlew bootRun
