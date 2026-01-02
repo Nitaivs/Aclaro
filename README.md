@@ -1,7 +1,5 @@
 <!-- New blank project: SCRUM Management > readme.md > `Edit single file` -->
 
-[[_TOC_]]
-
 # Aclaro 
 
 Aclaro is a process and task management software created for L1VE GmbH to help manage internal processes and tasks. It is a web application consisting of a backend REST API and a frontend user interface.
