@@ -12,15 +12,15 @@ The project was created as a part of the multidisciplinary project course at the
 ---
 # Authors
 
-- Nitai Spira
-- Santeri Sillanaukee
-- Tuuli Marttila
-- Noora Nevalainen
-- Henri Nieminen
+- Nitai Spira - [Nitaivs](https://github.com/Nitaivs)
+- Santeri Sillanaukee - [SanteriSil](https://github.com/SanteriSil)
+- Tuuli Marttila - [Tuulipa](https://github.com/Tuulipa)
+- Noora Nevalainen - [Astraalikiisu](https://github.com/Astraalikiisu)
+- Henri Nieminen  - [HenaNieminen](https://github.com/HenaNieminen)
 
 ---
 # Personal contribution
-I was the head of the programming team, and had the final say on which features would be implemented and when.  I also was the primary frontend programmer, implementing most of the functionality along with being responsible for implementing the UI elements, which were designed by Noora.
+I was the head of the programming team, and had the final say on which features would be implemented and when.  I also was the primary frontend programmer, implementing most of the functionality along with being responsible for implementing the UI elements, which were designed by [Noora](https://github.com/Astraalikiisu).
 
 ---
 # System requirements
