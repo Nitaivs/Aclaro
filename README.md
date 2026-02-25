@@ -20,7 +20,7 @@ The project was created as a part of the multidisciplinary project course at the
 
 ---
 # Personal contribution
-I was the head of the programming team, and had the final say on which features would be implemented and when.  I also was the primary frontend programmer, implementing most of the functionality along with being responsible for implementing the UI design.
+I was the head of the programming team, and had the final say on which features would be implemented and when.  I also was the primary frontend programmer, implementing most of the functionality along with being responsible for implementing the UI elements, which were designed by Noora.
 
 ---
 # System requirements
