@@ -19,6 +19,8 @@ The project was created as a part of the multidisciplinary project course at the
 - Henri Nieminen
 
 ---
+# Personal contribution
+I was the head of the programming team, and had the final say on which features would be implemented and when.  I also was the primary frontend programmer, implementing most of the functionality along with being responsible for implementing the UI design.
 
 # System requirements
 
@@ -55,6 +57,8 @@ To run the container and expose it to the necessary ports to host it, run this c
 `docker run -d -t -p 8080:8080 Aclaro`
 
 The following command will boot up the image in the background and outputs the container ID that was created from running the image.
+
+After the container is running, the application can be accessed by connecting to `localhost:8080` in a browser.
 
 To shut down the docker container from the terminal use:
 
